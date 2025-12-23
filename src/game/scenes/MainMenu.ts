@@ -1,19 +1,22 @@
 import { Scene, GameObjects } from 'phaser';
+import { Utils } from './Utils';
 
-export class MainMenu extends Scene
-{
+export class MainMenu extends Scene {
     background: GameObjects.Image;
     logo: GameObjects.Image;
     title: GameObjects.Text;
+    centerXY: Phaser.Math.Vector2;
 
-    constructor ()
-    {
+    constructor() {
         super('MainMenu');
     }
 
-    create ()
-    {
-        this.background = this.add.image(512, 384, 'background');
+    init() {
+        this.centerXY = Utils.CenterXY(this.game);
+    }
+
+    create() {
+        this.background = this.add.image(this.centerXY.x, this.centerXY.y, 'bg');
 
         this.logo = this.add.image(512, 300, 'logo');
 
