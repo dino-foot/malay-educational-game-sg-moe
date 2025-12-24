@@ -7,5 +7,8 @@ export class BasScene extends Scene {
     constructor() {
         super('BasScene');
     }
-    create() { }
+
+    create() {
+
+    }
 }

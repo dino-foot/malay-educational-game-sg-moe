@@ -99,6 +99,7 @@ export class Preloader extends Scene {
         this.load.image('omar', 'menu/omar.png');
         this.load.image('settings', 'menu/settings.png');
         this.load.image('bg', 'menu/background.png');
+        this.load.image('back', 'menu/backBtn.png');
 
     }
 
