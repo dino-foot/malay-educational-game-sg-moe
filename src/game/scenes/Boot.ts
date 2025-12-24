@@ -11,6 +11,10 @@ export class Boot extends Scene {
         // this.load.image('background', 'assets/bg.png');
         this.load.image('background', 'assets/menu/background.png');
 
+        // this.load.spineJson("boat-data", "assets/spine/boat.json");
+        // this.load.spineAtlas("boat-atlas", "assets/spine/boat.atlas");
+        // this.load.image('boat', 'assets/spine/boat.png');
+
     }
 
     create() {

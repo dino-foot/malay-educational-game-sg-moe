@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { Utils } from './Utils';
 
 export class Preloader extends Scene {
     constructor() {
@@ -7,23 +8,24 @@ export class Preloader extends Scene {
 
     init() {
         //  We loaded this image in our Boot Scene, so we can display it here
-        this.add.image(512, 384, 'background');
+        this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'background');
 
         //  A simple progress bar. This is the outline of the bar.
-        this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
+        this.add.rectangle(this.cameras.main.centerX, this.cameras.main.centerY, 468, 32).setStrokeStyle(1, 0xffffff);
 
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
-
+        const bar = this.add.rectangle(this.cameras.main.centerX, this.cameras.main.centerY, 28, 0xffffff);
         //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
         this.load.on('progress', (progress: number) => {
             //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
             bar.width = 4 + (460 * progress);
-
         });
     }
 
     preload() {
+
+        this.load.spineJson("boat-data", "assets/spine/boat.json");
+        this.load.spineAtlas("boat-atlas", "assets/spine/boat.atlas");
 
         this.load.image('blue_light', 'assets/menu/blue_light.png');
         this.load.image('green_light', 'assets/menu/green_light.png');
@@ -31,7 +33,11 @@ export class Preloader extends Scene {
         this.load.image('yellow_light', 'assets/menu/yellow_light.png');
 
         //  Load the assets for the game - Replace with your own assets
-        this.load.setPath('assets');
+        // this.load.setPath('assets');
+
+        // this.load.spineJson("boat-data", "spine/boat.json");
+        // this.load.spineAtlas("boat-atlas", "spine/boat.atlas");
+        // this.load.image('boat', 'spine/boat.png');
 
         const basImageKeys = [
             'bus_stop',
@@ -50,7 +56,7 @@ export class Preloader extends Scene {
         ];
 
         basImageKeys.forEach(key => {
-            this.load.image(key, `bas/${key}.png`);
+            this.load.image(key, `assets/bas/${key}.png`);
         });
 
         const kayakImageKeys = [
@@ -67,7 +73,7 @@ export class Preloader extends Scene {
         ];
 
         kayakImageKeys.forEach(key => {
-            this.load.image(key, `kayak/${key}.png`);
+            this.load.image(key, `assets/kayak/${key}.png`);
         });
 
         const kuasaImageKeys = [
@@ -88,20 +94,20 @@ export class Preloader extends Scene {
         ];
 
         kuasaImageKeys.forEach(key => {
-            this.load.image(key, `kuasa/${key}.png`);
+            this.load.image(key, `assets/kuasa/${key}.png`);
         });
 
 
-        this.load.image('bas', 'menu/bas.png');
-        this.load.image('battery', 'menu/battery.png');
-        this.load.image('glow', 'menu/glow.png');
-        this.load.image('kampung', 'menu/kampung.png');
-        this.load.image('kuasa', 'menu/kuasa.png');
-        this.load.image('logo', 'menu/logo.png');
-        this.load.image('omar', 'menu/omar.png');
-        this.load.image('settings', 'menu/settings.png');
-        this.load.image('bg', 'menu/background.png');
-        this.load.image('back', 'menu/backBtn.png');
+        this.load.image('bas', 'assets/menu/bas.png');
+        this.load.image('battery', 'assets/menu/battery.png');
+        this.load.image('glow', 'assets/menu/glow.png');
+        this.load.image('kampung', 'assets/menu/kampung.png');
+        this.load.image('kuasa', 'assets/menu/kuasa.png');
+        this.load.image('logo', 'assets/menu/logo.png');
+        this.load.image('omar', 'assets/menu/omar.png');
+        this.load.image('settings', 'assets/menu/settings.png');
+        this.load.image('bg', 'assets/menu/background.png');
+        this.load.image('back', 'assets/menu/backBtn.png');
 
     }
 

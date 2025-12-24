@@ -789,6 +789,53 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.6.3.tgz#f13c7c205915eb91ae54c557f5e92bddd8be0e83"
   integrity sha512-4B4OijXeVNOPZlYA2oEwWOTkzyltLao+xbotHQeqN++Rv27Y6s818+n2Qkp8q+Fxhn0t/5lA5X1Mxktud8eayQ==
 
+"@esotericsoftware/spine-canvas@4.2.43":
+  version "4.2.43"
+  resolved "https://registry.yarnpkg.com/@esotericsoftware/spine-canvas/-/spine-canvas-4.2.43.tgz#14b109641b63c3d84553f3c980414dd539778c4c"
+  integrity sha512-B1ivuAcNdWwbwwuThbvl5xcCmbXPRfQl9mv1XzXkpez1dUEAC/L1dnODu/94p3JZM+bsSFbeCFT4h3yoZyoErA==
+  dependencies:
+    "@esotericsoftware/spine-core" "4.2.43"
+
+"@esotericsoftware/spine-canvas@4.2.76":
+  version "4.2.76"
+  resolved "https://registry.yarnpkg.com/@esotericsoftware/spine-canvas/-/spine-canvas-4.2.76.tgz#47c96a1cbdea671651abece7470614e516690ca7"
+  integrity sha512-h1oRiMdSngWDLBXbBt+ZBwxQT7LzRLCfTHTuQc1EMSXdbQYYJBR8AxzZEVkknRNMxal9MEE/abDgpNb64YImgw==
+  dependencies:
+    "@esotericsoftware/spine-core" "4.2.76"
+
+"@esotericsoftware/spine-core@4.2.43":
+  version "4.2.43"
+  resolved "https://registry.yarnpkg.com/@esotericsoftware/spine-core/-/spine-core-4.2.43.tgz#6dd1b8ff59fd8190a5fcc974f3b014eca11f75ca"
+  integrity sha512-FzpNkJllTwu7l1bHO6186r8D4/0UR3bkPWqMlLUZf57sh2ErV8iQFyPXiz3suZTXpfAjw4k5dVhAebPVUZMtXw==
+
+"@esotericsoftware/spine-core@4.2.76":
+  version "4.2.76"
+  resolved "https://registry.yarnpkg.com/@esotericsoftware/spine-core/-/spine-core-4.2.76.tgz#be25e9699fa4e255de72081bf518a19a8f4b8311"
+  integrity sha512-U5h++pz6YyqXc/ci5ZNvn8rWTFgezRppDtLoCMqQXkGF1K1Pu8a4czpVG3QgJr71rk0lR1J7E5hL5cteCyc8Bw==
+
+"@esotericsoftware/spine-phaser@^4.2.43":
+  version "4.2.76"
+  resolved "https://registry.yarnpkg.com/@esotericsoftware/spine-phaser/-/spine-phaser-4.2.76.tgz#4810d9819245f54642537f3b6aceb6fc1743d334"
+  integrity sha512-I4ip5vy57yp3OjE+pWPtJiJD5cCF4LHhASTKo/My63WvEQHAYrOy6icuVYasWIKPJgY1lMSZR7r0AZ9SOehiCQ==
+  dependencies:
+    "@esotericsoftware/spine-canvas" "4.2.76"
+    "@esotericsoftware/spine-core" "4.2.76"
+    "@esotericsoftware/spine-webgl" "4.2.76"
+
+"@esotericsoftware/spine-webgl@4.2.43":
+  version "4.2.43"
+  resolved "https://registry.yarnpkg.com/@esotericsoftware/spine-webgl/-/spine-webgl-4.2.43.tgz#51a273752ef6475e98df25e6cacd35b8af58d593"
+  integrity sha512-ydffbWTd0b7Iw5BDHdnEgxEmf2xmQurx1ZVll9u50OfKPgk6QKvlo7vuY7UJIwtDRPALAhSql2sBJPVniYHixQ==
+  dependencies:
+    "@esotericsoftware/spine-core" "4.2.43"
+
+"@esotericsoftware/spine-webgl@4.2.76":
+  version "4.2.76"
+  resolved "https://registry.yarnpkg.com/@esotericsoftware/spine-webgl/-/spine-webgl-4.2.76.tgz#05101735801573e154958ffcbd745bb89acc24af"
+  integrity sha512-R7w1J/DlD/naS8YhLVcy0Tba5d4rzYk0Bx+pESMZgbSPOxdRypAM2uuU2MVuW9lUJ+wTkOAXDtihRicnstg4iQ==
+  dependencies:
+    "@esotericsoftware/spine-core" "4.2.76"
+
 "@isaacs/balanced-match@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@isaacs/balanced-match/-/balanced-match-4.0.1.tgz#3081dadbc3460661b751e7591d7faea5df39dd29"
@@ -1935,7 +1982,7 @@ eventemitter3@^4.0.0:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
-eventemitter3@^5.0.1:
+eventemitter3@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-5.0.1.tgz#53f5ffd0a492ac800721bb42c66b841de96423c4"
   integrity sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==
@@ -2857,12 +2904,12 @@ path-to-regexp@~0.1.12:
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.12.tgz#d5e1a12e478a976d432ef3c58d534b9923164bb7"
   integrity sha512-RA1GjUVMnvYFxuqovrEqZoxxW5NUZqbwKtYz/Tt7nXerk0LbLblQmrsgdeOxV5SFHf0UDggjS/bSeOZwt1pmEQ==
 
-phaser@^3.90.0:
-  version "3.90.0"
-  resolved "https://registry.yarnpkg.com/phaser/-/phaser-3.90.0.tgz#a281b2e5e67ec3638cbf73ea3bbfe72b52c4e7de"
-  integrity sha512-/cziz/5ZIn02uDkC9RzN8VF9x3Gs3XdFFf9nkiMEQT3p7hQlWuyjy4QWosU802qqno2YSLn2BfqwOKLv/sSVfQ==
+phaser@3.60.0:
+  version "3.60.0"
+  resolved "https://registry.yarnpkg.com/phaser/-/phaser-3.60.0.tgz#8a555623e64c707482e6321485b4bda84604590d"
+  integrity sha512-IKUy35EnoEVcl2EmJ8WOyK4X8OoxHYdlhZLgRGpNrvD1fEagYffhVmwHcapE/tGiLgyrnezmXIo5RrH2NcrTHw==
   dependencies:
-    eventemitter3 "^5.0.1"
+    eventemitter3 "^5.0.0"
 
 picocolors@^1.1.1:
   version "1.1.1"

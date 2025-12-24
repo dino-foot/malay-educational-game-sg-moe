@@ -37,6 +37,10 @@
         "webpack-merge": "^6.0.1"
     },
     "dependencies": {
-        "phaser": "^3.90.0"
+        "@esotericsoftware/spine-canvas": "4.2.43",
+        "@esotericsoftware/spine-core": "4.2.43",
+        "@esotericsoftware/spine-phaser": "^4.2.43",
+        "@esotericsoftware/spine-webgl": "4.2.43",
+        "phaser": "3.70.0"
     }
 }
