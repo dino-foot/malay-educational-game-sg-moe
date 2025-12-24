@@ -25,10 +25,16 @@ export class Preloader extends Scene {
     }
 
     preload() {
+
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
         this.load.image('logo', 'menu/logo.png');
         this.load.image('background', 'background.png');
+
+        const imageKeys = ['blue_light', 'green_light', 'red_light', 'yellow_light'];
+        imageKeys.forEach(key => {
+            this.load.image(key, `effects/${key}.png`);
+        });
 
         this.load.image('bas', 'menu/bas.png');
         this.load.image('battery', 'menu/battery.png');
@@ -39,6 +45,7 @@ export class Preloader extends Scene {
         this.load.image('omar', 'menu/omar.png');
         this.load.image('settings', 'menu/settings.png');
         this.load.image('bg', 'menu/background.png');
+
     }
 
     create() {
