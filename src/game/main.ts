@@ -6,6 +6,7 @@ import { KaysakScene } from './scenes/KayakScene';
 import { GameOver } from './scenes/GameOver';
 import { AUTO, Game } from 'phaser';
 import { Preloader } from './scenes/Preloader';
+import { SpinePlugin } from '@esotericsoftware/spine-phaser';
 
 const BASE_WIDTH = 1600;
 const BASE_HEIGHT = 900;
@@ -30,7 +31,13 @@ const config: Phaser.Types.Core.GameConfig = {
         KuasaScene,
         KaysakScene,
         GameOver
-    ]
+    ],
+
+    plugins: {
+        scene: [
+            { key: "SpinePlugin", plugin: SpinePlugin, mapping: "spine", sceneKey: "MainMenu", start: true },
+        ]
+    }
 };
 
 const StartGame = (parent: string) => {
