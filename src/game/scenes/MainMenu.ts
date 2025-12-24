@@ -12,6 +12,7 @@ export class MainMenu extends Scene {
     title: GameObjects.Text;
     centerXY: Phaser.Math.Vector2;
     kuasaBtn: GameObjects.Image;
+    settingsBtn: GameObjects.Image;
 
     constructor() {
         super('MainMenu');
@@ -37,6 +38,25 @@ export class MainMenu extends Scene {
 
         this.createMenuButtons(x, y);
 
+        // settings button (top-right)
+        this.settingsBtn = this.add
+            .image(x + 450, y - 270, 'settings')
+            .setOrigin(0.5)
+            .setScale(0.9)
+            .setInteractive({ useHandCursor: true });
+
+        Utils.AlignTopRight(this.settingsBtn, this.background, -20, -20);
+        Utils.MakeButton(this, this.settingsBtn, () => {
+            // this.scene.start('SettingsMenu');
+        });
+
+        const characterCointainer = this.add.container();
+        const umar = this.add
+            .image(x + 460, y + 70, 'omar')
+            .setOrigin(0.5);
+
+        characterCointainer.add(umar);
+
     } // end
 
     private createMenuButtons(x: number, y: number) {
@@ -55,26 +75,9 @@ export class MainMenu extends Scene {
                 .setScale(0.9)
                 .setInteractive({ useHandCursor: true });
 
-            // Hover
-            button.on('pointerover', () => {
-                button.setScale(0.95);
-            });
-
-            button.on('pointerout', () => {
-                button.setScale(0.9);
-            });
-
-            // Click
-            button.on('pointerdown', () => {
-                this.tweens.add({
-                    targets: button,
-                    scale: 0.85,
-                    duration: 80,
-                    yoyo: true,
-                    onComplete: () => {
-                        this.scene.start(btn.scene);
-                    }
-                });
+            Utils.MakeButton(this, button, () => {
+                console.log(`Start scene: ${btn.key}`);
+                // this.scene.start(btn.scene);
             });
         });
     }
