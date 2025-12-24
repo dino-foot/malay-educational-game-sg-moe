@@ -1,7 +1,9 @@
 import { Boot } from './scenes/Boot';
-import { GameOver } from './scenes/GameOver';
-import { Game as MainGame } from './scenes/Game';
 import { MainMenu } from './scenes/MainMenu';
+import { BasScene } from './scenes/BasScene';
+import { KuasaScene } from './scenes/KuasaScene';
+import { KaysakScene } from './scenes/KayakScene';
+import { GameOver } from './scenes/GameOver';
 import { AUTO, Game } from 'phaser';
 import { Preloader } from './scenes/Preloader';
 
@@ -24,7 +26,9 @@ const config: Phaser.Types.Core.GameConfig = {
         Boot,
         Preloader,
         MainMenu,
-        MainGame,
+        BasScene,
+        KuasaScene,
+        KaysakScene,
         GameOver
     ]
 };

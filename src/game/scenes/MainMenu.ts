@@ -2,9 +2,9 @@ import { Scene, GameObjects } from 'phaser';
 import { Utils } from './Utils';
 
 const menuButtons = [
-    { key: 'bas', scene: 'Game' },
-    { key: 'kuasa', scene: 'Game2' },
-    { key: 'kampung', scene: 'Game3' },
+    { key: 'bas', scene: 'BasScene' },
+    { key: 'kuasa', scene: 'KuasaScene' },
+    { key: 'kampung', scene: 'KaysakScene' },
 ];
 export class MainMenu extends Scene {
     background: GameObjects.Image;
@@ -56,6 +56,7 @@ export class MainMenu extends Scene {
             .setOrigin(0.5);
 
         characterCointainer.add(umar);
+        characterCointainer.setDepth(1);
 
     } // end
 
@@ -77,7 +78,7 @@ export class MainMenu extends Scene {
 
             Utils.MakeButton(this, button, () => {
                 console.log(`Start scene: ${btn.key}`);
-                // this.scene.start(btn.scene);
+                this.scene.start(btn.scene);
             });
         });
     }
