@@ -44,7 +44,9 @@ export class Preloader extends Scene {
             'letter_placement',
             'letter',
             'paper',
-            'road'
+            'road',
+            'rect_green_btn',
+            'rect_bus'
         ];
 
         basImageKeys.forEach(key => {
