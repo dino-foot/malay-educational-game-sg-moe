@@ -42,7 +42,6 @@ export class Preloader extends Scene {
         const basImageKeys = [
             'bus_stop',
             'checkmark',
-            'city_bg',
             'ellipse',
             'flag',
             'green_tick',
@@ -52,7 +51,11 @@ export class Preloader extends Scene {
             'paper',
             'road',
             'rect_green_btn',
-            'rect_bus'
+            'rect_bus',
+            'yellow-panel',
+            'small_road',
+            'level-title-bg',
+            'upper-bg'
         ];
 
         basImageKeys.forEach(key => {
