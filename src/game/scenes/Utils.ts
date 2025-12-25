@@ -30,6 +30,24 @@ export class Utils {
         Phaser.Display.Align.In.TopRight(target, reference, offsetX, offsetY);
     }
 
+    public static AlignBottomCenter(
+        target: Phaser.GameObjects.GameObject,
+        reference: Phaser.GameObjects.GameObject,
+        offsetX: number = 0,
+        offsetY: number = 0
+    ): void {
+        Phaser.Display.Align.In.BottomCenter(target, reference, offsetX, offsetY);
+    }
+
+    public static AlignTopCenter(
+        target: Phaser.GameObjects.GameObject,
+        reference: Phaser.GameObjects.GameObject,
+        offsetX: number = 0,
+        offsetY: number = 0
+    ): void {
+        Phaser.Display.Align.In.TopCenter(target, reference, offsetX, offsetY);
+    }
+
     /**
     * Adds button-like input behavior to an image
     */
