@@ -115,7 +115,12 @@ export class Preloader extends Scene {
         this.load.image('bg', 'assets/menu/background.png');
         this.load.image('back', 'assets/menu/backBtn.png');
 
-    }
+        const basLevelImageKeys = ['placeholder'];
+        basLevelImageKeys.forEach(key => {
+            this.load.image(key, `assets/level_bas/${key}.png`);
+        });
+
+    } // end 
 
     create() {
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.

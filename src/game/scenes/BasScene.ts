@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { Utils } from './Utils';
+import { BUS_LEVELS_DATA } from '../BusLevelData';
 
 export class BasScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -11,6 +12,7 @@ export class BasScene extends Scene {
     questionContainer: Phaser.GameObjects.Container;
     wordsZone: Phaser.GameObjects.Zone; // scatter words here
     roadMarksList: any[] = [];
+    // imageBox: Phaser.GameObjects.Image;
 
     constructor() {
         super('BasScene');
@@ -44,12 +46,12 @@ export class BasScene extends Scene {
         this.questionContainer = this.add.container(0, 0).setDepth(10);
         Phaser.Display.Align.In.LeftCenter(this.questionContainer, road, -200, 10);
 
-        const questionBox = this.add
+        const imageBox = this.add
             .image(0, 0, 'question_box')
             .setOrigin(0.5)
             .setScale(1);
 
-        this.questionContainer.add(questionBox);
+        this.questionContainer.add(imageBox);
 
         this.busTrack = this.add
             .image(x, y - 110, 'small_road')
@@ -120,7 +122,14 @@ export class BasScene extends Scene {
             Phaser.Display.Align.In.LeftCenter(mark.container, this.busTrack, -280 + i * -115, 55);
         }
 
+        this.gameplayLogic();
+    }
 
+    gameplayLogic() {
+        // level constracts here
+        const levelData = BUS_LEVELS_DATA[0]; // get first level data
+        const img = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1).setDepth(11);
+        Phaser.Display.Align.In.Center(img, this.questionContainer, 0, 0);
     }
 
     private createMarker(x: number, y: number) {

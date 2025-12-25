@@ -1,6 +1,6 @@
 import { LevelData } from "./LevelData";
 
-export const LEVELS: LevelData[] = [
+export const BUS_LEVELS_DATA: LevelData[] = [
     {
         id: 1,
         correctWord: "BERSIAR-SIAR",
