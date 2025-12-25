@@ -25,11 +25,12 @@ export class MainMenu extends Scene {
     create() {
         const { x, y } = this.centerXY;
 
-        const boat = this.add.spine(x, y, "boat-data", "boat-atlas").setOrigin(0.5);
-        boat.setDepth(10);
-        boat.setInteractive();
-        boat.animationState.setAnimation(0, "rowling", true);
-        this.input.enableDebug(boat, 0xff00ff);
+        //* add spine boat later    
+        // const boat = this.add.spine(x, y, "boat-data", "boat-atlas").setOrigin(0.5);
+        // boat.setDepth(10);
+        // boat.setInteractive();
+        // boat.animationState.setAnimation(0, "rowling", true);
+        // this.input.enableDebug(boat, 0xff00ff);
 
         // Background
         this.background = this.add
@@ -63,6 +64,9 @@ export class MainMenu extends Scene {
 
         characterCointainer.add(umar);
         characterCointainer.setDepth(1);
+
+        //? debug start bas scene directly
+        this.scene.start('BasScene');
 
     } // end
 
