@@ -55,7 +55,9 @@ export class Preloader extends Scene {
             'yellow-panel',
             'small_road',
             'level-title-bg',
-            'upper-bg'
+            'upper-bg',
+            'empty_heart',
+            'heart',
         ];
 
         basImageKeys.forEach(key => {
