@@ -8,6 +8,8 @@ export class BasScene extends Scene {
     bgAlignZone: Phaser.GameObjects.Zone;
     busTrack: Phaser.GameObjects.Image;
     answerSubmitBtn: Phaser.GameObjects.Image;
+    questionContainer: Phaser.GameObjects.Container;
+    wordsZone: Phaser.GameObjects.Zone; // scatter words here
     roadMarksList: any[] = [];
 
     constructor() {
@@ -37,6 +39,17 @@ export class BasScene extends Scene {
             .image(x, y + 120, 'road')
             .setOrigin(0.5)
             .setScale(1);
+
+        //? question box container
+        this.questionContainer = this.add.container(0, 0).setDepth(10);
+        Phaser.Display.Align.In.LeftCenter(this.questionContainer, road, -200, 10);
+
+        const questionBox = this.add
+            .image(0, 0, 'question_box')
+            .setOrigin(0.5)
+            .setScale(1);
+
+        this.questionContainer.add(questionBox);
 
         this.busTrack = this.add
             .image(x, y - 110, 'small_road')
