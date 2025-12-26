@@ -115,7 +115,16 @@ export class Preloader extends Scene {
         this.load.image('bg', 'assets/menu/background.png');
         this.load.image('back', 'assets/menu/backBtn.png');
 
-        const basLevelImageKeys = ['placeholder'];
+        const basLevelImageKeys = [
+            "hinggap",
+            "kenderaan",
+            "menghalau",
+            "menyesal",
+            "menyewa",
+            "panduan",
+            "terbeliak",
+            "terpinga-pinga",
+            "teruja"];
         basLevelImageKeys.forEach(key => {
             this.load.image(key, `assets/level_bas/${key}.png`);
         });
