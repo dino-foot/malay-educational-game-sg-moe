@@ -93,7 +93,7 @@ export class BasScene extends Scene {
         this.answerSubmitBtn = this.add
             .image(0, 0, 'rect_green_btn')
             .setOrigin(0.5)
-            .setScale(1)
+            .setScale(0.8)
             .setDepth(10)
             .setInteractive({ useHandCursor: true });
 
@@ -102,7 +102,7 @@ export class BasScene extends Scene {
             // this.scene.start('MainMenu');
         });
 
-        Phaser.Display.Align.In.BottomRight(this.answerSubmitBtn, this.bgAlignZone, -70, -20);
+        Phaser.Display.Align.In.BottomRight(this.answerSubmitBtn, this.bgAlignZone, -50, -20);
 
         for (let i = 0; i < 3; i++) {
             const heart = this.add
@@ -127,10 +127,37 @@ export class BasScene extends Scene {
 
     gameplayLogic() {
         // level constracts here
-        const levelData = BUS_LEVELS_DATA[0]; // get first level data
-        const img = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1).setDepth(11);
+        const levelData = BUS_LEVELS_DATA[1]; // get first level data
+        const img = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1.5).setDepth(11);
         Phaser.Display.Align.In.Center(img, this.questionContainer, 0, 0);
-    }
+
+        const spacing = 135;
+        const letters: Phaser.GameObjects.Container[] = [];
+
+        for (let i = 0; i < levelData.correctWord.length; i++) {
+            letters.push(
+                this.add
+                    .container(0, 0, [
+                        this.add.image(0, 0, 'letter_placement').setOrigin(0.5).setScale(0.9)
+                    ])
+                    .setDepth(11)
+            );
+        }
+
+        // ✅ FIXED CENTER CALCULATION
+        const bounds = this.wordRects.getBounds();
+        const centerX = bounds.centerX;
+        const centerY = bounds.centerY;
+
+        const halfWidth = ((letters.length - 1) * spacing) / 2;
+
+        Phaser.Actions.PlaceOnLine(
+            letters,
+            new Phaser.Geom.Line(centerX - halfWidth - 80, centerY, centerX + halfWidth, centerY)
+        );
+
+
+    } // end logic
 
     private createMarker(x: number, y: number) {
         const container = this.add.container(x, y).setDepth(10);

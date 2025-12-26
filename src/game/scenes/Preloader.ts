@@ -124,7 +124,9 @@ export class Preloader extends Scene {
             "panduan",
             "terbeliak",
             "terpinga-pinga",
-            "teruja"];
+            "teruja",
+            "placeholder" // keep this at the end
+        ];
         basLevelImageKeys.forEach(key => {
             this.load.image(key, `assets/level_bas/${key}.png`);
         });
