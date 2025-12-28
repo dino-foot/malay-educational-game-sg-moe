@@ -225,7 +225,7 @@ export class BasScene extends Scene {
                 .setInteractive({ useHandCursor: true });
 
             this.input.setDraggable(container);
-
+            // store initial position
             container.setData({
                 letter: letters[i],
                 startX: x,
@@ -248,6 +248,7 @@ export class BasScene extends Scene {
         pointer: Phaser.Input.Pointer,
         letterObj: Phaser.GameObjects.Container
     ) {
+        console.log('Drag Ended:', letterObj.getData('letter'));
         if (letterObj.getData('locked')) return;
 
         const letter = letterObj.getData('letter');
@@ -263,14 +264,12 @@ export class BasScene extends Scene {
                     slot.getBounds()
                 )
             ) {
-                // ✅ SNAP
+                //? ✅ SNAP
                 letterObj.setPosition(slot.x, slot.y);
                 letterObj.setData('locked', true);
                 slot.setData('occupied', true);
                 letterObj.disableInteractive();
 
-                // letterObj.rotation = 0;
-                // letterObj.angle = 0;
                 this.tweens.add({
                     targets: letterObj,
                     x: slot.x,
@@ -281,22 +280,19 @@ export class BasScene extends Scene {
                     ease: Phaser.Math.Easing.Quartic.In,
                     onComplete: () => {
                         letterObj.rotation = 0;
+                        const completed = this.letterSlots.every(slot => slot.getData('occupied'));
+                        if (completed) {
+                            console.log('WORD COMPLETE! / Proceed to next level!');
+                        }
                     }
                 });
 
-                console.log(`Placed letter '${letter}' correctly!`, letterObj);
+                // console.log(`Placed letter '${letter}' correctly!`, letterObj);
                 return;
             }
         }
 
-        //! WRONG DROP → SNAP BACK
-        this.tweens.add({
-            targets: letterObj,
-            x: letterObj.getData('startX'),
-            y: letterObj.getData('startY'),
-            duration: 300,
-            ease: 'Back.Out'
-        });
+        this.resetLetterPosition(letterObj);
     }
 
 
@@ -311,6 +307,16 @@ export class BasScene extends Scene {
     }
 
 
+    private resetLetterPosition(letterObj: Phaser.GameObjects.Container) {
+        //! WRONG DROP → SNAP BACK
+        this.tweens.add({
+            targets: letterObj,
+            x: letterObj.getData('startX'),
+            y: letterObj.getData('startY'),
+            duration: 300,
+            ease: 'Back.Out'
+        });
+    }
 
 
 }
