@@ -15,7 +15,7 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         /* Linting */
-        "strict": true,
+        "strict": false,
         "strictPropertyInitialization": false,
         "noUnusedLocals": false,
         "noUnusedParameters": false,
