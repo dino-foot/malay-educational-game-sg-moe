@@ -11,6 +11,7 @@ export class BasScene extends Scene {
     answerSubmitBtn: Phaser.GameObjects.Image;
     questionContainer: Phaser.GameObjects.Container;
     wordsZone: Phaser.GameObjects.Zone; // scatter words here
+    road: Phaser.GameObjects.Image;
     roadMarksList: any[] = [];
     // imageBox: Phaser.GameObjects.Image;
 
@@ -37,14 +38,14 @@ export class BasScene extends Scene {
             .setScale(1);
         Utils.AlignBottomCenter(this.wordRects, this.bgAlignZone, 0, 0);
 
-        const road = this.add
+        this.road = this.add
             .image(x, y + 120, 'road')
             .setOrigin(0.5)
             .setScale(1);
 
         //? question box container
         this.questionContainer = this.add.container(0, 0).setDepth(10);
-        Phaser.Display.Align.In.LeftCenter(this.questionContainer, road, -200, 10);
+        Phaser.Display.Align.In.LeftCenter(this.questionContainer, this.road, -200, 10);
 
         const imageBox = this.add
             .image(0, 0, 'question_box')
@@ -128,7 +129,7 @@ export class BasScene extends Scene {
     gameplayLogic() {
         // level constracts here
         const levelData = BUS_LEVELS_DATA[1]; // get first level data
-        const img = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1.5).setDepth(11);
+        const img = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1.3).setDepth(11);
         Phaser.Display.Align.In.Center(img, this.questionContainer, 0, 0);
 
         const spacing = 135;
@@ -156,6 +157,12 @@ export class BasScene extends Scene {
             new Phaser.Geom.Line(centerX - halfWidth - 80, centerY, centerX + halfWidth, centerY)
         );
 
+        // 
+        const wordZone = this.add.zone(this.road.getBounds().centerX + 180, this.road.getBounds().centerY, this.road.width / 1.5, this.road.height - 70);
+        Utils.DebugGraphics(this, wordZone);
+        Phaser.Display.Align.In.Center(wordZone, this.road, 0, 0);
+
+        this.createPatternWordSlots(levelData.correctWord, wordZone);
 
     } // end logic
 
@@ -169,4 +176,66 @@ export class BasScene extends Scene {
         container.add([grey, flag, tick]);
         return { container, grey, flag, tick };
     }
+
+    private createPatternWordSlots(
+        word: string,
+        zone: Phaser.GameObjects.Zone,
+        slotSize: number = 100,
+        spacing: number = 120,
+        waveHeight: number = 50
+    ): {
+        container: Phaser.GameObjects.Container;
+        bg: Phaser.GameObjects.Image;
+        text: Phaser.GameObjects.Text;
+    }[] {
+
+        const slots = [];
+        const count = word.length;
+
+        const center = zone.getCenter(new Phaser.Math.Vector2());
+        const centerX = center.x;
+        const centerY = center.y;
+
+
+        // total width of pattern
+        const totalWidth = (count - 1) * spacing;
+        let startX = centerX - totalWidth / 3;
+
+        for (let i = 0; i < count; i++) {
+
+            const x = startX + i * spacing;
+
+            // Zig-zag Y pattern
+            let y = centerY + (i % 2 === 0 ? -Phaser.Math.Between(5, 100) : Phaser.Math.Between(5, 100));
+
+            const bg = this.add
+                .image(0, 0, 'letter')
+                .setOrigin(0.5)
+                .setDisplaySize(slotSize, slotSize);
+
+            const text = this.add
+                .text(0, 0, word[i], {
+                    fontSize: '36px',
+                    color: '#000',
+                    fontStyle: 'bold'
+                })
+                .setOrigin(0.5);
+
+            const container = this.add
+                .container(x, y, [bg, text])
+                .setDepth(11);
+            container.setRotation(
+                Phaser.Math.DegToRad(
+                    Phaser.Math.Between(-12, 12)
+                )
+            );
+
+            slots.push({ container, bg, text });
+        }
+
+        return slots;
+    }
+
+
+
 }
