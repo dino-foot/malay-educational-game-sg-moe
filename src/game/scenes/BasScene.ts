@@ -14,6 +14,7 @@ export class BasScene extends Scene {
     road: Phaser.GameObjects.Image;
     roadMarksList: any[] = [];
     letterSlots: Phaser.GameObjects.Container[] = [];
+
     // imageBox: Phaser.GameObjects.Image;
 
     constructor() {
@@ -128,48 +129,56 @@ export class BasScene extends Scene {
     }
 
     gameplayLogic() {
-        // level constracts here
-        const levelData = BUS_LEVELS_DATA[1]; // get first level data
-        const img = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1.3).setDepth(11);
-        Phaser.Display.Align.In.Center(img, this.questionContainer, 0, 0);
 
-        const spacing = 135;
-        const lettersSlots: Phaser.GameObjects.Container[] = [];
+        const levelData = BUS_LEVELS_DATA[1];
+
+        const spacing = 160;
+        const slots: Phaser.GameObjects.Container[] = [];
 
         for (let i = 0; i < levelData.correctWord.length; i++) {
 
             const expectedLetter = levelData.correctWord[i];
-            const slot = this.add.image(0, 0, 'letter_placement')
+            const img = this.add.image(0, 0, 'letter_placement')
                 .setOrigin(0.5)
-                .setScale(0.9)
+                .setScale(0.9);
+
+            const slot = this.add.container(0, 0, [img])
+                .setDepth(9)
+                .setSize(90, 90)
                 .setData({
                     expectedLetter,
                     occupied: false
                 });
-            lettersSlots.push(
-                this.add
-                    .container(0, 0, [slot])
-                    .setDepth(9)
-            );
+
+            slots.push(slot);
         }
 
-        // ✅ FIXED CENTER CALCULATION
+        // position slots
         const { centerX, centerY } = this.wordRects.getBounds();
-        const halfWidth = ((lettersSlots.length - 1) * spacing) / 2;
+        const halfWidth = ((slots.length - 1) * spacing) / 2;
 
         Phaser.Actions.PlaceOnLine(
-            lettersSlots,
-            new Phaser.Geom.Line(centerX - halfWidth - 80, centerY, centerX + halfWidth, centerY)
+            slots,
+            new Phaser.Geom.Line(centerX - halfWidth, centerY, centerX + halfWidth, centerY)
         );
 
-        // dragable words
-        const wordZone = this.add.zone(this.road.getBounds().centerX + 180, this.road.getBounds().centerY, this.road.width / 1.5, this.road.height - 70);
-        // Utils.DebugGraphics(this, wordZone);
-        Phaser.Display.Align.In.Center(wordZone, this.road, 0, 0);
-        // this.letterSlots = this.createPatternWordSlots(levelData.correctWord, wordZone);
-        // this.createPatternWordSlots(levelData.correctWord, wordZone);
+        // ✅ bind slots to scene
+        this.letterSlots = slots;
 
-    } // end logic
+        // word drag zone
+        const wordZone = this.add.zone(
+            this.road.getBounds().centerX + 180,
+            this.road.getBounds().centerY,
+            this.road.width / 1.5,
+            this.road.height - 70
+        );
+
+        Phaser.Display.Align.In.Center(wordZone, this.road);
+
+        // create draggable letters
+        this.createPatternWordSlots(levelData.correctWord, wordZone);
+    }
+
 
     private createMarker(x: number, y: number) {
         const container = this.add.container(x, y).setDepth(10);
@@ -186,65 +195,62 @@ export class BasScene extends Scene {
         word: string,
         zone: Phaser.GameObjects.Zone,
         slotSize: number = 100,
-        spacing: number = 120,
+        spacing: number = 120
     ) {
 
-        const count = word.length;
+        const letters = Phaser.Utils.Array.Shuffle(word.split(''));
         const center = zone.getCenter(new Phaser.Math.Vector2());
-        const centerX = center.x;
-        const centerY = center.y;
 
-        // total width of pattern
-        const totalWidth = (count - 1) * spacing;
-        let startX = centerX - totalWidth / 3;
+        const totalWidth = (letters.length - 1) * spacing;
+        const startX = center.x - totalWidth / 2;
 
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < letters.length; i++) {
+
             const x = startX + i * spacing;
-            // Zig-zag Y pattern
-            let y = centerY + (i % 2 === 0 ? -Phaser.Math.Between(5, 100) : Phaser.Math.Between(5, 100));
-            const bg = this.add
-                .image(0, 0, 'letter')
-                .setOrigin(0.5)
-                .setDisplaySize(slotSize, slotSize);
+            const y = center.y + (i % 2 === 0 ? -50 : 50);
 
-            const text = this.add
-                .text(0, 0, word[i], {
-                    fontSize: '36px',
-                    color: '#000',
-                    fontStyle: 'bold'
-                })
+            const bg = this.add.image(0, 0, 'letter')
+                .setDisplaySize(slotSize, slotSize)
                 .setOrigin(0.5);
 
-            const container = this.add
-                .container(x, y, [bg, text])
-                .setDepth(11);
+            const text = this.add.text(0, 0, letters[i], {
+                fontSize: '36px',
+                color: '#000',
+                fontStyle: 'bold'
+            }).setOrigin(0.5);
 
-            container.setSize(slotSize, slotSize);
-            container.setInteractive({ useHandCursor: true });
+            const container = this.add.container(x, y, [bg, text])
+                .setDepth(11)
+                .setSize(slotSize, slotSize)
+                .setInteractive({ useHandCursor: true });
+
             this.input.setDraggable(container);
 
-            // ✅ store letter instead of index
             container.setData({
-                expectedLetter: word[i], // store the actual letter
-                startX: container.x,
-                startY: container.y,
+                letter: letters[i],
+                startX: x,
+                startY: y,
                 locked: false
             });
 
-            container.setRotation(Phaser.Math.DegToRad(Phaser.Math.Between(-12, 12)));
-            // this.letterSlots.push(container);
+            container.setRotation(
+                Phaser.Math.DegToRad(Phaser.Math.Between(-20, 20))
+            );
         }
 
+        // register drag events ONCE
         this.input.on('drag', this.onDragLetter, this);
         this.input.on('dragend', this.onDragEndLetter, this);
-
-        return this.letterSlots;
     }
 
-    private onDragEndLetter(pointer: Phaser.Input.Pointer, letterObj: Phaser.GameObjects.Container) {
+
+    private onDragEndLetter(
+        pointer: Phaser.Input.Pointer,
+        letterObj: Phaser.GameObjects.Container
+    ) {
         if (letterObj.getData('locked')) return;
-        const letter = letterObj.getData('expectedLetter');
-        let snapped = false;
+
+        const letter = letterObj.getData('letter');
 
         for (const slot of this.letterSlots) {
 
@@ -258,22 +264,53 @@ export class BasScene extends Scene {
                 )
             ) {
                 // ✅ SNAP
-                letterObj.x = slot.x;
-                letterObj.y = slot.y;
-
+                letterObj.setPosition(slot.x, slot.y);
                 letterObj.setData('locked', true);
                 slot.setData('occupied', true);
                 letterObj.disableInteractive();
-                snapped = true;
-                break;
+
+                // letterObj.rotation = 0;
+                // letterObj.angle = 0;
+                this.tweens.add({
+                    targets: letterObj,
+                    x: slot.x,
+                    y: slot.y,
+                    scale: 1.05,
+                    rotation: 0,
+                    duration: 300,
+                    ease: Phaser.Math.Easing.Quartic.In,
+                    onComplete: () => {
+                        letterObj.rotation = 0;
+                    }
+                });
+
+                console.log(`Placed letter '${letter}' correctly!`, letterObj);
+                return;
             }
         }
+
+        //! WRONG DROP → SNAP BACK
+        this.tweens.add({
+            targets: letterObj,
+            x: letterObj.getData('startX'),
+            y: letterObj.getData('startY'),
+            duration: 300,
+            ease: 'Back.Out'
+        });
     }
 
-    private onDragLetter(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.Container, dragX: number, dragY: number) {
+
+    private onDragLetter(
+        pointer: Phaser.Input.Pointer,
+        gameObject: Phaser.GameObjects.Container,
+        dragX: number,
+        dragY: number
+    ) {
         if (gameObject.getData('locked')) return;
-
-        gameObject.x = dragX;
-        gameObject.y = dragY;
+        gameObject.setPosition(dragX, dragY);
     }
+
+
+
+
 }
