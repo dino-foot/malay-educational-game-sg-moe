@@ -14,9 +14,9 @@ export class BasScene extends Scene {
     road: Phaser.GameObjects.Image;
     roadMarksList: any[] = [];
     letterSlots: Phaser.GameObjects.Container[] = [];
-
-    // imageBox: Phaser.GameObjects.Image;
-
+    bus: Phaser.GameObjects.Image;
+    busSpeed: number = 1;
+    totalSteps: number = 10;
     constructor() {
         super('BasScene');
     }
@@ -177,8 +177,15 @@ export class BasScene extends Scene {
 
         // create draggable letters
         this.createPatternWordSlots(levelData.correctWord, wordZone);
+
+        // todo create bus
+
+
     }
 
+    private OnEachStepComplete() {
+        // Logic for each step in the game
+    }
 
     private createMarker(x: number, y: number) {
         const container = this.add.container(x, y).setDepth(10);
