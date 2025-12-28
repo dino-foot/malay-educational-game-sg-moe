@@ -45,12 +45,12 @@ export class BasScene extends Scene {
 
         //? question box container
         this.questionContainer = this.add.container(0, 0).setDepth(10);
-        Phaser.Display.Align.In.LeftCenter(this.questionContainer, this.road, -200, 10);
+        Phaser.Display.Align.In.LeftCenter(this.questionContainer, this.road, -180, 20);
 
         const imageBox = this.add
             .image(0, 0, 'question_box')
             .setOrigin(0.5)
-            .setScale(1);
+            .setScale(0.9);
 
         this.questionContainer.add(imageBox);
 
