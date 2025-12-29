@@ -93,9 +93,8 @@ export class BasScene extends Scene {
         Utils.MakeButton(this, this.answerSubmitBtn, () => {
             this.validateWord();
         });
-        this.answerSubmitBtn.setAlpha(0.5);
-        this.answerSubmitBtn.disableInteractive();
         Phaser.Display.Align.In.BottomRight(this.answerSubmitBtn, this.bgAlignZone, -50, -20);
+        this.disableButton(this.answerSubmitBtn);
 
         //? lives systems
         this.createLives();
@@ -289,6 +288,7 @@ export class BasScene extends Scene {
 
         if (wrongAttempt) {
             this.loseLife();
+            this.disableButton(this.answerSubmitBtn);
         }
 
         // check full completion
@@ -357,5 +357,10 @@ export class BasScene extends Scene {
             life.full.setVisible(true);
             life.empty.setVisible(false);
         });
+    }
+
+    private disableButton(button: Phaser.GameObjects.Image) {
+        button.setAlpha(0.5);
+        button.disableInteractive();
     }
 }
