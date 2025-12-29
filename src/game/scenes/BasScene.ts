@@ -9,14 +9,17 @@ export class BasScene extends Scene {
     bgAlignZone: Phaser.GameObjects.Zone;
     busTrack: Phaser.GameObjects.Image;
     answerSubmitBtn: Phaser.GameObjects.Image;
+    backButton: Phaser.GameObjects.Image;
     questionContainer: Phaser.GameObjects.Container;
     wordsZone: Phaser.GameObjects.Zone; // scatter words here
     road: Phaser.GameObjects.Image;
     roadMarksList: any[] = [];
     letterSlots: Phaser.GameObjects.Container[] = [];
+    livesContainer: Phaser.GameObjects.Container;
     bus: Phaser.GameObjects.Image;
     busSpeed: number = 1;
     totalSteps: number = 10;
+
     constructor() {
         super("BasScene");
     }
@@ -74,9 +77,13 @@ export class BasScene extends Scene {
 
     createHUD() {
         // HUD elements can be created here
-        const backBtn = this.add.image(50, 50, "back").setOrigin(0.5).setScale(0.7).setDepth(10).setInteractive({ useHandCursor: true });
-
+        this.backButton = this.add.image(50, 50, "back").setOrigin(0.5).setScale(0.7).setDepth(10).setInteractive({ useHandCursor: true });
         this.answerSubmitBtn = this.add.image(0, 0, "rect_green_btn").setOrigin(0.5).setScale(0.8).setDepth(10).setInteractive({ useHandCursor: true });
+
+        Utils.MakeButton(this, this.backButton, () => {
+            // todo back button logic
+            console.log("Back button clicked");
+        });
 
         // submit button
         Utils.MakeButton(this, this.answerSubmitBtn, () => {
@@ -86,11 +93,14 @@ export class BasScene extends Scene {
         this.answerSubmitBtn.disableInteractive();
         Phaser.Display.Align.In.BottomRight(this.answerSubmitBtn, this.bgAlignZone, -50, -20);
 
+        //? lives systems
         for (let i = 0; i < 3; i++) {
-            const heart = this.add.image(0, 0, "heart").setOrigin(0.5).setScale(0.8).setDepth(10);
-
-            //todo track the list of hearts
-            Phaser.Display.Align.In.TopLeft(heart, this.bgAlignZone, -100 - i * 60, -25);
+            const container = this.add.container(0, 0).setDepth(10);
+            const fullHeart = this.add.image(0, 0, "heart").setOrigin(0.5).setScale(0.8).setDepth(10);
+            const emptyHeart = this.add.image(0, 0, "empty_heart").setOrigin(0.5).setScale(0.8).setDepth(10).setVisible(false);
+            container.setSize(fullHeart.width, fullHeart.height);
+            container.add([fullHeart, emptyHeart]);
+            Phaser.Display.Align.In.TopLeft(container, this.bgAlignZone, -100 - i * 60, -25);
         }
 
         //? grey marks on bus track
@@ -245,6 +255,8 @@ export class BasScene extends Scene {
         gameObject.setPosition(dragX, dragY);
     }
 
+    // correct > move bus
+    // incorrect > remove lives
     private validateWord() {
         for (const slot of this.letterSlots) {
             const expected = slot.getData("expectedLetter");
@@ -286,7 +298,7 @@ export class BasScene extends Scene {
     }
 
     private resetLetterPosition(letterObj: Phaser.GameObjects.Container) {
-        //! WRONG DROP → SNAP BACK
+        //? wrong DROP → SNAP BACK
         this.tweens.add({
             targets: letterObj,
             x: letterObj.getData("startX"),
