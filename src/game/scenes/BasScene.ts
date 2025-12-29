@@ -167,13 +167,19 @@ export class BasScene extends Scene {
         Phaser.Display.Align.In.LeftCenter(this.bus, this.busTrack, -200, 40);
 
         //? on each correct answer
-        this.OnEachStepComplete();
+        //! debug 
+        // this.OnEachStepComplete();
+        // this.time.addEvent({
+        //     delay: 10000,
+        //     loop: true,
+        //     callback: () => this.OnEachStepComplete()
+        // });
+
     }
 
     private OnEachStepComplete() {
         // stop if reached end
         if (this.currentStepIndex >= this.roadMarksList.length) {
-            console.log("Bus reached the final stop");
             return;
         }
 
@@ -190,9 +196,15 @@ export class BasScene extends Scene {
             duration: duration,
             ease: Phaser.Math.Easing.Linear,
             onComplete: () => {
+                // show cheked flag
+                this.roadMarksList[this.currentStepIndex - 1].mark.setVisible(false);
+                this.roadMarksList[this.currentStepIndex - 1].tick.setVisible(true);
+                this.roadMarksList[this.currentStepIndex - 1].flag.setVisible(true);
+
                 this.currentStepIndex++;
                 if (this.currentStepIndex >= this.roadMarksList.length) {
                     // todo next scene
+                    console.log("Bus reached the final stop");
                 }
                 console.log(`Level ${this.currentLevel} | Bus speed duration: ${Math.round(duration)}ms`);
             },
@@ -333,9 +345,8 @@ export class BasScene extends Scene {
         // check full completion
         const completed = this.letterSlots.every((slot) => slot.getData("currentLetter") && slot.getData("currentLetter").getData("letter") === slot.getData("expectedLetter"));
         if (completed) {
-            console.log("🎉 WORD COMPLETED!");
-            //todo move bus / next level etc
-            // this.currentStepIndex += 1;
+            console.log("WORD COMPLETED!");
+            // move bus / next level etc
             this.OnEachStepComplete();
         }
     }
