@@ -15,11 +15,16 @@ export class BasScene extends Scene {
     road: Phaser.GameObjects.Image;
     roadMarksList: any[] = [];
     letterSlots: Phaser.GameObjects.Container[] = [];
-    livesContainer: Phaser.GameObjects.Container;
+    lives: {
+        container: Phaser.GameObjects.Container;
+        full: Phaser.GameObjects.Image;
+        empty: Phaser.GameObjects.Image;
+    }[] = [];
     bus: Phaser.GameObjects.Image;
     busSpeed: number = 1;
     totalSteps: number = 10;
-
+    currentLives: number = 3;
+    maxLives: number = 3;
     constructor() {
         super("BasScene");
     }
@@ -50,7 +55,6 @@ export class BasScene extends Scene {
         Phaser.Display.Align.In.LeftCenter(this.questionContainer, this.road, -180, 20);
 
         const imageBox = this.add.image(0, 0, "question_box").setOrigin(0.5).setScale(0.9);
-
         this.questionContainer.add(imageBox);
 
         this.busTrack = this.add
@@ -94,14 +98,7 @@ export class BasScene extends Scene {
         Phaser.Display.Align.In.BottomRight(this.answerSubmitBtn, this.bgAlignZone, -50, -20);
 
         //? lives systems
-        for (let i = 0; i < 3; i++) {
-            const container = this.add.container(0, 0).setDepth(10);
-            const fullHeart = this.add.image(0, 0, "heart").setOrigin(0.5).setScale(0.8).setDepth(10);
-            const emptyHeart = this.add.image(0, 0, "empty_heart").setOrigin(0.5).setScale(0.8).setDepth(10).setVisible(false);
-            container.setSize(fullHeart.width, fullHeart.height);
-            container.add([fullHeart, emptyHeart]);
-            Phaser.Display.Align.In.TopLeft(container, this.bgAlignZone, -100 - i * 60, -25);
-        }
+        this.createLives();
 
         //? grey marks on bus track
         for (let i = 0; i < 10; i++) {
@@ -115,6 +112,9 @@ export class BasScene extends Scene {
 
     gameplayLogic() {
         const levelData = BUS_LEVELS_DATA[1];
+
+        const hintImg = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1).setDepth(11);
+        Phaser.Display.Align.In.Center(hintImg, this.questionContainer)
 
         const spacing = 160;
         const slots: Phaser.GameObjects.Container[] = [];
@@ -250,7 +250,7 @@ export class BasScene extends Scene {
 
     private onDragLetter(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.Container, dragX: number, dragY: number) {
         if (gameObject.getData("locked")) return;
-        if (gameObject.getData('permanent')) return;
+        if (gameObject.getData("permanent")) return;
 
         gameObject.setPosition(dragX, dragY);
     }
@@ -258,19 +258,20 @@ export class BasScene extends Scene {
     // correct > move bus
     // incorrect > remove lives
     private validateWord() {
+
+        let wrongAttempt = false;
         for (const slot of this.letterSlots) {
             const expected = slot.getData("expectedLetter");
             const letterObj = slot.getData("currentLetter");
 
             if (!letterObj) continue;
-
             const placedLetter = letterObj.getData("letter");
-
             if (placedLetter === expected) {
-                // ✅ CORRECT → STAY LOCKED
+                // STAY LOCKED
                 letterObj.setData("permanent", true);
             } else {
-                // ❌ WRONG → RESET LETTER
+                wrongAttempt = true;
+                // RESET LETTER
                 letterObj.setData({
                     locked: false,
                     slot: null,
@@ -278,9 +279,7 @@ export class BasScene extends Scene {
 
                 letterObj.setInteractive({ useHandCursor: true });
                 this.input.setDraggable(letterObj);
-
                 this.resetLetterPosition(letterObj);
-
                 slot.setData({
                     occupied: false,
                     currentLetter: null,
@@ -288,12 +287,15 @@ export class BasScene extends Scene {
             }
         }
 
+        if (wrongAttempt) {
+            this.loseLife();
+        }
+
         // check full completion
         const completed = this.letterSlots.every((slot) => slot.getData("currentLetter") && slot.getData("currentLetter").getData("letter") === slot.getData("expectedLetter"));
-
         if (completed) {
             console.log("🎉 WORD COMPLETED!");
-            // move bus / next level etc
+            //todo move bus / next level etc
         }
     }
 
@@ -306,6 +308,54 @@ export class BasScene extends Scene {
             rotation: Phaser.Math.DegToRad(letterObj.getData("rotation")),
             duration: 500,
             ease: Phaser.Math.Easing.Expo.Out,
+        });
+    }
+
+    private createLives() {
+        this.lives = [];
+        this.currentLives = this.maxLives;
+
+        for (let i = 0; i < this.maxLives; i++) {
+            const container = this.add.container(0, 0).setDepth(10);
+            const fullHeart = this.add.image(0, 0, "heart").setOrigin(0.5).setScale(0.8);
+            const emptyHeart = this.add.image(0, 0, "empty_heart").setOrigin(0.5).setScale(0.8).setVisible(false);
+
+            container.setSize(fullHeart.width, fullHeart.height);
+            container.add([fullHeart, emptyHeart]);
+            Phaser.Display.Align.In.TopLeft(container, this.bgAlignZone, -100 - i * 60, -25);
+
+            this.lives.push({
+                container,
+                full: fullHeart,
+                empty: emptyHeart,
+            });
+        }
+    }
+
+    private loseLife() {
+
+        if (this.currentLives <= 0) {
+            console.log("No lives left!");
+            return;
+        }
+        this.currentLives--;
+        const life = this.lives[this.currentLives];
+        life.full.setVisible(false);
+        life.empty.setVisible(true);
+
+        if (this.currentLives === 0) {
+            console.log("Game Over - No lives left");
+            // todo show gameover scene
+        } else {
+            console.log(`Lives left: ${this.currentLives}`);
+        }
+    }
+
+    private resetLives() {
+        this.currentLives = this.maxLives;
+        this.lives.forEach((life) => {
+            life.full.setVisible(true);
+            life.empty.setVisible(false);
         });
     }
 }
