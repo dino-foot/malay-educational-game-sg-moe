@@ -13,18 +13,32 @@ export class BasScene extends Scene {
     questionContainer: Phaser.GameObjects.Container;
     wordsZone: Phaser.GameObjects.Zone; // scatter words here
     road: Phaser.GameObjects.Image;
-    roadMarksList: any[] = [];
-    letterSlots: Phaser.GameObjects.Container[] = [];
+
+    roadMarksList: {
+        container: Phaser.GameObjects.Container;
+        mark: Phaser.GameObjects.Image;
+        flag: Phaser.GameObjects.Image;
+        tick: Phaser.GameObjects.Image;
+    }[] = [];
+
     lives: {
         container: Phaser.GameObjects.Container;
         full: Phaser.GameObjects.Image;
         empty: Phaser.GameObjects.Image;
     }[] = [];
+
+    letterSlots: Phaser.GameObjects.Container[] = [];
     bus: Phaser.GameObjects.Image;
     busSpeed: number = 1;
     totalSteps: number = 10;
     currentLives: number = 3;
     maxLives: number = 3;
+    baseDuration = 1500; // slowest
+    minDuration = 400; // fastest
+    maxLevels = 10;
+    currentLevel = 1;
+    currentStepIndex: number = 1;
+
     constructor() {
         super("BasScene");
     }
@@ -101,9 +115,9 @@ export class BasScene extends Scene {
 
         //? grey marks on bus track
         for (let i = 0; i < 10; i++) {
-            const mark = this.createMarker(0, 0);
-            this.roadMarksList.push(mark);
-            Phaser.Display.Align.In.LeftCenter(mark.container, this.busTrack, -280 + i * -115, 55);
+            const { container, mark, flag, tick } = this.createMarker(0, 0);
+            this.roadMarksList.push({ container, mark, flag, tick });
+            Phaser.Display.Align.In.LeftCenter(container, this.busTrack, -280 + i * -115, 55);
         }
 
         this.gameplayLogic();
@@ -113,7 +127,7 @@ export class BasScene extends Scene {
         const levelData = BUS_LEVELS_DATA[1];
 
         const hintImg = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1).setDepth(11);
-        Phaser.Display.Align.In.Center(hintImg, this.questionContainer)
+        Phaser.Display.Align.In.Center(hintImg, this.questionContainer);
 
         const spacing = 160;
         const slots: Phaser.GameObjects.Container[] = [];
@@ -148,25 +162,51 @@ export class BasScene extends Scene {
         // create draggable letters
         this.createPatternWordSlots(levelData.correctWord, wordZone);
 
-        // todo create bus
+        // create bus
         this.bus = this.add.image(0, 0, "bus").setOrigin(0.5).setScale(1).setDepth(12);
-
         Phaser.Display.Align.In.LeftCenter(this.bus, this.busTrack, -200, 40);
+
+        //? on each correct answer
+        this.OnEachStepComplete();
     }
 
     private OnEachStepComplete() {
-        // Logic for each step in the game
+        // stop if reached end
+        if (this.currentStepIndex >= this.roadMarksList.length) {
+            console.log("Bus reached the final stop");
+            return;
+        }
+
+        // increase level (max 10)
+        this.currentLevel = Math.min(this.currentLevel + 1, this.maxLevels);
+        // calculate speed (linear interpolation)
+        const progress = (this.currentLevel - 1) / (this.maxLevels - 1);
+        const duration = Phaser.Math.Linear(this.baseDuration, this.minDuration, progress);
+
+        const targetMark = this.roadMarksList[this.currentStepIndex].container;
+        this.tweens.add({
+            targets: this.bus,
+            x: targetMark.x,
+            duration: duration,
+            ease: Phaser.Math.Easing.Linear,
+            onComplete: () => {
+                this.currentStepIndex++;
+                if (this.currentStepIndex >= this.roadMarksList.length) {
+                    // todo next scene
+                }
+                console.log(`Level ${this.currentLevel} | Bus speed duration: ${Math.round(duration)}ms`);
+            },
+        });
     }
 
     private createMarker(x: number, y: number) {
         const container = this.add.container(x, y).setDepth(10);
-
-        const grey = this.add.image(0, 0, "grey_mark").setDepth(9);
+        const mark = this.add.image(0, 0, "grey_mark").setDepth(9);
         const flag = this.add.image(10, -70, "flag").setVisible(false).setOrigin(0.5).setDepth(10);
         const tick = this.add.image(0, 0, "green_tick").setVisible(false).setDepth(10);
 
-        container.add([grey, flag, tick]);
-        return { container, grey, flag, tick };
+        container.add([mark, flag, tick]);
+        return { container, mark, flag, tick };
     }
 
     private createPatternWordSlots(word: string, zone: Phaser.GameObjects.Zone, slotSize: number = 100, spacing: number = 120) {
@@ -257,7 +297,6 @@ export class BasScene extends Scene {
     // correct > move bus
     // incorrect > remove lives
     private validateWord() {
-
         let wrongAttempt = false;
         for (const slot of this.letterSlots) {
             const expected = slot.getData("expectedLetter");
@@ -296,6 +335,8 @@ export class BasScene extends Scene {
         if (completed) {
             console.log("🎉 WORD COMPLETED!");
             //todo move bus / next level etc
+            // this.currentStepIndex += 1;
+            this.OnEachStepComplete();
         }
     }
 
@@ -333,7 +374,6 @@ export class BasScene extends Scene {
     }
 
     private loseLife() {
-
         if (this.currentLives <= 0) {
             console.log("No lives left!");
             return;
