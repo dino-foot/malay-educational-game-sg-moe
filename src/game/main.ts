@@ -7,6 +7,7 @@ import { GameOver } from './scenes/GameOver';
 import { AUTO, Game } from 'phaser';
 import { Preloader } from './scenes/Preloader';
 import { SpinePlugin } from '@esotericsoftware/spine-phaser';
+import { SettingsScene } from './scenes/SettingsScene';
 
 const BASE_WIDTH = 1600;
 const BASE_HEIGHT = 900;
@@ -30,7 +31,8 @@ const config: Phaser.Types.Core.GameConfig = {
         BasScene,
         KuasaScene,
         KaysakScene,
-        GameOver
+        GameOver,
+        SettingsScene
     ],
 
     plugins: {
@@ -41,9 +43,7 @@ const config: Phaser.Types.Core.GameConfig = {
 };
 
 const StartGame = (parent: string) => {
-
     return new Game({ ...config, parent });
-
 }
 
 export default StartGame;
