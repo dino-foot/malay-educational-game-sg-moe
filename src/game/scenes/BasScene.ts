@@ -38,7 +38,7 @@ export class BasScene extends Scene {
     maxLevels = 10;
     currentLevel = 1;
     currentStepIndex: number = 1;
-    levelDataIndex: number = 9; // should be 0
+    levelDataIndex: number = 0; // should be 0
     score = 0;
     scoreBg: Phaser.GameObjects.Image;
     scoreText: Phaser.GameObjects.Text;
@@ -134,19 +134,20 @@ export class BasScene extends Scene {
     }
 
     setupGameplay() {
-        console.log('level ' + this.levelDataIndex)
+        console.log('level ' + BUS_LEVELS_DATA[this.levelDataIndex].correctWord.length)
         const levelData = BUS_LEVELS_DATA[this.levelDataIndex];
+        const wordLength = BUS_LEVELS_DATA[this.levelDataIndex].correctWord.length;
 
         this.hintImg = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1).setDepth(11);
         Phaser.Display.Align.In.Center(this.hintImg, this.questionContainer);
 
-        const spacing = 150;
+        let spacing = this.getWordScaleConfig(wordLength).spacing;
+        const scale = this.getWordScaleConfig(wordLength).slotScale;
         const slots: Phaser.GameObjects.Container[] = [];
 
         for (let i = 0; i < levelData.correctWord.length; i++) {
             const expectedLetter = levelData.correctWord[i];
-            const img = this.add.image(0, 0, "letter_placement").setOrigin(0.5).setScale(0.9);
-
+            const img = this.add.image(0, 0, "letter_placement").setOrigin(0.5).setScale(scale);
             const slot = this.add.container(0, 0, [img]).setDepth(9).setSize(90, 90).setData({
                 expectedLetter,
                 currentLetter: null,
@@ -248,9 +249,10 @@ export class BasScene extends Scene {
         return { container, mark, flag, tick };
     }
 
-    private createPatternWordSlots(word: string, zone: Phaser.GameObjects.Zone, slotSize: number = 100, spacing: number = 120) {
+    private createPatternWordSlots(word: string, zone: Phaser.GameObjects.Zone, slotSize: number = 100, spacing: number = 100) {
         const letters = Phaser.Utils.Array.Shuffle(word.split(''));
         const center = zone.getCenter(new Phaser.Math.Vector2());
+        spacing = this.getWordScaleConfig(letters.length).spacingOfRandomLetter;
 
         const totalWidth = (letters.length - 1) * spacing;
         const startX = center.x - totalWidth / 3;
@@ -259,8 +261,8 @@ export class BasScene extends Scene {
         for (let i = 0; i < letters.length; i++) {
             const x = startX + i * spacing;
             const y = center.y + (i % 2 === 0 ? -50 : 50);
-
             const bg = this.add.image(0, 0, "letter").setDisplaySize(slotSize, slotSize).setOrigin(0.5);
+            bg.setScale(this.getWordScaleConfig(letters.length).letterScale)
 
             const text = this.add
                 .text(0, 0, letters[i], Utils.fontStyle)
@@ -447,7 +449,11 @@ export class BasScene extends Scene {
             this.score += Utils.correctAnswerBonus;
         }
         this.scoreText.setText(this.score.toString());
-
         // todo save the score for later use
     }
+
+    private getWordScaleConfig(wordLength: number) {
+        return Utils.WORD_SCALE_CONFIG[wordLength] ?? Utils.DEFAULT_WORD_SCALE_CONFIG;
+    }
+
 }
