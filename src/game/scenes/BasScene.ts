@@ -38,6 +38,9 @@ export class BasScene extends Scene {
     maxLevels = 10;
     currentLevel = 1;
     currentStepIndex: number = 1;
+    score = 0;
+    scoreBg: Phaser.GameObjects.Image;
+    scoreText: Phaser.GameObjects.Text;
 
     constructor() {
         super("BasScene");
@@ -94,13 +97,19 @@ export class BasScene extends Scene {
     }
 
     createHUD() {
+
+        this.scoreBg = this.add.image(0, 0, 'score').setOrigin(0.5).setDepth(12).setScale(0.9);
+        this.scoreText = this.add.text(0, 0, '0000', Utils.fontStyle).setOrigin(0.5).setDepth(13);
+        Phaser.Display.Align.In.TopRight(this.scoreBg, this.bgAlignZone);
+        Phaser.Display.Align.In.RightCenter(this.scoreText, this.scoreBg, -70, 0);
+
         // HUD elements can be created here
         this.backButton = this.add.image(50, 50, "back").setOrigin(0.5).setScale(0.7).setDepth(10).setInteractive({ useHandCursor: true });
         this.answerSubmitBtn = this.add.image(0, 0, "rect_green_btn").setOrigin(0.5).setScale(0.8).setDepth(10).setInteractive({ useHandCursor: true });
 
+        // back button logic
         Utils.MakeButton(this, this.backButton, () => {
-            // todo back button logic
-            console.log("Back button clicked");
+            this.scene.start('MainMenu');
         });
 
         // submit button
@@ -196,6 +205,10 @@ export class BasScene extends Scene {
             duration: duration,
             ease: Phaser.Math.Easing.Linear,
             onComplete: () => {
+
+                // correct answer increment score
+                this.incrementScore();
+
                 // show cheked flag
                 this.roadMarksList[this.currentStepIndex - 1].mark.setVisible(false);
                 this.roadMarksList[this.currentStepIndex - 1].tick.setVisible(true);
@@ -203,7 +216,7 @@ export class BasScene extends Scene {
 
                 this.currentStepIndex++;
                 if (this.currentStepIndex >= this.roadMarksList.length) {
-                    // todo next scene
+                    // todo load next scene
                     console.log("Bus reached the final stop");
                 }
                 console.log(`Level ${this.currentLevel} | Bus speed duration: ${Math.round(duration)}ms`);
@@ -235,11 +248,7 @@ export class BasScene extends Scene {
             const bg = this.add.image(0, 0, "letter").setDisplaySize(slotSize, slotSize).setOrigin(0.5);
 
             const text = this.add
-                .text(0, 0, letters[i], {
-                    fontSize: "36px",
-                    color: "#000",
-                    fontStyle: "bold",
-                })
+                .text(0, 0, letters[i], Utils.fontStyle)
                 .setOrigin(0.5);
 
             const rndRotation = Phaser.Math.Between(-20, 20);
@@ -413,5 +422,15 @@ export class BasScene extends Scene {
     private disableButton(button: Phaser.GameObjects.Image) {
         button.setAlpha(0.5);
         button.disableInteractive();
+    }
+
+    private incrementScore(addBonus: boolean = false) {
+        this.score += Utils.corectAnswerPoint;
+        if (addBonus) {
+            this.score += Utils.correctAnswerBonus;
+        }
+        this.scoreText.setText(this.score.toString());
+
+        // todo save the score for later use
     }
 }

@@ -1,5 +1,15 @@
 export class Utils {
 
+    public static fontStyle = {
+        fontSize: "36px",
+        color: "#000",
+        fontStyle: "bold",
+    };
+
+    public static corectAnswerPoint = 10;
+    public static correctAnswerBonus = 5;
+    public static wrongAnswer = -5;
+
     public static CenterXY(game: Phaser.Game): Phaser.Math.Vector2 {
         return new Phaser.Math.Vector2(
             game.scale.width * 0.5,
@@ -116,4 +126,6 @@ export class Utils {
         }
         return shuffledArray;
     }
+
+
 }

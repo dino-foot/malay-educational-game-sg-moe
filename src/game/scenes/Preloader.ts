@@ -59,7 +59,8 @@ export class Preloader extends Scene {
             'empty_heart',
             'heart',
             'question_box',
-            'bus'
+            'bus',
+            'score',
         ];
 
         basImageKeys.forEach(key => {
