@@ -17,10 +17,10 @@ export class SettingsScene extends Phaser.Scene {
 
         // Settings panel background
         const panelBg = this.add.image(x, y, "setting-bg").setOrigin(0.5);
-        panelBg.setDisplaySize(panelBg.width, panelBg.height + 100);
+        panelBg.setDisplaySize(panelBg.width, panelBg.height + 80);
 
         const title = this.add.image(0, 0, 'settings-title').setOrigin(0.5).setDepth(11);
-        Phaser.Display.Align.In.TopCenter(title, panelBg, 0, -50);
+        Phaser.Display.Align.In.TopCenter(title, panelBg, 0, -30);
 
         const musicContainer = this.add.container();
         const music = this.add.image(0, 0, 'music-fx').setOrigin(0.5).setDepth(11).setInteractive({ useHandCursor: true });
@@ -46,8 +46,8 @@ export class SettingsScene extends Phaser.Scene {
         Phaser.Display.Align.In.TopCenter(voiceOverContainer, panelBg, 0, -350);
         Phaser.Display.Align.In.RightCenter(checkMark2, voice, 0, 0);
 
-        const closeBtn = this.add.image(0, 0, 'close-btn').setOrigin(0.5).setDepth(12);
-        Phaser.Display.Align.In.BottomCenter(closeBtn, panelBg, 0, 20);
+        const closeBtn = this.add.image(0, 0, 'close-btn').setOrigin(0.5).setDepth(12).setScale(0.9);
+        Phaser.Display.Align.In.BottomCenter(closeBtn, panelBg, 0, 10);
 
         Utils.MakeButton(this, closeBtn, () => {
             this.scene.launch('MainMenu');
