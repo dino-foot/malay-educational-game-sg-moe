@@ -15,7 +15,6 @@ export class SettingsScene extends Phaser.Scene {
 
         const darkBg = this.add.graphics().fillStyle(0x000000, 0.7).fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
 
-
         // Settings panel background
         const panelBg = this.add.image(x, y, "setting-bg").setOrigin(0.5);
         panelBg.setDisplaySize(panelBg.width, panelBg.height + 100);

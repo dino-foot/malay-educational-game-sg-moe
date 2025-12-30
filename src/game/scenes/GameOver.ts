@@ -1,33 +1,29 @@
 import { Scene } from "phaser";
+import { Utils } from "./Utils";
 
 export class GameOver extends Scene {
-    camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
-    gameover_text: Phaser.GameObjects.Text;
 
     constructor() {
         super("GameOver");
     }
 
     create() {
-        this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0xff0000);
+        const { x, y } = Utils.CenterXY(this.game);
 
-        this.background = this.add.image(512, 384, "background");
-        this.background.setAlpha(0.5);
+        const darkBg = this.add.graphics().fillStyle(0x000000, 0.7).fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
+        const panelBg = this.add.image(x, y, "setting-bg").setOrigin(0.5);
+        panelBg.setDisplaySize(panelBg.width, panelBg.height);
 
-        this.gameover_text = this.add.text(512, 384, "Game Over", {
-            fontFamily: "Arial Black",
-            fontSize: 64,
-            color: "#ffffff",
-            stroke: "#000000",
-            strokeThickness: 8,
-            align: "center",
-        });
-        this.gameover_text.setOrigin(0.5);
+        const titleImg = this.add.image(0, 0, 'gameover').setOrigin(0.5).setDepth(11);
+        Phaser.Display.Align.In.TopCenter(titleImg, panelBg, 0, -30);
 
-        this.input.once("pointerdown", () => {
-            this.scene.start("MainMenu");
+
+        const backToMenu = this.add.image(0, 0, 'back-to-menu').setOrigin(0.5).setDepth(12).setScale(0.8);
+        Phaser.Display.Align.In.BottomCenter(backToMenu, panelBg, 0, -20);
+        Utils.MakeButton(this, backToMenu, () => {
+            this.scene.launch('MainMenu');
+            this.scene.sendToBack();
+            this.scene.pause();
         });
     }
 }

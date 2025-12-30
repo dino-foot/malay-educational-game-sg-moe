@@ -146,6 +146,15 @@ export class Preloader extends Scene {
             this.load.image(key, `assets/settings/${key}.png`);
         });
 
+        const gameoverImgKeys = [
+            'gameover',
+            'back-to-menu'
+        ]
+
+        gameoverImgKeys.forEach(key => {
+            this.load.image(key, `assets/gameover/${key}.png`);
+        });
+
     } // end 
 
     create() {
