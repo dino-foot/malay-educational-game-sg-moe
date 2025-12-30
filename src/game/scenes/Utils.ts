@@ -10,6 +10,29 @@ export class Utils {
     public static correctAnswerBonus = 5;
     public static wrongAnswer = -5;
 
+
+    public static DEFAULT_WORD_SCALE_CONFIG = {
+        letterScale: 0.75,
+        slotScale: 0.9,
+        spacing: 150,
+        verticalOffset: 20,
+    };
+
+
+    public static WORD_SCALE_CONFIG: {
+        [length: number]: {
+            letterScale: number;
+            slotScale: number;
+            spacing: number;
+            verticalOffset: number;
+        };
+    } = {
+            // 8: { letterScale: 0.8, slotScale: 0.7, spacing: 105, verticalOffset: 20 },
+            12: { letterScale: 0.8, slotScale: 0.7, spacing: 105, verticalOffset: 20 },
+            14: { letterScale: 0.8, slotScale: 0.6, spacing: 90, verticalOffset: 20 },
+        };
+
+
     public static CenterXY(game: Phaser.Game): Phaser.Math.Vector2 {
         return new Phaser.Math.Vector2(
             game.scale.width * 0.5,
