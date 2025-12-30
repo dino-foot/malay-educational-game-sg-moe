@@ -15,7 +15,7 @@ export class Utils {
         letterScale: 0.75,
         slotScale: 0.9,
         spacing: 150,
-        verticalOffset: 20,
+        spacingOfRandomLetter: 100,
     };
 
 
@@ -24,12 +24,12 @@ export class Utils {
             letterScale: number;
             slotScale: number;
             spacing: number;
-            verticalOffset: number;
+            spacingOfRandomLetter: number;
         };
     } = {
             // 8: { letterScale: 0.8, slotScale: 0.7, spacing: 105, verticalOffset: 20 },
-            12: { letterScale: 0.8, slotScale: 0.7, spacing: 105, verticalOffset: 20 },
-            14: { letterScale: 0.8, slotScale: 0.6, spacing: 90, verticalOffset: 20 },
+            12: { letterScale: 0.7, slotScale: 0.7, spacing: 105, spacingOfRandomLetter: 90 },
+            14: { letterScale: 0.6, slotScale: 0.6, spacing: 90, spacingOfRandomLetter: 80 },
         };
 
 
