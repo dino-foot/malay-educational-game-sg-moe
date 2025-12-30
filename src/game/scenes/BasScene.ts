@@ -38,9 +38,12 @@ export class BasScene extends Scene {
     maxLevels = 10;
     currentLevel = 1;
     currentStepIndex: number = 1;
+    levelDataIndex: number = 9; // should be 0
     score = 0;
     scoreBg: Phaser.GameObjects.Image;
     scoreText: Phaser.GameObjects.Text;
+    hintImg: Phaser.GameObjects.Image;
+    draggableLetters: any[];
 
     constructor() {
         super("BasScene");
@@ -51,13 +54,6 @@ export class BasScene extends Scene {
         const { x, y } = Utils.CenterXY(this.game);
 
         this.bgAlignZone = this.add.zone(x, y, width, height);
-
-        // Background
-        // this.background = this.add
-        //     .image(x, y, 'paper')
-        //     .setDepth(-1)
-        //     .setOrigin(0.5).setDisplaySize(width, height);
-
         // Word Rects
         this.wordRects = this.add.image(x, y, "rect_bus").setOrigin(0.5).setScale(1);
         Utils.AlignBottomCenter(this.wordRects, this.bgAlignZone, 0, 0);
@@ -116,7 +112,7 @@ export class BasScene extends Scene {
         Utils.MakeButton(this, this.answerSubmitBtn, () => {
             this.validateWord();
         });
-        Phaser.Display.Align.In.BottomRight(this.answerSubmitBtn, this.bgAlignZone, -50, -20);
+        Phaser.Display.Align.In.BottomRight(this.answerSubmitBtn, this.bgAlignZone, -20, -20);
         this.disableButton(this.answerSubmitBtn);
 
         //? lives systems
@@ -129,16 +125,22 @@ export class BasScene extends Scene {
             Phaser.Display.Align.In.LeftCenter(container, this.busTrack, -280 + i * -115, 55);
         }
 
-        this.gameplayLogic();
+        // create bus
+        this.bus = this.add.image(0, 0, "bus").setOrigin(0.5).setScale(1).setDepth(12);
+        Phaser.Display.Align.In.LeftCenter(this.bus, this.busTrack, -200, 40);
+
+
+        this.setupGameplay();
     }
 
-    gameplayLogic() {
-        const levelData = BUS_LEVELS_DATA[1];
+    setupGameplay() {
+        console.log('level ' + this.levelDataIndex)
+        const levelData = BUS_LEVELS_DATA[this.levelDataIndex];
 
-        const hintImg = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1).setDepth(11);
-        Phaser.Display.Align.In.Center(hintImg, this.questionContainer);
+        this.hintImg = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1).setDepth(11);
+        Phaser.Display.Align.In.Center(this.hintImg, this.questionContainer);
 
-        const spacing = 160;
+        const spacing = 150;
         const slots: Phaser.GameObjects.Container[] = [];
 
         for (let i = 0; i < levelData.correctWord.length; i++) {
@@ -159,21 +161,14 @@ export class BasScene extends Scene {
         const halfWidth = ((slots.length - 1) * spacing) / 2;
 
         Phaser.Actions.PlaceOnLine(slots, new Phaser.Geom.Line(centerX - halfWidth, centerY, centerX + halfWidth, centerY));
-
-        // ✅ bind slots to scene
         this.letterSlots = slots;
 
         // word drag zone
         const wordZone = this.add.zone(this.road.getBounds().centerX + 180, this.road.getBounds().centerY, this.road.width / 1.5, this.road.height - 70);
-
         Phaser.Display.Align.In.Center(wordZone, this.road);
 
         // create draggable letters
-        this.createPatternWordSlots(levelData.correctWord, wordZone);
-
-        // create bus
-        this.bus = this.add.image(0, 0, "bus").setOrigin(0.5).setScale(1).setDepth(12);
-        Phaser.Display.Align.In.LeftCenter(this.bus, this.busTrack, -200, 40);
+        this.draggableLetters = this.createPatternWordSlots(levelData.correctWord, wordZone);
 
         //? on each correct answer
         //! debug 
@@ -208,6 +203,7 @@ export class BasScene extends Scene {
 
                 // correct answer increment score
                 this.incrementScore();
+                this.cleanupLevel();
 
                 // show cheked flag
                 this.roadMarksList[this.currentStepIndex - 1].mark.setVisible(false);
@@ -224,6 +220,24 @@ export class BasScene extends Scene {
         });
     }
 
+    private cleanupLevel() {
+        this.letterSlots.forEach((item) => {
+            item.destroy();
+        });
+
+        this.draggableLetters.forEach((item) => {
+            item.destroy();
+        });
+
+        if (this.levelDataIndex < BUS_LEVELS_DATA.length) {
+            this.levelDataIndex += 1;
+        }
+
+        this.setupGameplay();
+        this.disableButton(this.answerSubmitBtn);
+    }
+
+
     private createMarker(x: number, y: number) {
         const container = this.add.container(x, y).setDepth(10);
         const mark = this.add.image(0, 0, "grey_mark").setDepth(9);
@@ -235,11 +249,12 @@ export class BasScene extends Scene {
     }
 
     private createPatternWordSlots(word: string, zone: Phaser.GameObjects.Zone, slotSize: number = 100, spacing: number = 120) {
-        const letters = Phaser.Utils.Array.Shuffle(word.split(""));
+        const letters = Phaser.Utils.Array.Shuffle(word.split(''));
         const center = zone.getCenter(new Phaser.Math.Vector2());
 
         const totalWidth = (letters.length - 1) * spacing;
-        const startX = center.x - totalWidth / 2;
+        const startX = center.x - totalWidth / 3;
+        const draggableLetters = [];
 
         for (let i = 0; i < letters.length; i++) {
             const x = startX + i * spacing;
@@ -263,11 +278,13 @@ export class BasScene extends Scene {
                 rotation: rndRotation,
                 locked: false,
             });
+            draggableLetters.push(container);
         }
 
         // register drag events ONCE
         this.input.on("drag", this.onDragLetter, this);
         this.input.on("dragend", this.onDragEndLetter, this);
+        return draggableLetters;
     }
 
     private onDragEndLetter(pointer: Phaser.Input.Pointer, letterObj: Phaser.GameObjects.Container) {

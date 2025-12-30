@@ -51,7 +51,7 @@ export const BUS_LEVELS_DATA: LevelData[] = [
     },
     {
         id: 9,
-        correctWord: "TERPINGA-PINGA",
+        correctWord: "TERPINGA PINGA",
         meaningWord: "hairan kerana tidak tahu perkara yang sedang berlaku",
         imageKey: "terpinga-pinga"
     },
