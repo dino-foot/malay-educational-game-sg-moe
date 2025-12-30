@@ -15,7 +15,7 @@ export class Utils {
         letterScale: 0.75,
         slotScale: 0.9,
         spacing: 150,
-        spacingOfRandomLetter: 100,
+        spacingOfRandomLetter: 110,
     };
 
 
