@@ -132,6 +132,20 @@ export class Preloader extends Scene {
             this.load.image(key, `assets/level_bas/${key}.png`);
         });
 
+        const settingsImgKeys = [
+            'checkmark-green',
+            'close-btn',
+            'music-fx',
+            'setting-bg',
+            'sound-fx',
+            'voice-over',
+            'settings-title'
+        ]
+
+        settingsImgKeys.forEach(key => {
+            this.load.image(key, `assets/settings/${key}.png`);
+        });
+
     } // end 
 
     create() {

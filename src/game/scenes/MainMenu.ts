@@ -54,7 +54,9 @@ export class MainMenu extends Scene {
 
         Utils.AlignTopRight(this.settingsBtn, this.background, -20, -20);
         Utils.MakeButton(this, this.settingsBtn, () => {
-            // this.scene.start('SettingsMenu');
+            this.scene.launch('SettingsMenu');
+            this.scene.sendToBack();
+            this.scene.pause();
         });
 
         const characterCointainer = this.add.container();
@@ -66,7 +68,7 @@ export class MainMenu extends Scene {
         characterCointainer.setDepth(1);
 
         //? debug start bas scene directly
-        this.scene.start('BasScene');
+        // this.scene.start('BasScene');
 
     } // end
 
