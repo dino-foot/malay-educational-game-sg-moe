@@ -5,6 +5,13 @@ export class Utils {
         fontStyle: "bold",
     };
 
+    public static scoreFontStyle = {
+        fontSize: "64px",
+        color: "#000",
+        fontFamily: "nunito",
+        fontStyle: "bold",
+    };
+
     public static corectAnswerPoint = 10;
     public static correctAnswerBonus = 5;
     public static wrongAnswer = -5;
@@ -121,7 +128,7 @@ export class Utils {
                 console.log(`Font loaded: ${name}`);
             })
             .catch((err) => {
-                console.error("Font loading failed", err);
+                // console.error("Font loading failed", err);
             });
     }
 }

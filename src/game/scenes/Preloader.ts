@@ -153,7 +153,8 @@ export class Preloader extends Scene {
 
         const gameoverImgKeys = [
             'gameover',
-            'back-to-menu'
+            'back-to-menu',
+            'score-title'
         ]
 
         gameoverImgKeys.forEach(key => {
