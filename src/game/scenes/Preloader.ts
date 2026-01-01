@@ -93,17 +93,19 @@ export class Preloader extends Scene {
             'black_screen',
             'brige_pole',
             'button_2',
-            'city_scape',
             'island',
             'left_train',
             'mid_train',
-            'ocean',
+            // 'ocean',
             'right_train',
-            'sky',
-            'sun',
+            // 'sky',
+            // 'sun',
             'train_track_back',
             'train_track_font',
-            'kuasa-level-title-bg'
+            'kuasa-level-title-bg',
+            'train_bg',
+            'train_line',
+            'train_track'
         ];
 
         kuasaImageKeys.forEach(key => {
