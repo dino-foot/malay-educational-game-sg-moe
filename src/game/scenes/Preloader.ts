@@ -11,18 +11,22 @@ export class Preloader extends Scene {
         this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'background');
 
         //  A simple progress bar. This is the outline of the bar.
-        this.add.rectangle(this.cameras.main.centerX, this.cameras.main.centerY, 468, 32).setStrokeStyle(1, 0xffffff);
+        this.add.rectangle(this.cameras.main.centerX, this.cameras.main.centerY, 468, 32).setStrokeStyle(2, 0xffffff);
 
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(this.cameras.main.centerX, this.cameras.main.centerY, 28, 0xffffff);
+        const bar = this.add.rectangle(this.cameras.main.centerX - 468 / 2 + 10, this.cameras.main.centerY, 10, 20, 0x00FF00);
+
         //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
         this.load.on('progress', (progress: number) => {
             //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-            bar.width = 4 + (460 * progress);
+            bar.width = 4 + (454 * progress);
         });
     }
 
     preload() {
+
+        Utils.LoadLocalFont('nunito', 'assets/fonts/Nunito-VariableFont_wght.ttf');
+        Utils.LoadLocalFont('nunito-bold', 'assets/fonts/Nunito-Italic-VariableFont_wght.ttf');
 
         this.load.spineJson("boat-data", "assets/spine/boat.json");
         this.load.spineAtlas("boat-atlas", "assets/spine/boat.atlas");

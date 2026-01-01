@@ -38,7 +38,7 @@ export class BasScene extends Scene {
     maxLevels = 10;
     currentLevel = 1;
     currentStepIndex: number = 1;
-    levelDataIndex: number = 0; // should be 0
+    levelDataIndex: number = 1; // should be 0
     score = 0;
     scoreBg: Phaser.GameObjects.Image;
     scoreText: Phaser.GameObjects.Text;
