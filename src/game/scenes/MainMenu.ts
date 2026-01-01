@@ -55,6 +55,9 @@ export class MainMenu extends Scene {
         Utils.AlignTopRight(this.settingsBtn, this.background, -20, -20);
         Utils.MakeButton(this, this.settingsBtn, () => {
             this.scene.launch('SettingsMenu');
+            // this.scene.launch('GameOver', {
+            //     currentScore: 99
+            // }); // SettingsMenu, GameOver
             this.scene.sendToBack();
             this.scene.pause();
         });
@@ -68,7 +71,7 @@ export class MainMenu extends Scene {
         characterCointainer.setDepth(1);
 
         //? debug start bas scene directly
-        this.scene.start('BasScene');
+        // this.scene.start('BasScene');
 
     } // end
 
@@ -90,7 +93,8 @@ export class MainMenu extends Scene {
 
             Utils.MakeButton(this, button, () => {
                 console.log(`Start scene: ${btn.key}`);
-                this.scene.start(btn.scene);
+                Utils.FadeToScene(this, btn.scene);
+                // this.scene.start(btn.scene);
             });
         });
     }
