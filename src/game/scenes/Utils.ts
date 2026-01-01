@@ -128,7 +128,24 @@ export class Utils {
                 console.log(`Font loaded: ${name}`);
             })
             .catch((err) => {
-                // console.error("Font loading failed", err);
+                console.error("Font loading failed", err);
             });
+    }
+
+    static FadeToScene(
+        scene: Phaser.Scene,
+        nextSceneKey: string,
+        options?: {
+            fadeOutDuration?: number;
+            fadeInDuration?: number;
+            color?: { r: number; g: number; b: number };
+        }
+    ) {
+        const camera = scene.cameras.main;
+        const { fadeOutDuration = 700, fadeInDuration = 700, color = { r: 0, g: 0, b: 0 } } = options || {};
+        camera.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+            scene.scene.start(nextSceneKey);
+        });
+        camera.fadeOut(fadeOutDuration, color.r, color.g, color.b);
     }
 }
