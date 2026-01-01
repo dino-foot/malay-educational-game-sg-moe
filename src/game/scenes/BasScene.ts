@@ -49,6 +49,16 @@ export class BasScene extends Scene {
         super("BasScene");
     }
 
+    init() {
+        this.score = 0;
+        this.maxLevels = 3;
+        this.currentStepIndex = 1;
+        this.levelDataIndex = 1;
+        this.currentLives = 3;
+        this.maxLives = 3;
+        this.resetLives();
+    }
+
     create() {
         const { width, height } = this.cameras.main;
         const { x, y } = Utils.CenterXY(this.game);
@@ -134,7 +144,7 @@ export class BasScene extends Scene {
     }
 
     setupGameplay() {
-        console.log('level ' + BUS_LEVELS_DATA[this.levelDataIndex].correctWord.length)
+        // console.log('level ' + BUS_LEVELS_DATA[this.levelDataIndex].correctWord.length)
         const levelData = BUS_LEVELS_DATA[this.levelDataIndex];
         const wordLength = BUS_LEVELS_DATA[this.levelDataIndex].correctWord.length;
 
@@ -424,7 +434,10 @@ export class BasScene extends Scene {
 
         if (this.currentLives === 0) {
             console.log("Game Over - No lives left");
-            // todo show gameover scene
+            //? show gameover scene
+            this.scene.launch('GameOver', {
+                currentScore: this.score
+            });
         } else {
             console.log(`Lives left: ${this.currentLives}`);
         }
