@@ -1,7 +1,8 @@
 export class Utils {
     public static fontStyle = {
         fontSize: "36px",
-        color: "#000",
+        color: "white",
+        fontFamily: "nunito",
         fontStyle: "bold",
     };
 

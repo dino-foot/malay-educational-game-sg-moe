@@ -102,7 +102,8 @@ export class Preloader extends Scene {
             'sky',
             'sun',
             'train_track_back',
-            'train_track_font'
+            'train_track_font',
+            'kuasa-level-title-bg'
         ];
 
         kuasaImageKeys.forEach(key => {
