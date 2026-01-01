@@ -52,8 +52,8 @@ export class BasScene extends Scene {
     init() {
         this.score = 0;
         this.maxLevels = 3;
-        this.currentStepIndex = 1;
-        this.levelDataIndex = 1;
+        this.currentStepIndex = 9;
+        this.levelDataIndex = 9;
         this.currentLives = 3;
         this.maxLives = 3;
         this.resetLives();
@@ -212,10 +212,6 @@ export class BasScene extends Scene {
             ease: Phaser.Math.Easing.Linear,
             onComplete: () => {
 
-                // correct answer increment score
-                this.incrementScore();
-                this.cleanupLevel();
-
                 // show cheked flag
                 this.roadMarksList[this.currentStepIndex - 1].mark.setVisible(false);
                 this.roadMarksList[this.currentStepIndex - 1].tick.setVisible(true);
@@ -224,7 +220,13 @@ export class BasScene extends Scene {
                 this.currentStepIndex++;
                 if (this.currentStepIndex >= this.roadMarksList.length) {
                     // todo load next scene
-                    console.log("Bus reached the final stop");
+                    console.log("level completed");
+                    Utils.FadeToScene(this, 'MainMenu');
+                }
+                else {
+                    // correct answer increment score
+                    this.incrementScore();
+                    this.cleanupLevel();
                 }
                 console.log(`Level ${this.currentLevel} | Bus speed duration: ${Math.round(duration)}ms`);
             },
