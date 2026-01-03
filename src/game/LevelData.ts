@@ -14,3 +14,12 @@ export interface TrainLevelData {
     hintSentence: string; // appear on HUD
     audioKey?: string;
 }
+
+export interface KayakLevelData {
+    id: number;
+    imageKey?: string;
+    audioKey?: string;
+    correctWord: string;
+    exampleSentence: string;
+    newSentence: string;
+}

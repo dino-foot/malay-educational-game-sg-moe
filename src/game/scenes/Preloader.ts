@@ -80,6 +80,8 @@ export class Preloader extends Scene {
             'kayak_title',
             'kayak-sentence',
             'kayak_rnd_word',
+            'kayak-lower-panel',
+            'kayak-sentence'
         ];
 
         kayakImageKeys.forEach(key => {

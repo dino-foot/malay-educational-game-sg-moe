@@ -3,10 +3,10 @@ import { Utils } from "./Utils";
 
 export class KaysakScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
     bgAlignZone: Phaser.GameObjects.Zone;
     backButton: Phaser.GameObjects.Image;
-
+    questionPanel: Phaser.GameObjects.Image;
+    questionText: Phaser.GameObjects.Image;
     lives: {
         container: Phaser.GameObjects.Container;
         full: Phaser.GameObjects.Image;
@@ -16,6 +16,11 @@ export class KaysakScene extends Scene {
     scoreText: Phaser.GameObjects.Text;
     currentLives: any;
     maxLives = 3;
+    kayak: any;
+    kayakContainer = {} as {
+        kayak: any;
+        shadow: Phaser.GameObjects.Image;
+    };
 
     constructor() {
         super("KayakScene");
@@ -32,8 +37,18 @@ export class KaysakScene extends Scene {
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
+        //  spine boat later  
+        //? Each correct answer pushes the kayak forward; wrong answers make it drift back slightly.
+        this.kayak = this.add.spine(250, y + 50, "boat-data", "boat-atlas").setOrigin(0.5);
+        this.kayak.setDepth(10);
+        this.kayak.setInteractive();
+        this.kayak.animationState.setAnimation(0, "rowling", true);
 
-        this.createHUD()
+        const kayakShadow = this.add.image(250, y + 105, 'boat_shadow').setOrigin(0.5).setDepth(8)
+        this.kayakContainer.kayak = this.kayak;
+        this.kayakContainer.shadow = kayakShadow;
+
+        this.createHUD();
     }
 
     createHUD() {
@@ -47,7 +62,14 @@ export class KaysakScene extends Scene {
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
             this.scene.start('MainMenu');
-        });
+        }); 2
+
+        // dragable words
+        const lowerPanel = this.add.image(0, 0, 'kayak-lower-panel').setOrigin(0.5).setDepth(1);
+        Phaser.Display.Align.In.BottomCenter(lowerPanel, this.bgAlignZone);
+
+        this.questionPanel = this.add.image(0, 0, 'kayak-sentence').setOrigin(0.5).setDepth(10).setScale(0.8);
+        Phaser.Display.Align.In.TopLeft(this.questionPanel, lowerPanel, 50, 160);
 
         //? lives systems
         this.createLives();
