@@ -71,7 +71,7 @@ export class MainMenu extends Scene {
         characterCointainer.setDepth(1);
 
         //? debug start bas scene directly
-        this.scene.start('KuasaScene');
+        this.scene.start('KayakScene');
 
     } // end
 

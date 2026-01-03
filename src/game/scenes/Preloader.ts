@@ -73,15 +73,13 @@ export class Preloader extends Scene {
 
         const kayakImageKeys = [
             'boat_shadow',
-            'far_city',
-            'left_island',
+            'kayak-bg',
             'omar_kayak',
             'pier_shadow',
             'pier',
-            'right_island',
-            'sky_noon',
-            'sun_cast',
-            'water_noon'
+            'kayak_title',
+            'kayak-sentence',
+            'kayak_rnd_word',
         ];
 
         kayakImageKeys.forEach(key => {
@@ -96,10 +94,7 @@ export class Preloader extends Scene {
             'island',
             'left_train',
             'mid_train',
-            // 'ocean',
             'right_train',
-            // 'sky',
-            // 'sun',
             'train_track_back',
             'train_track_font',
             'kuasa-level-title-bg',
