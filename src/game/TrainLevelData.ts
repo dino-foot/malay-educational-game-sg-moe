@@ -1,6 +1,6 @@
 import { TrainLevelData } from "./LevelData";
 
-export const LEVELS: TrainLevelData[] = [
+export const KUASA_LEVEL_DATA: TrainLevelData[] = [
     {
         id: 1,
         imageKey: "placeholder",

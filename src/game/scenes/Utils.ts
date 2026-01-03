@@ -13,6 +13,14 @@ export class Utils {
         fontStyle: "bold",
     };
 
+    // public static kayakFontStyle = {
+    //     fontSize: "34px",
+    //     color: "#000",
+    //     fontFamily: "nunito",
+    //     fontStyle: "bold",
+    //     wordWrap: { width: 300 }
+    // };
+
     public static corectAnswerPoint = 10;
     public static correctAnswerBonus = 5;
     public static wrongAnswer = -5;

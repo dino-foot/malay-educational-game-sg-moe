@@ -20,6 +20,6 @@ export interface KayakLevelData {
     imageKey?: string;
     audioKey?: string;
     correctWord: string;
-    exampleSentence: string;
-    newSentence: string;
+    fillinTheGap: string;
+    hintSentence: string;
 }

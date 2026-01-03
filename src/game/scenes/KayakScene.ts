@@ -1,12 +1,13 @@
 import { Scene } from "phaser";
 import { Utils } from "./Utils";
+import { KAYAK_LEVEL_DATA } from "../KayakLevelData";
 
 export class KaysakScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
     bgAlignZone: Phaser.GameObjects.Zone;
     backButton: Phaser.GameObjects.Image;
     questionPanel: Phaser.GameObjects.Image;
-    questionText: Phaser.GameObjects.Image;
+    questionText: Phaser.GameObjects.Text;
     lives: {
         container: Phaser.GameObjects.Container;
         full: Phaser.GameObjects.Image;
@@ -21,6 +22,8 @@ export class KaysakScene extends Scene {
         kayak: any;
         shadow: Phaser.GameObjects.Image;
     };
+    graphics: any;
+    answerPanel: Phaser.GameObjects.Image;
 
     constructor() {
         super("KayakScene");
@@ -65,14 +68,15 @@ export class KaysakScene extends Scene {
         }); 2
 
         // dragable words
-        const lowerPanel = this.add.image(0, 0, 'kayak-lower-panel').setOrigin(0.5).setDepth(1);
-        Phaser.Display.Align.In.BottomCenter(lowerPanel, this.bgAlignZone);
+        this.answerPanel = this.add.image(0, 0, 'kayak-lower-panel').setOrigin(0.5).setDepth(1);
+        Phaser.Display.Align.In.BottomCenter(this.answerPanel, this.bgAlignZone);
 
         this.questionPanel = this.add.image(0, 0, 'kayak-sentence').setOrigin(0.5).setDepth(10).setScale(0.8);
-        Phaser.Display.Align.In.TopLeft(this.questionPanel, lowerPanel, 50, 160);
+        Phaser.Display.Align.In.TopLeft(this.questionPanel, this.answerPanel, 50, 160);
 
         //? lives systems
         this.createLives();
+        this.setupLevel();
     }
 
     private createLives() {
@@ -96,6 +100,36 @@ export class KaysakScene extends Scene {
         }
     }
 
+    setupLevel(levelIndex = 0) {
+        const padding = 24;
+        const kayakFontStyle = this.getQuestionTextStyle();
+
+        this.questionText = this.add.text(
+            this.questionPanel.x - this.questionPanel.width / 2 + padding,
+            this.questionPanel.y - this.questionPanel.height / 2 + padding,
+            KAYAK_LEVEL_DATA[levelIndex].hintSentence, // todo random between hint and fill-the-gap
+            kayakFontStyle
+        )
+            .setOrigin(0, 0)
+            .setDepth(13);
+
+        Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
+
+        // create click/dragable words
+        for (let i = 0; i < 4; i++) {
+            const wordCell = this.add.image(0, 0, 'kayak_rnd_word').setOrigin(0.5).setDepth(13).setScale(0.9);
+            Phaser.Display.Align.In.LeftCenter(wordCell, this.answerPanel, -80);
+        }
+
+        // debug
+        this.graphics = this.add.graphics().setDepth(100);
+        this.graphics.clear();
+        this.graphics.lineStyle(1, 0xff0000, 1);
+        this.graphics.strokeRectShape(this.questionText.getBounds());
+    }
+
+
+
     private getWordScaleConfig(wordLength: number) {
         return Utils.WORD_SCALE_CONFIG[wordLength] ?? Utils.DEFAULT_WORD_SCALE_CONFIG;
     }
@@ -106,5 +140,18 @@ export class KaysakScene extends Scene {
             life.full.setVisible(true);
             life.empty.setVisible(false);
         });
+    }
+
+    private getQuestionTextStyle() {
+        return {
+            fontSize: "30px",
+            color: "#000",
+            fontFamily: "nunito",
+            fontStyle: "bold",
+            align: "center",
+            wordWrap: {
+                width: this.questionPanel.getBounds().width,
+            }
+        };
     }
 }
