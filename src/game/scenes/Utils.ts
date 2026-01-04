@@ -111,8 +111,7 @@ export class Utils {
 
     public static DebugGraphics(scene: Phaser.Scene, wordZone: Phaser.GameObjects.Zone) {
         const debugGraphics = scene.add.graphics().setDepth(1000);
-
-        debugGraphics.lineStyle(10, 0x00ff00, 1).strokeRect(wordZone.getTopLeft().x ?? 0, wordZone.getTopLeft().y ?? 0, wordZone.width ?? 0, wordZone.height ?? 0);
+        debugGraphics.lineStyle(5, 0x00ff00, 1).strokeRect(wordZone.getTopLeft().x ?? 0, wordZone.getTopLeft().y ?? 0, wordZone.width ?? 0, wordZone.height ?? 0);
     }
 
     public static Clamp(value: number, min: number, max: number): number {

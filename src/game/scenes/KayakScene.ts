@@ -24,6 +24,8 @@ export class KaysakScene extends Scene {
     };
     graphics: any;
     answerPanel: Phaser.GameObjects.Image;
+    fillGapZone: Phaser.GameObjects.Zone;
+
 
     constructor() {
         super("KayakScene");
@@ -103,18 +105,24 @@ export class KaysakScene extends Scene {
     setupLevel(levelIndex = 0) {
         const padding = 24;
         const kayakFontStyle = this.getextStyle();
-        const questionType = Math.random() > 0.5
+        let questionType = Math.random() > 0.5
             ? 'hintSentence'
             : 'fillinTheGap';
 
-        this.questionText = this.add.text(
-            this.questionPanel.x - this.questionPanel.width / 2 + padding,
-            this.questionPanel.y - this.questionPanel.height / 2 + padding,
-            KAYAK_LEVEL_DATA[levelIndex][questionType],
-            kayakFontStyle
-        ).setOrigin(0, 0).setDepth(13);
+        //? question text debug
+        // questionType = 'fillinTheGap';
 
-        Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
+        if (questionType == 'fillinTheGap') {
+            this.createFillIntheGapZone(levelIndex);
+        } else {
+            this.questionText = this.add.text(
+                this.questionPanel.x - this.questionPanel.width / 2 + padding,
+                this.questionPanel.y - this.questionPanel.height / 2 + padding,
+                KAYAK_LEVEL_DATA[levelIndex][questionType],
+                kayakFontStyle
+            ).setOrigin(0, 0).setDepth(13);
+            Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
+        }
 
         // create 4 word container with wordcell and random word from level data
         // 1 word must be  KAYAK_LEVEL_DATA[levelIndex].correctWord and 3 random word no repeat of the KAYAK_LEVEL_DATA[levelIndex].correctWord
@@ -127,13 +135,13 @@ export class KaysakScene extends Scene {
         Phaser.Utils.Array.Shuffle(words);
         words.forEach((word, index) => {
             const container = this.add.container(0, 0);
-            const wordCell = this.add.image(0, 0, 'kayak_rnd_word').setOrigin(0.5).setScale(0.9);
+            const wordCell = this.add.image(0, 0, 'kayak_rnd_word').setOrigin(0.5).setScale(0.85);
             const wordText = this.add.text(0, 0, word, this.getextStyle()).setOrigin(0.5);
             container.add([wordCell, wordText]);
             container.setDepth(13);
 
             container.setSize(wordCell.width, wordCell.height);
-            container.setInteractive();
+            container.setInteractive({ useHandCursor: true });
             Phaser.Display.Align.In.LeftCenter(container, this.answerPanel, -270 * index);
             container.setData({ word, isCorrect: word === KAYAK_LEVEL_DATA[levelIndex].correctWord });
 
@@ -144,20 +152,119 @@ export class KaysakScene extends Scene {
             }
             else {
                 // todo make them dragable to the fillInThegap
+                this.input.setDraggable(container);
+                // store original position (important for reset)
+                container.setData({
+                    startX: container.x,
+                    startY: container.y
+                });
+
+                this.applyDrag(container);
             }
             // this.wordContainers.push(container);
         });
 
         // debug
-        this.graphics = this.add.graphics().setDepth(100);
-        this.graphics.clear();
-        this.graphics.lineStyle(1, 0xff0000, 1);
-        this.graphics.strokeRectShape(this.questionText.getBounds());
+        // this.graphics = this.add.graphics().setDepth(100);
+        // this.graphics.clear();
+        // this.graphics.lineStyle(1, 0xff0000, 1);
+        // this.graphics.strokeRectShape(this.questionText.getBounds());
     }
 
+    private createFillIntheGapZone(levelIndex) {
+        const BLANK = "______________";
+        const parts = KAYAK_LEVEL_DATA[levelIndex].fillinTheGap.split(BLANK);
+
+        const leftText = this.add.text(0, 0, parts[0], this.getextStyle())
+            .setOrigin(0, 0.5)
+            .setDepth(13);
+
+        const blankText = this.add.text(0, 0, BLANK, this.getextStyle())
+            .setOrigin(0, 0.5)
+            .setDepth(13);
+
+        const rightText = this.add.text(0, 0, parts[1], this.getextStyle())
+            .setOrigin(0, 0.5)
+            .setDepth(13);
+
+        const sentenceContainer = this.add.container(0, 0, [
+            leftText,
+            blankText,
+            rightText
+        ]).setDepth(14);
+
+        // todo fix it later for larger word
+        // this.questionPanel.displayWidth += 500;
+        // this.questionPanel.x += 250;
+        Phaser.Display.Align.In.Center(sentenceContainer, this.questionPanel, -250);
+
+        // inline layout
+        blankText.x = leftText.width;
+        rightText.x = leftText.width + blankText.width;
+
+        this.fillGapZone = this.add.zone(
+            sentenceContainer.x + blankText.x + blankText.width / 2,
+            sentenceContainer.y,
+            blankText.width,
+            blankText.height
+        ).setRectangleDropZone(blankText.width, blankText.height);
+
+        // Optional debug
+        Utils.DebugGraphics(this, this.fillGapZone);
+
+    }
 
     private handleClick(container) {
         console.log('clicked ', container.getData('isCorrect'))
+    }
+
+    private applyDrag(container) {
+        this.input.on('dragstart', (_pointer, gameObject) => {
+            gameObject.setDepth(20);
+            this.tweens.add({
+                targets: gameObject,
+                scale: 1.05,
+                duration: 100
+            });
+        });
+
+        this.input.on('drag', (_pointer, gameObject, dragX, dragY) => {
+            gameObject.x = dragX;
+            gameObject.y = dragY;
+        });
+
+        this.input.on('dragend', (_pointer, gameObject, dropped) => {
+            gameObject.setDepth(13);
+            if (!dropped) {
+                // snap back if not dropped on target
+                this.resetWordPosition(gameObject);
+            }
+        });
+
+        this.input.on('drop', (_pointer, gameObject, dropZone) => {
+            const isCorrect = gameObject.getData('isCorrect');
+
+            if (isCorrect) {
+                // SNAP & LOCK correct word
+                gameObject.x = dropZone.x;
+                gameObject.y = dropZone.y;
+                gameObject.disableInteractive();
+
+                // Optional polish
+                this.tweens.add({
+                    targets: gameObject,
+                    scale: 1.05,
+                    yoyo: true,
+                    duration: 120
+                });
+                // todo handle correct answer 
+                // this.handleCorrectAnswer(gameObject);
+            } else {
+                // WRONG → snap back
+                this.resetWordPosition(gameObject);
+            }
+        });
+
     }
 
     private getWordScaleConfig(wordLength: number) {
@@ -169,6 +276,17 @@ export class KaysakScene extends Scene {
         this.lives.forEach((life) => {
             life.full.setVisible(true);
             life.empty.setVisible(false);
+        });
+    }
+
+    private resetWordPosition(gameObject: Phaser.GameObjects.Container) {
+        this.tweens.add({
+            targets: gameObject,
+            x: gameObject.getData('startX'),
+            y: gameObject.getData('startY'),
+            scale: 1,
+            duration: 200,
+            ease: 'Back.easeOut'
         });
     }
 
