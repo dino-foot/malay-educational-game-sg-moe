@@ -76,7 +76,7 @@ export class KaysakScene extends Scene {
 
         //? lives systems
         this.createLives();
-        this.setupLevel();
+        this.setupLevel(0);
     }
 
     private createLives() {
@@ -102,24 +102,51 @@ export class KaysakScene extends Scene {
 
     setupLevel(levelIndex = 0) {
         const padding = 24;
-        const kayakFontStyle = this.getQuestionTextStyle();
+        const kayakFontStyle = this.getextStyle();
+        const questionType = Math.random() > 0.5
+            ? 'hintSentence'
+            : 'fillinTheGap';
 
         this.questionText = this.add.text(
             this.questionPanel.x - this.questionPanel.width / 2 + padding,
             this.questionPanel.y - this.questionPanel.height / 2 + padding,
-            KAYAK_LEVEL_DATA[levelIndex].hintSentence, // todo random between hint and fill-the-gap
+            KAYAK_LEVEL_DATA[levelIndex][questionType],
             kayakFontStyle
-        )
-            .setOrigin(0, 0)
-            .setDepth(13);
+        ).setOrigin(0, 0).setDepth(13);
 
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
-        // create click/dragable words
-        for (let i = 0; i < 4; i++) {
-            const wordCell = this.add.image(0, 0, 'kayak_rnd_word').setOrigin(0.5).setDepth(13).setScale(0.9);
-            Phaser.Display.Align.In.LeftCenter(wordCell, this.answerPanel, -80);
-        }
+        // create 4 word container with wordcell and random word from level data
+        // 1 word must be  KAYAK_LEVEL_DATA[levelIndex].correctWord and 3 random word no repeat of the KAYAK_LEVEL_DATA[levelIndex].correctWord
+
+        const words: string[] = [
+            KAYAK_LEVEL_DATA[levelIndex].correctWord,
+            ...this.getRandomWrongWords(levelIndex, KAYAK_LEVEL_DATA[levelIndex].correctWord)
+        ];
+
+        Phaser.Utils.Array.Shuffle(words);
+        words.forEach((word, index) => {
+            const container = this.add.container(0, 0);
+            const wordCell = this.add.image(0, 0, 'kayak_rnd_word').setOrigin(0.5).setScale(0.9);
+            const wordText = this.add.text(0, 0, word, this.getextStyle()).setOrigin(0.5);
+            container.add([wordCell, wordText]);
+            container.setDepth(13);
+
+            container.setSize(wordCell.width, wordCell.height);
+            container.setInteractive();
+            Phaser.Display.Align.In.LeftCenter(container, this.answerPanel, -270 * index);
+            container.setData({ word, isCorrect: word === KAYAK_LEVEL_DATA[levelIndex].correctWord });
+
+            if (questionType == 'hintSentence') {
+                Utils.MakeButton(this, container, () => {
+                    this.handleClick(container);
+                });
+            }
+            else {
+                // todo make them dragable to the fillInThegap
+            }
+            // this.wordContainers.push(container);
+        });
 
         // debug
         this.graphics = this.add.graphics().setDepth(100);
@@ -129,6 +156,9 @@ export class KaysakScene extends Scene {
     }
 
 
+    private handleClick(container) {
+        console.log('clicked ', container.getData('isCorrect'))
+    }
 
     private getWordScaleConfig(wordLength: number) {
         return Utils.WORD_SCALE_CONFIG[wordLength] ?? Utils.DEFAULT_WORD_SCALE_CONFIG;
@@ -142,7 +172,7 @@ export class KaysakScene extends Scene {
         });
     }
 
-    private getQuestionTextStyle() {
+    private getextStyle() {
         return {
             fontSize: "30px",
             color: "#000",
@@ -154,4 +184,16 @@ export class KaysakScene extends Scene {
             }
         };
     }
+
+    private getRandomWrongWords(currentIndex: number, correctWord: string, count = 3): string[] {
+        const pool = KAYAK_LEVEL_DATA
+            .filter((_, index) => index !== currentIndex)
+            .map(level => level.correctWord)
+            .filter(word => word !== correctWord);
+
+        Phaser.Utils.Array.Shuffle(pool);
+
+        return pool.slice(0, count);
+    }
+
 }

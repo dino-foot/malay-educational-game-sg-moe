@@ -74,7 +74,7 @@ export class Utils {
      */
     public static MakeButton(
         scene: Phaser.Scene,
-        image: Phaser.GameObjects.Image,
+        image: Phaser.GameObjects.Image | Phaser.GameObjects.Container,
         onClick: () => void,
         options?: {
             baseScale?: number;
