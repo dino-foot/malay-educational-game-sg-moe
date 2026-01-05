@@ -18,6 +18,7 @@ export class KaysakScene extends Scene {
     currentLives: any;
     maxLives = 3;
     SCORE = 0;
+    currentLevelIndex = 0;
     kayak: any;
     kayakContainer = {} as {
         kayak: any;
@@ -26,6 +27,18 @@ export class KaysakScene extends Scene {
     graphics: any;
     answerPanel: Phaser.GameObjects.Image;
     fillGapZone: Phaser.GameObjects.Zone;
+    levelObjects: {
+        texts: Phaser.GameObjects.Text[];
+        images: Phaser.GameObjects.Image[];
+        containers: Phaser.GameObjects.Container[];
+        zones: Phaser.GameObjects.Zone[];
+    } = {
+            texts: [],
+            images: [],
+            containers: [],
+            zones: []
+        };
+
 
     constructor() {
         super("KayakScene");
@@ -34,6 +47,12 @@ export class KaysakScene extends Scene {
     init() {
         this.maxLives = 3;
         this.SCORE = 0;
+        this.currentLevelIndex = 0;
+        this.fillGapZone = null;
+        this.levelObjects.texts?.forEach((item) => item.destroy());
+        this.levelObjects.images?.forEach((item) => item.destroy());
+        this.levelObjects.containers?.forEach((item) => item.destroy());
+        this.levelObjects.zones?.forEach((item) => item.destroy());
         this.resetLives();
     }
 
@@ -77,28 +96,29 @@ export class KaysakScene extends Scene {
         Utils.MakeButton(this, this.backButton, () => {
             this.scene.start("MainMenu");
         });
-        2;
 
         // dragable words
         this.answerPanel = this.add.image(0, 0, "kayak-lower-panel").setOrigin(0.5).setDepth(1);
         Phaser.Display.Align.In.BottomCenter(this.answerPanel, this.bgAlignZone);
 
-        this.questionPanel = this.add.image(0, 0, "kayak-sentence").setOrigin(0.5).setDepth(10).setScale(0.8);
-        Phaser.Display.Align.In.TopLeft(this.questionPanel, this.answerPanel, 50, 160);
-
         //? lives systems
         this.createLives();
-        this.setupLevel(0);
+        this.setupLevel(this.currentLevelIndex);
         this.registerDragEvents();
     }
 
     setupLevel(levelIndex = 0) {
+
+        this.questionPanel = this.add.image(0, 0, "kayak-sentence").setOrigin(0.5).setDepth(10).setScale(0.8);
+        Phaser.Display.Align.In.TopLeft(this.questionPanel, this.answerPanel, 50, 160);
+        this.track(this.questionPanel, 'images');
+
         const padding = 24;
         const kayakFontStyle = this.getextStyle();
         let questionType = Math.random() > 0.5 ? "hintSentence" : "fillinTheGap";
 
         //? question text debug
-        questionType = "fillinTheGap";
+        questionType = "hintSentence";
 
         if (questionType == "fillinTheGap") {
             this.createFillIntheGapZone(levelIndex);
@@ -108,6 +128,7 @@ export class KaysakScene extends Scene {
                 .setOrigin(0, 0)
                 .setDepth(13);
             Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
+            this.track(this.questionText, 'texts');
         }
 
         // create 4 word container with wordcell and random word from level data
@@ -121,6 +142,7 @@ export class KaysakScene extends Scene {
             const wordCell = this.add.image(0, 0, "kayak_rnd_word").setOrigin(0.5).setScale(0.85);
             const wordText = this.add.text(0, 0, word, this.getextStyle()).setOrigin(0.5);
             container.add([wordCell, wordText]);
+            this.track(container, 'containers');
             container.setDepth(13);
 
             container.setSize(wordCell.width, wordCell.height);
@@ -141,7 +163,7 @@ export class KaysakScene extends Scene {
                     startY: container.y,
                     word,
                     isCorrect: word === KAYAK_LEVEL_DATA[levelIndex].correctWord,
-                    isWord: true,           // 👈 IMPORTANT
+                    isWord: true,
                     locked: false
                 });
 
@@ -160,14 +182,12 @@ export class KaysakScene extends Scene {
     private createFillIntheGapZone(levelIndex) {
         const BLANK = "___________________";
         const parts = KAYAK_LEVEL_DATA[levelIndex].fillinTheGap.split(BLANK);
-
         const leftText = this.add.text(0, 0, parts[0], this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
-
         const blankText = this.add.text(0, 0, BLANK, this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
-
         const rightText = this.add.text(0, 0, parts[1], this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
 
         const sentenceContainer = this.add.container(0, 0, [leftText, blankText, rightText]).setDepth(14);
+        this.track(sentenceContainer, 'containers');
 
         // todo fix it later for larger word
         // console.log(`${parts[0].length + BLANK.length + parts[1].length}`);
@@ -184,6 +204,7 @@ export class KaysakScene extends Scene {
             .zone(sentenceContainer.x + blankText.x + blankText.width / 2, sentenceContainer.y, blankText.width, 50)
             .setRectangleDropZone(blankText.width, blankText.height);
 
+        this.track(this.fillGapZone, 'containers');
         // Optional debug
         Utils.DebugGraphics(this, this.fillGapZone);
     }
@@ -198,62 +219,39 @@ export class KaysakScene extends Scene {
         this.handleScore(isCorrect);
     }
 
-    // private applyDrag(container) {
-    //     this.input.on("dragstart", (_pointer, gameObject) => {
-    //         gameObject.setDepth(20);
-    //         this.tweens.add({
-    //             targets: gameObject,
-    //             scale: 1.05,
-    //             duration: 100,
-    //         });
-    //     });
-
-    //     this.input.on("drag", (_pointer, gameObject, dragX, dragY) => {
-    //         gameObject.x = dragX;
-    //         gameObject.y = dragY;
-    //     });
-
-    //     this.input.on("dragend", (_pointer, gameObject) => {
-    //         const isCorrect = gameObject.getData("isCorrect");
-    //         const isLocked = gameObject.getData("locked") === true;
-
-    //         // ⛔ prevent double scoring
-    //         if (isLocked) return;
-
-    //         const isOverGap = Phaser.Geom.Intersects.RectangleToRectangle(
-    //             gameObject.getBounds(),
-    //             this.fillGapZone.getBounds()
-    //         );
-
-    //         if (isCorrect && isOverGap) {
-    //             // ✅ correct
-    //             gameObject.setData("locked", true);
-    //             gameObject.disableInteractive();
-
-    //             this.snapToGap(gameObject);
-    //             this.handleScore(true);
-    //         } else {
-    //             // ❌ wrong (exactly once)
-    //             this.resetWordPosition(gameObject);
-    //             this.handleScore(false);
-    //         }
-    //     });
-    // } // end
 
     private handleScore(isCorrect: boolean) {
         if (isCorrect) {
             this.SCORE += Utils.corectAnswerPoint;
+            this.clearLevel();
         } else {
             this.SCORE -= Utils.wrongAnswerPoint;
             this.loseLife(); // loss 1 life
         }
-        // this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
+        this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
         this.scoreText.setText(this.SCORE.toString());
         // console.log("handle-score ", isCorrect, this.SCORE);
     }
 
     private clearLevel() {
         // todo clear level for
+        if (this.currentLevelIndex >= KAYAK_LEVEL_DATA.length - 1) {
+            console.log("🏁 Reached end of the level set!");
+            this.scene.launch("GameOver", {
+                currentScore: this.SCORE,
+            });
+            return;
+        }
+
+        // cleanup
+        this.levelObjects.texts?.forEach((item) => item.destroy());
+        this.levelObjects.images?.forEach((item) => item.destroy());
+        this.levelObjects.containers?.forEach((item) => item.destroy());
+        this.levelObjects.zones?.forEach((item) => item.destroy());
+        this.fillGapZone = null;
+
+        this.currentLevelIndex += 1;
+        this.setupLevel(this.currentLevelIndex);
     }
 
     private resetLives() {
@@ -413,4 +411,13 @@ export class KaysakScene extends Scene {
         panel.x += delta / 2;
         Phaser.Display.Align.In.Center(content, panel);
     }
+
+    private track<T extends Phaser.GameObjects.GameObject>(
+        obj: T,
+        type: keyof typeof this.levelObjects
+    ): T {
+        this.levelObjects[type].push(obj as any);
+        return obj;
+    }
+
 }
