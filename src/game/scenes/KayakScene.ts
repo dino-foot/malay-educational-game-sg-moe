@@ -158,7 +158,7 @@ export class KaysakScene extends Scene {
                 });
             }
             else {
-                // todo make them dragable to the fillInThegap
+                // make them dragable to the fillInThegap
                 this.input.setDraggable(container);
                 // store original position (important for reset)
                 container.setData({
@@ -285,6 +285,7 @@ export class KaysakScene extends Scene {
             this.SCORE += Utils.corectAnswerPoint;
         } else {
             this.SCORE -= Utils.wrongAnswerPoint;
+            this.loseLife(); // loss 1 life
         }
         // this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
         this.scoreText.setText(this.SCORE.toString());
@@ -292,7 +293,7 @@ export class KaysakScene extends Scene {
     }
 
     private clearLevel() {
-
+        // todo clear level for 
     }
 
 
@@ -302,6 +303,27 @@ export class KaysakScene extends Scene {
             life.full.setVisible(true);
             life.empty.setVisible(false);
         });
+    }
+
+    private loseLife() {
+        if (this.currentLives <= 0) {
+            console.log("No lives left!");
+            return;
+        }
+        this.currentLives--;
+        const life = this.lives[this.currentLives];
+        life.full.setVisible(false);
+        life.empty.setVisible(true);
+
+        if (this.currentLives === 0) {
+            console.log("Game Over - No lives left");
+            //? show gameover scene
+            this.scene.launch('GameOver', {
+                currentScore: this.SCORE
+            });
+        } else {
+            console.log(`Lives left: ${this.currentLives}`);
+        }
     }
 
     private resetWordPosition(gameObject: Phaser.GameObjects.Container) {
@@ -344,9 +366,7 @@ export class KaysakScene extends Scene {
             .filter((_, index) => index !== currentIndex)
             .map(level => level.correctWord)
             .filter(word => word !== correctWord);
-
         Phaser.Utils.Array.Shuffle(pool);
-
         return pool.slice(0, count);
     }
 
