@@ -76,7 +76,7 @@ export class Preloader extends Scene {
             'kayak-bg',
             'omar_kayak',
             'pier_shadow',
-            'pier',
+            'jetty',
             'kayak_title',
             'kayak-sentence',
             'kayak_rnd_word',

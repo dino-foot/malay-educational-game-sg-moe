@@ -24,6 +24,9 @@ export class Utils {
     public static corectAnswerPoint = 10;
     public static correctAnswerBonus = 5;
     public static wrongAnswerPoint = 5;
+    public static maxLevels = 10;
+    public static baseDuration = 1500; // slowest
+    public static minDuration = 400; // fastest
 
     public static DEFAULT_WORD_SCALE_CONFIG = {
         letterScale: 0.75,
