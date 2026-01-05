@@ -464,7 +464,7 @@ export class BasScene extends Scene {
             this.score += Utils.correctAnswerBonus;
         }
         this.scoreText.setText(this.score.toString());
-        // todo save the score for later use
+        // todo handle wrong answer point for wrong answer
     }
 
     private getWordScaleConfig(wordLength: number) {

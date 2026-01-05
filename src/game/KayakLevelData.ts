@@ -4,61 +4,61 @@ export const KAYAK_LEVEL_DATA: KayakLevelData[] = [
     {
         id: 1,
         correctWord: "bersiar-siar",
-        fillinTheGap: "Umar dan keluarganya ______________ di Sentosa.",
+        fillinTheGap: "Umar dan keluarganya ___________________ di Sentosa.",
         hintSentence: "Pada hari Ahad, keluarga kami bersiar-siar di taman sambil menikmati udara yang segar."
     },
     {
         id: 2,
         correctWord: "hinggap",
-        fillinTheGap: "Burung itu ______________ di dahan pokok.",
+        fillinTheGap: "Burung itu ___________________ di dahan pokok.",
         hintSentence: "Seekor rama-rama yang cantik hinggap di atas bunga ros di taman sekolah kami."
     },
     {
         id: 3,
         correctWord: "kenderaan",
-        fillinTheGap: "Kereta api MRT ialah ______________ yang selalu digunakan oleh rakyat Singapura.",
+        fillinTheGap: "Kereta api MRT ialah ___________________ yang selalu digunakan oleh rakyat Singapura.",
         hintSentence: "Jalan raya itu sesak dengan pelbagai kenderaan seperti kereta, bas dan motosikal."
     },
     {
         id: 4,
         correctWord: "menghalau",
-        fillinTheGap: "Ibu Tanggang ______________ angsa yang mematuk Tanggang.",
+        fillinTheGap: "Ibu Tanggang ___________________ angsa yang mematuk Tanggang.",
         hintSentence: "Ibu menghalau lalat yang hinggap di atas meja makan dengan menggunakan kipas."
     },
     {
         id: 5,
         correctWord: "menyesal",
-        fillinTheGap: "Tanggang ______________ kerana bersikap biadab terhadap ibunya.",
+        fillinTheGap: "Tanggang ___________________ kerana bersikap biadab terhadap ibunya.",
         hintSentence: "Adik menyesal lalu meminta maaf kerana tidak mendengar nasihat ibu."
     },
     {
         id: 6,
         correctWord: "menyewa",
-        fillinTheGap: "Ayah ______________ kayak untuk kami sekeluarga.",
+        fillinTheGap: "Ayah ___________________ kayak untuk kami sekeluarga.",
         hintSentence: "Ayah menyewa sebuah kereta untuk kami pergi bercuti ke Pulau Pinang."
     },
     {
         id: 7,
         correctWord: "panduan",
-        fillinTheGap: "Abang membaca ______________ untuk memasang kereta mainan yang baru dibeli.",
+        fillinTheGap: "Abang membaca ___________________ untuk memasang kereta mainan yang baru dibeli.",
         hintSentence: "Cikgu memberikan panduan yang jelas supaya kami dapat menyiapkan projek sains dengan betul."
     },
     {
         id: 8,
         correctWord: "terbelalak",
-        fillinTheGap: "Mata Umar ______________ apabila ternampak Tanggang.",
+        fillinTheGap: "Mata Umar ___________________ apabila ternampak Tanggang.",
         hintSentence: "Mata Ali terbelalak apabila dia melihat kek hari lahir yang besar dan cantik itu."
     },
     {
         id: 9,
         correctWord: "terpinga-pinga",
-        fillinTheGap: "Saya ______________ apabila terdengar bunyi letupan.",
+        fillinTheGap: "Saya ___________________ apabila terdengar bunyi letupan.",
         hintSentence: "Kakak terpinga-pinga melihat persembahan silap mata yang sangat mengagumkan."
     },
     {
         id: 10,
         correctWord: "teruja",
-        fillinTheGap: "Adik ______________ menaiki bas dua tingkat untuk kali pertama.",
+        fillinTheGap: "Adik ___________________ menaiki bas dua tingkat untuk kali pertama.",
         hintSentence: "Kami berasa teruja kerana akan pergi ke Taman Haiwan bersama-sama esok."
     }
 ];

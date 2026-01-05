@@ -23,7 +23,7 @@ export class Utils {
 
     public static corectAnswerPoint = 10;
     public static correctAnswerBonus = 5;
-    public static wrongAnswer = -5;
+    public static wrongAnswerPoint = 5;
 
     public static DEFAULT_WORD_SCALE_CONFIG = {
         letterScale: 0.75,

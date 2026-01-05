@@ -17,6 +17,7 @@ export class KaysakScene extends Scene {
     scoreText: Phaser.GameObjects.Text;
     currentLives: any;
     maxLives = 3;
+    SCORE = 0;
     kayak: any;
     kayakContainer = {} as {
         kayak: any;
@@ -147,7 +148,7 @@ export class KaysakScene extends Scene {
 
             if (questionType == 'hintSentence') {
                 Utils.MakeButton(this, container, () => {
-                    this.handleClick(container);
+                    this.handleCorrectAnswer(container);
                 });
             }
             else {
@@ -214,8 +215,14 @@ export class KaysakScene extends Scene {
 
     }
 
-    private handleClick(container) {
+    private handleCorrectAnswer(container) {
         console.log('clicked ', container.getData('isCorrect'))
+        const isCorrect = container.getData('isCorrect');
+        const isLocked = container.getData('locked') === true;
+        if (isLocked) return;
+
+        container.setData('locked', true);
+        this.handleScore(isCorrect);
     }
 
     private applyDrag(container) {
@@ -241,35 +248,43 @@ export class KaysakScene extends Scene {
             }
         });
 
-        this.input.on('drop', (_pointer, gameObject, dropZone) => {
+        this.input.on('drop', (_pointer, gameObject) => {
             const isCorrect = gameObject.getData('isCorrect');
+            const isLocked = gameObject.getData('locked') === true;
+            // ⛔ prevent double score
+            if (isLocked) return;
+            const isOverGap = Phaser.Geom.Intersects.RectangleToRectangle(
+                gameObject.getBounds(),
+                this.fillGapZone.getBounds()
+            );
 
-            if (isCorrect) {
-                // SNAP & LOCK correct word
-                gameObject.x = dropZone.x;
-                gameObject.y = dropZone.y;
+            if (isCorrect && isOverGap) {
+                // ✅ correct drop
+                gameObject.setData('locked', true);
                 gameObject.disableInteractive();
 
-                // Optional polish
-                this.tweens.add({
-                    targets: gameObject,
-                    scale: 1.05,
-                    yoyo: true,
-                    duration: 120
-                });
-                // todo handle correct answer 
-                // this.handleCorrectAnswer(gameObject);
+                this.snapToGap(gameObject);
+                this.handleScore(true);
             } else {
-                // WRONG → snap back
+                // ❌ wrong drop (released anywhere else)
                 this.resetWordPosition(gameObject);
+                this.handleScore(false);
             }
         });
 
     }
 
-    private getWordScaleConfig(wordLength: number) {
-        return Utils.WORD_SCALE_CONFIG[wordLength] ?? Utils.DEFAULT_WORD_SCALE_CONFIG;
+    private handleScore(isCorrect: boolean) {
+        if (isCorrect) {
+            this.SCORE += Utils.corectAnswerPoint;
+        } else {
+            this.SCORE -= Utils.wrongAnswerPoint;
+        }
+        // this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
+        this.scoreText.setText(this.SCORE.toString());
+        console.log('handle-score ', isCorrect, this.SCORE);
     }
+
 
     private resetLives() {
         this.currentLives = this.maxLives;
@@ -289,6 +304,17 @@ export class KaysakScene extends Scene {
             ease: 'Back.easeOut'
         });
     }
+
+    private snapToGap(gameObject: Phaser.GameObjects.Container) {
+        this.tweens.add({
+            targets: gameObject,
+            x: this.fillGapZone.x,
+            y: this.fillGapZone.y,
+            duration: 150,
+            ease: 'Back.easeOut'
+        });
+    }
+
 
     private getextStyle() {
         return {

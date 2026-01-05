@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { Utils } from './Utils';
-import { KUASA_LEVEL_DATA } from '../TrainLevelData';
+import { KUASA_LEVEL_DATA } from '../KuasaLevelData';
 
 export class KuasaScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
