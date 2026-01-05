@@ -89,6 +89,7 @@ export class KaysakScene extends Scene {
         //? lives systems
         this.createLives();
         this.setupLevel(0);
+        this.registerDragEvents();
     }
 
     setupLevel(levelIndex = 0) {
@@ -138,9 +139,13 @@ export class KaysakScene extends Scene {
                 container.setData({
                     startX: container.x,
                     startY: container.y,
+                    word,
+                    isCorrect: word === KAYAK_LEVEL_DATA[levelIndex].correctWord,
+                    isWord: true,           // 👈 IMPORTANT
+                    locked: false
                 });
 
-                this.applyDrag(container);
+                // this.applyDrag(container);
             }
             // this.wordContainers.push(container);
         });
@@ -165,7 +170,7 @@ export class KaysakScene extends Scene {
         const sentenceContainer = this.add.container(0, 0, [leftText, blankText, rightText]).setDepth(14);
 
         // todo fix it later for larger word
-        console.log(`${parts[0].length + BLANK.length + parts[1].length}`);
+        // console.log(`${parts[0].length + BLANK.length + parts[1].length}`);
 
         // this.questionPanel.displayWidth += 170;
         // this.questionPanel.x += 170;
@@ -184,7 +189,7 @@ export class KaysakScene extends Scene {
     }
 
     private handleCorrectAnswer(container) {
-        console.log("clicked ", container.getData("isCorrect"));
+        // console.log("clicked ", container.getData("isCorrect"));
         const isCorrect = container.getData("isCorrect");
         const isLocked = container.getData("locked") === true;
         if (isLocked) return;
@@ -193,50 +198,47 @@ export class KaysakScene extends Scene {
         this.handleScore(isCorrect);
     }
 
-    private applyDrag(container) {
-        this.input.on("dragstart", (_pointer, gameObject) => {
-            gameObject.setDepth(20);
-            this.tweens.add({
-                targets: gameObject,
-                scale: 1.05,
-                duration: 100,
-            });
-        });
+    // private applyDrag(container) {
+    //     this.input.on("dragstart", (_pointer, gameObject) => {
+    //         gameObject.setDepth(20);
+    //         this.tweens.add({
+    //             targets: gameObject,
+    //             scale: 1.05,
+    //             duration: 100,
+    //         });
+    //     });
 
-        this.input.on("drag", (_pointer, gameObject, dragX, dragY) => {
-            gameObject.x = dragX;
-            gameObject.y = dragY;
-        });
+    //     this.input.on("drag", (_pointer, gameObject, dragX, dragY) => {
+    //         gameObject.x = dragX;
+    //         gameObject.y = dragY;
+    //     });
 
-        this.input.on("dragend", (_pointer, gameObject, dropped) => {
-            gameObject.setDepth(13);
-            if (!dropped) {
-                // snap back if not dropped on target
-                this.resetWordPosition(gameObject);
-            }
-        });
+    //     this.input.on("dragend", (_pointer, gameObject) => {
+    //         const isCorrect = gameObject.getData("isCorrect");
+    //         const isLocked = gameObject.getData("locked") === true;
 
-        this.input.on("drop", (_pointer, gameObject) => {
-            const isCorrect = gameObject.getData("isCorrect");
-            const isLocked = gameObject.getData("locked") === true;
-            //? prevent double score
-            if (isLocked) return;
-            const isOverGap = Phaser.Geom.Intersects.RectangleToRectangle(gameObject.getBounds(), this.fillGapZone.getBounds());
+    //         // ⛔ prevent double scoring
+    //         if (isLocked) return;
 
-            if (isCorrect && isOverGap) {
-                // ✅ correct drop
-                gameObject.setData("locked", true);
-                gameObject.disableInteractive();
+    //         const isOverGap = Phaser.Geom.Intersects.RectangleToRectangle(
+    //             gameObject.getBounds(),
+    //             this.fillGapZone.getBounds()
+    //         );
 
-                this.snapToGap(gameObject);
-                this.handleScore(true);
-            } else {
-                // wrong drop (released anywhere else)
-                this.resetWordPosition(gameObject);
-                this.handleScore(false);
-            }
-        });
-    }
+    //         if (isCorrect && isOverGap) {
+    //             // ✅ correct
+    //             gameObject.setData("locked", true);
+    //             gameObject.disableInteractive();
+
+    //             this.snapToGap(gameObject);
+    //             this.handleScore(true);
+    //         } else {
+    //             // ❌ wrong (exactly once)
+    //             this.resetWordPosition(gameObject);
+    //             this.handleScore(false);
+    //         }
+    //     });
+    // } // end
 
     private handleScore(isCorrect: boolean) {
         if (isCorrect) {
@@ -247,7 +249,7 @@ export class KaysakScene extends Scene {
         }
         // this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
         this.scoreText.setText(this.SCORE.toString());
-        console.log("handle-score ", isCorrect, this.SCORE);
+        // console.log("handle-score ", isCorrect, this.SCORE);
     }
 
     private clearLevel() {
@@ -345,6 +347,58 @@ export class KaysakScene extends Scene {
             });
         }
     }
+
+    private registerDragEvents() {
+        // drag start
+        this.input.on("dragstart", (_pointer, gameObject) => {
+            gameObject.setDepth(20);
+            gameObject.setData("dragHandled", false);
+
+            this.tweens.add({
+                targets: gameObject,
+                scale: 1.05,
+                duration: 100,
+            });
+        });
+
+        // dragging
+        this.input.on("drag", (_pointer, gameObject, dragX, dragY) => {
+            gameObject.x = dragX;
+            gameObject.y = dragY;
+        });
+
+        // drag end (🔥 SINGLE SOURCE OF TRUTH)
+        this.input.on("dragend", (_pointer, gameObject) => {
+            // ignore non-word objects
+            if (!gameObject.getData("isWord")) return;
+
+            // ⛔ HARD GUARD
+            if (gameObject.getData("dragHandled")) return;
+            gameObject.setData("dragHandled", true);
+
+            const isLocked = gameObject.getData("locked") === true;
+            if (isLocked) return;
+
+            const isCorrect = gameObject.getData("isCorrect");
+
+            const isOverGap = Phaser.Geom.Intersects.RectangleToRectangle(
+                gameObject.getBounds(),
+                this.fillGapZone.getBounds()
+            );
+
+            if (isCorrect && isOverGap) {
+                gameObject.setData("locked", true);
+                gameObject.disableInteractive();
+
+                this.snapToGap(gameObject);
+                this.handleScore(true);
+            } else {
+                this.resetWordPosition(gameObject);
+                this.handleScore(false);
+            }
+        });
+    }
+
 
     private fitPanelToContent(panel: Phaser.GameObjects.Image, content: Phaser.GameObjects.Container | Phaser.GameObjects.Text, paddingX: number = 40) {
         const contentWidth = content.getBounds().width;
