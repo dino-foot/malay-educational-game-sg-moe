@@ -32,6 +32,12 @@ export class KaysakScene extends Scene {
         super("KayakScene");
     }
 
+    init() {
+        this.maxLives = 3;
+        this.SCORE = 0;
+        this.resetLives();
+    }
+
     create() {
         const { width, height } = this.cameras.main;
         const { x, y } = Utils.CenterXY(this.game);
@@ -251,7 +257,7 @@ export class KaysakScene extends Scene {
         this.input.on('drop', (_pointer, gameObject) => {
             const isCorrect = gameObject.getData('isCorrect');
             const isLocked = gameObject.getData('locked') === true;
-            // ⛔ prevent double score
+            //? prevent double score
             if (isLocked) return;
             const isOverGap = Phaser.Geom.Intersects.RectangleToRectangle(
                 gameObject.getBounds(),
@@ -266,7 +272,7 @@ export class KaysakScene extends Scene {
                 this.snapToGap(gameObject);
                 this.handleScore(true);
             } else {
-                // ❌ wrong drop (released anywhere else)
+                // wrong drop (released anywhere else)
                 this.resetWordPosition(gameObject);
                 this.handleScore(false);
             }
@@ -283,6 +289,10 @@ export class KaysakScene extends Scene {
         // this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
         this.scoreText.setText(this.SCORE.toString());
         console.log('handle-score ', isCorrect, this.SCORE);
+    }
+
+    private clearLevel() {
+
     }
 
 
