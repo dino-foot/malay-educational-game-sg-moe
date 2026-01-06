@@ -221,6 +221,7 @@ export class BasScene extends Scene {
                 if (this.currentStepIndex >= this.roadMarksList.length) {
                     // todo load next scene
                     console.log("level completed");
+                    this.onLevelComplete();
                     Utils.FadeToScene(this, 'MainMenu');
                 }
                 else {
@@ -470,5 +471,12 @@ export class BasScene extends Scene {
     private getWordScaleConfig(wordLength: number) {
         return Utils.WORD_SCALE_CONFIG[wordLength] ?? Utils.DEFAULT_WORD_SCALE_CONFIG;
     }
+
+    //? on level completed
+    onLevelComplete() {
+        const completed = this.registry.get('completedLevels') || 0;
+        this.registry.set('completedLevels', completed + 1);
+    }
+
 
 }

@@ -439,6 +439,11 @@ export class KaysakScene extends Scene {
         });
     }
 
+    //? on level completed
+    onLevelComplete() {
+        const completed = this.registry.get('completedLevels') || 0;
+        this.registry.set('completedLevels', completed + 1);
+    }
 
     private track<T extends Phaser.GameObjects.GameObject>(obj: T, type: keyof typeof this.levelObjects): T {
         this.levelObjects[type].push(obj as any);
