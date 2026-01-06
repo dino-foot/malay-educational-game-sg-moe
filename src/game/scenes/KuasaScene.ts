@@ -173,6 +173,7 @@ export class KuasaScene extends Scene {
 
             // rnd word that user must click
             const wordContainer = this.add.container(0, 0).setDepth(100).setSize(300, 100);
+            wordContainer.setData("word", words[i]); // ✅ store word here
             const bg = this.add.image(0, 0, "kayak_rnd_word").setOrigin(0.5).setScale(1.1).setInteractive({ useHandCursor: true });
             const text = this.add.text(0, 0, words[i], this.geBlacktextStyle());
             Utils.MakeButton(this, bg, () => {
@@ -192,9 +193,27 @@ export class KuasaScene extends Scene {
     }
 
 
-    private handleAnswerSubmit(container: GameObjects.Container | GameObjects.Image) {
-        console.log('ans submit');
+    private handleAnswerSubmit(container: Phaser.GameObjects.Container) {
+        const selectedWord = container.getData("word");
+        const correctWord = KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord;
+
+        if (selectedWord === correctWord) {
+            // ✅ CORRECT ANSWER
+            console.log("✅ Correct Answer:", selectedWord);
+
+            this.SCORE += Utils.corectAnswerPoint;
+            this.scoreText.setText(this.SCORE.toString().padStart(4, "0"));
+            // todo speed up train 
+            // todo second train after level 5
+
+        } else {
+            // ❌ WRONG ANSWER
+            console.log("❌ Wrong Answer:", selectedWord);
+            this.loseLife();
+
+        }
     }
+
 
     private loseLife() {
         if (this.currentLives <= 0) {
