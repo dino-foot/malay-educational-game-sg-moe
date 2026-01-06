@@ -63,21 +63,12 @@ export class KuasaScene extends Scene {
         this.bgAlignZone = this.add.zone(x, y, width, height);
         const background = this.add.image(x, y, "train_bg").setOrigin(0.5);
         const levelTitleBg = this.add.image(0, 0, "kuasa-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.9);
-        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, -80);
+        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, -10);
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
         this.createHUD();
     }
-
-    // createTrainLevel() {
-    //     const train1Container = this.add.container();
-    //     const pillar1 = this.add.image(0, 0, "train_line").setOrigin(0.5).setDepth(2);
-    //     const track1 = this.add.image(0, 0, "train_track").setOrigin(0.5).setDepth(3).setScale(1.1, 1);
-
-    //     Phaser.Display.Align.In.BottomCenter(pillar1, this.bgAlignZone, 0, 160);
-    //     Phaser.Display.Align.In.TopCenter(track1, pillar1, 0, 100);
-    // }
 
     createHUD() {
         this.scoreBg = this.add.image(0, 0, "score").setOrigin(0.5).setDepth(12).setScale(0.9);
@@ -92,8 +83,31 @@ export class KuasaScene extends Scene {
             this.scene.start("MainMenu");
         });
 
+        const beamContaier = this.add.container(0, 0).setName('beamContainer').setDepth(3);
+        beamContaier.setSize(1000, 200);
+        const beam1 = this.add.image(0, 0, 'beam').setOrigin(0.5);
+        const beam2 = this.add.image(beam1.width, 0, 'beam').setOrigin(0.5);
+        const beam3 = this.add.image(beam2.width + beam2.x, 0, 'beam').setOrigin(0.5);
+        const beam4 = this.add.image(beam3.width + beam3.x, 0, 'beam').setOrigin(0.5);
+        const beam5 = this.add.image(beam4.width + beam4.x, 0, 'beam').setOrigin(0.5);
+        beamContaier.add([beam1, beam2, beam3, beam4, beam5])
+        Phaser.Display.Align.In.TopCenter(beamContaier, this.bgAlignZone, -this.cameras.main.width / 2, -130);
+
         //? lives systems
         this.createLives();
+    }
+
+    // createTrainLevel() {
+    //     const train1Container = this.add.container();
+    //     const pillar1 = this.add.image(0, 0, "train_line").setOrigin(0.5).setDepth(2);
+    //     const track1 = this.add.image(0, 0, "train_track").setOrigin(0.5).setDepth(3).setScale(1.1, 1);
+
+    //     Phaser.Display.Align.In.BottomCenter(pillar1, this.bgAlignZone, 0, 160);
+    //     Phaser.Display.Align.In.TopCenter(track1, pillar1, 0, 100);
+    // }
+
+    cleanupLevel() {
+
     }
 
     private setupLevel() { }
