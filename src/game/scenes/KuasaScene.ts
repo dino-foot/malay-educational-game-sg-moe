@@ -121,8 +121,8 @@ export class KuasaScene extends Scene {
         this.train1 = this.createTrain(300, 695, 3).setScale(0.8); // 3 compartments
         this.train1.setName('train1');
 
-        this.train2 = this.createTrain(300, 392, 3).setScale(0.8); // 3 compartments
-        this.train2.setName('train2');
+        // this.train2 = this.createTrain(300, 392, 3).setScale(0.8); // 3 compartments
+        // this.train2.setName('train2');
 
         //? setup track
         this.track1 = this.add.image(0, 0, 'train_track').setOrigin(0.5).setDepth(9);
@@ -163,17 +163,37 @@ export class KuasaScene extends Scene {
         offsetX += left.width;
         train.add(left);
 
-        for (let i = 0; i < midCount; i++) {
+        const words: string[] = [KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord, ...this.getRandomWrongWords(this.currentLevelIndex, KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord)];
+
+        //? only for mid train add word card
+        for (let i = 0; i < words.length - 1; i++) {
             const mid = this.add.image(offsetX, 0, "mid_train").setOrigin(0.5, 0.5);
             offsetX += mid.width - 1;
             train.add(mid);
-            mid.setDepth(-10);
+
+            // rnd word that user must click
+            const wordContainer = this.add.container(0, 0).setDepth(100).setSize(300, 100);
+            const bg = this.add.image(0, 0, "kayak_rnd_word").setOrigin(0.5).setScale(1.1).setInteractive({ useHandCursor: true });
+            const text = this.add.text(0, 0, words[i], this.geBlacktextStyle());
+            Utils.MakeButton(this, bg, () => {
+                this.handleAnswerSubmit(wordContainer);
+            });
+
+            wordContainer.add([bg, text]);
+            Display.Align.In.Center(wordContainer, mid)
+            Display.Align.In.Center(text, bg);
+            train.add(wordContainer);
         }
 
         const right = this.add.image(offsetX - 22, 0, "right_train").setOrigin(0.5, 0.5);
         train.add(right);
         train.setSize(offsetX + right.width, left.height);
         return train;
+    }
+
+
+    private handleAnswerSubmit(container: GameObjects.Container | GameObjects.Image) {
+        console.log('ans submit');
     }
 
     private loseLife() {
@@ -221,6 +241,19 @@ export class KuasaScene extends Scene {
         return {
             fontSize: "30px",
             color: "white",
+            fontFamily: "nunito",
+            fontStyle: "bold",
+            align: "center",
+            wordWrap: {
+                width: this.questionPanel.getBounds().width - 4,
+            },
+        };
+    }
+
+    private geBlacktextStyle() {
+        return {
+            fontSize: "40px",
+            color: "black",
             fontFamily: "nunito",
             fontStyle: "bold",
             align: "center",
