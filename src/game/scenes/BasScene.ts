@@ -39,7 +39,7 @@ export class BasScene extends Scene {
     currentLevel = 1;
     currentStepIndex: number = 1;
     levelDataIndex: number = 1; // should be 0
-    score = 0;
+    SCORE = 0;
     scoreBg: Phaser.GameObjects.Image;
     scoreText: Phaser.GameObjects.Text;
     hintImg: Phaser.GameObjects.Image;
@@ -50,7 +50,7 @@ export class BasScene extends Scene {
     }
 
     init() {
-        this.score = 0;
+        this.SCORE = 0;
         this.maxLevels = 3;
         this.currentStepIndex = 9;
         this.levelDataIndex = 9;
@@ -219,7 +219,7 @@ export class BasScene extends Scene {
 
                 this.currentStepIndex++;
                 if (this.currentStepIndex >= this.roadMarksList.length) {
-                    // todo load next scene
+                    //? load next scene
                     console.log("level completed");
                     this.onLevelComplete();
                     Utils.FadeToScene(this, 'MainMenu');
@@ -379,6 +379,10 @@ export class BasScene extends Scene {
         }
 
         if (wrongAttempt) {
+            //? wrong answer minue point
+            this.SCORE -= Utils.wrongAnswerPoint;
+            this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 150);
+
             this.loseLife();
             this.disableButton(this.answerSubmitBtn);
         }
@@ -439,7 +443,7 @@ export class BasScene extends Scene {
             console.log("Game Over - No lives left");
             //? show gameover scene
             this.scene.launch('GameOver', {
-                currentScore: this.score
+                currentScore: this.SCORE
             });
         } else {
             console.log(`Lives left: ${this.currentLives}`);
@@ -460,11 +464,11 @@ export class BasScene extends Scene {
     }
 
     private incrementScore(addBonus: boolean = false) {
-        this.score += Utils.corectAnswerPoint;
+        this.SCORE += Utils.corectAnswerPoint;
         if (addBonus) {
-            this.score += Utils.correctAnswerBonus;
+            this.SCORE += Utils.correctAnswerBonus;
         }
-        this.scoreText.setText(this.score.toString());
+        this.scoreText.setText(this.SCORE.toString());
         // todo handle wrong answer point for wrong answer
     }
 
