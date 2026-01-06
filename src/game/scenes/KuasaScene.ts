@@ -17,13 +17,10 @@ export class KuasaScene extends Scene {
     trainSpeed: number = 1;
     totalSteps: number = 10;
     currentLives: number = 3;
-    maxLives: number = 3;
     baseDuration = 1500; // slowest
     minDuration = 400; // fastest
     maxLevels = 10;
-    currentLevel = 1;
-    currentStepIndex: number = 1;
-    levelDataIndex: number = 1; // should be 0
+    maxLives = 3;
     SCORE = 0;
     currentLevelIndex = 0;
     scoreBg: Phaser.GameObjects.Image;
@@ -53,12 +50,10 @@ export class KuasaScene extends Scene {
     }
 
     init() {
-        this.SCORE = 0;
-        this.maxLevels = 3;
-        this.currentStepIndex = 9;
-        this.levelDataIndex = 9;
-        this.currentLives = 3;
+        this.maxLevels = 10;
         this.maxLives = 3;
+        this.SCORE = 0;
+        this.currentLevelIndex = 0;
         this.trainSpeed = 1;
         this.resetLives();
     }
@@ -105,11 +100,22 @@ export class KuasaScene extends Scene {
 
         //? lives systems
         this.createLives();
-        this.setupLevel();
+        this.setupLevel(this.currentLevelIndex);
     }
 
-    private setupLevel() {
+    private setupLevel(levelIndex = 0) {
 
+        // setup question
+        const showHintWord = Phaser.Math.Between(0, 1) === 0;
+        const questionTextValue = showHintWord
+            ? KUASA_LEVEL_DATA[levelIndex].hintWord
+            : KUASA_LEVEL_DATA[levelIndex].hintSentence;
+
+        this.questionText = this.add.text(0, 0, KUASA_LEVEL_DATA[levelIndex].hintSentence, this.getextStyle())
+            .setOrigin(0, 0)
+            .setDepth(13);
+        Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
+        this.trackObject(this.questionText, "texts");
 
         //? setup train
         this.train1 = this.createTrain(300, 695, 3).setScale(0.8); // 3 compartments
@@ -204,33 +210,24 @@ export class KuasaScene extends Scene {
     }
 
     private getRandomWrongWords(currentIndex: number, correctWord: string, count = 3): string[] {
-        // const pool = KUASA_LEVEL_DATA.filter((_, index) => index !== currentIndex)
-        //     .map((level) => level.correctWord)
-        //     .filter((word) => word !== correctWord);
-        // Phaser.Utils.Array.Shuffle(pool);
-        // return pool.slice(0, count);
-        return null;
+        const pool = KUASA_LEVEL_DATA.filter((_, index) => index !== currentIndex)
+            .map((level) => level.correctWord)
+            .filter((word) => word !== correctWord);
+        Phaser.Utils.Array.Shuffle(pool);
+        return pool.slice(0, count);
     }
 
-    private snapToGap(gameObject: Phaser.GameObjects.Container) {
-        // this.tweens.add({
-        //     targets: gameObject,
-        //     x: this.fillGapZone.x,
-        //     y: this.fillGapZone.y - 20,
-        //     duration: 150,
-        //     ease: "Back.easeOut",
-        // });
-    }
-
-    private resetWordPosition(gameObject: Phaser.GameObjects.Container) {
-        this.tweens.add({
-            targets: gameObject,
-            x: gameObject.getData("startX"),
-            y: gameObject.getData("startY"),
-            scale: 1,
-            duration: 200,
-            ease: "Back.easeOut",
-        });
+    private getextStyle() {
+        return {
+            fontSize: "30px",
+            color: "white",
+            fontFamily: "nunito",
+            fontStyle: "bold",
+            align: "center",
+            wordWrap: {
+                width: this.questionPanel.getBounds().width - 4,
+            },
+        };
     }
 
     //? on level completed
