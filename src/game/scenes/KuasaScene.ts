@@ -1,4 +1,4 @@
-import { GameObjects, Scene } from "phaser";
+import { Display, GameObjects, Scene } from "phaser";
 import { Utils } from "./Utils";
 import { KUASA_LEVEL_DATA } from "../KuasaLevelData";
 
@@ -28,7 +28,8 @@ export class KuasaScene extends Scene {
     currentLevelIndex = 0;
     scoreBg: Phaser.GameObjects.Image;
     scoreText: Phaser.GameObjects.Text;
-    hintImg: Phaser.GameObjects.Image;
+    questionPanel: GameObjects.Image;
+    questionText: GameObjects.Text;
     draggableLetters: any[];
     levelObjects: {
         texts: Phaser.GameObjects.Text[];
@@ -98,12 +99,18 @@ export class KuasaScene extends Scene {
         beamContaier.add([beam1, beam2, beam3, beam4, beam5]);
         Phaser.Display.Align.In.TopCenter(beamContaier, this.bgAlignZone, -this.cameras.main.width / 2, -130);
 
+        this.questionPanel = this.add.image(0, 0, 'train_question_panel').setOrigin(0.5).setDepth(10);
+        this.questionPanel.setScale(0.9).setDepth(11);
+        Display.Align.In.TopCenter(this.questionPanel, this.bgAlignZone, 0, -170);
+
         //? lives systems
         this.createLives();
         this.setupLevel();
     }
 
     private setupLevel() {
+
+
         //? setup train
         this.train1 = this.createTrain(300, 695, 3).setScale(0.8); // 3 compartments
         this.train1.setName('train1');

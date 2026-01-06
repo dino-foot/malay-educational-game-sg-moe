@@ -100,7 +100,8 @@ export class Preloader extends Scene {
             'kuasa-level-title-bg',
             'train_bg',
             'train_line',
-            'train_track'
+            'train_track',
+            'train_question_panel'
         ];
 
         kuasaImageKeys.forEach(key => {
