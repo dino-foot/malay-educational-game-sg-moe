@@ -111,7 +111,11 @@ export class Preloader extends Scene {
 
 
         this.load.image('bas', 'assets/menu/bas.png');
-        this.load.image('battery', 'assets/menu/battery.png');
+        this.load.image('battery_off', 'assets/menu/battery_off.png');
+        this.load.image('bar1', 'assets/menu/bar1.png');
+        this.load.image('bar2', 'assets/menu/bar2.png');
+        this.load.image('bar3', 'assets/menu/bar3.png');
+
         this.load.image('glow', 'assets/menu/glow.png');
         this.load.image('kampung', 'assets/menu/kampung.png');
         this.load.image('kuasa', 'assets/menu/kuasa.png');
