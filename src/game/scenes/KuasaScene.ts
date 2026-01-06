@@ -1,6 +1,6 @@
-import { Scene } from 'phaser';
-import { Utils } from './Utils';
-import { KUASA_LEVEL_DATA } from '../KuasaLevelData';
+import { Scene } from "phaser";
+import { Utils } from "./Utils";
+import { KUASA_LEVEL_DATA } from "../KuasaLevelData";
 
 export class KuasaScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -43,7 +43,7 @@ export class KuasaScene extends Scene {
         };
 
     constructor() {
-        super('KuasaScene');
+        super("KuasaScene");
     }
 
     init() {
@@ -56,7 +56,6 @@ export class KuasaScene extends Scene {
         this.trainSpeed = 1;
         this.resetLives();
     }
-
 
     create() {
         const { width, height } = this.cameras.main;
@@ -81,8 +80,8 @@ export class KuasaScene extends Scene {
     // }
 
     createHUD() {
-        this.scoreBg = this.add.image(0, 0, 'score').setOrigin(0.5).setDepth(12).setScale(0.9);
-        this.scoreText = this.add.text(0, 0, '0000', Utils.fontStyle).setOrigin(0.5).setDepth(13);
+        this.scoreBg = this.add.image(0, 0, "score").setOrigin(0.5).setDepth(12).setScale(0.9);
+        this.scoreText = this.add.text(0, 0, "0000", Utils.fontStyle).setOrigin(0.5).setDepth(13);
         Phaser.Display.Align.In.TopRight(this.scoreBg, this.bgAlignZone);
         Phaser.Display.Align.In.RightCenter(this.scoreText, this.scoreBg, -70, 0);
 
@@ -90,7 +89,7 @@ export class KuasaScene extends Scene {
         this.backButton = this.add.image(50, 50, "back").setOrigin(0.5).setScale(0.7).setDepth(10).setInteractive({ useHandCursor: true });
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
-            this.scene.start('MainMenu');
+            this.scene.start("MainMenu");
         });
 
         //? lives systems
@@ -119,7 +118,6 @@ export class KuasaScene extends Scene {
             });
         }
     }
-
 
     private loseLife() {
         if (this.currentLives <= 0) {
@@ -173,7 +171,6 @@ export class KuasaScene extends Scene {
         // });
     }
 
-
     private resetWordPosition(gameObject: Phaser.GameObjects.Container) {
         this.tweens.add({
             targets: gameObject,
@@ -187,10 +184,9 @@ export class KuasaScene extends Scene {
 
     //? on level completed
     onLevelComplete() {
-        const completed = this.registry.get('completedLevels') || 0;
-        this.registry.set('completedLevels', completed + 1);
+        const completed = this.registry.get("completedLevels") || 0;
+        this.registry.set("completedLevels", completed + 1);
     }
-
 
     private track<T extends Phaser.GameObjects.GameObject>(obj: T, type: keyof typeof this.levelObjects): T {
         this.levelObjects[type].push(obj as any);
