@@ -1,4 +1,4 @@
-import { Scene } from "phaser";
+import { GameObjects, Scene } from "phaser";
 import { Utils } from "./Utils";
 import { KUASA_LEVEL_DATA } from "../KuasaLevelData";
 
@@ -42,6 +42,11 @@ export class KuasaScene extends Scene {
             zones: [],
         };
 
+    train1: GameObjects.Container;
+    train2: GameObjects.Container;
+    track1: GameObjects.Image;
+    track2: GameObjects.Image;
+
     constructor() {
         super("KuasaScene");
     }
@@ -83,34 +88,38 @@ export class KuasaScene extends Scene {
             this.scene.start("MainMenu");
         });
 
-        const beamContaier = this.add.container(0, 0).setName('beamContainer').setDepth(3);
+        const beamContaier = this.add.container(0, 0).setName("beamContainer").setDepth(3);
         beamContaier.setSize(1000, 200);
-        const beam1 = this.add.image(0, 0, 'beam').setOrigin(0.5);
-        const beam2 = this.add.image(beam1.width, 0, 'beam').setOrigin(0.5);
-        const beam3 = this.add.image(beam2.width + beam2.x, 0, 'beam').setOrigin(0.5);
-        const beam4 = this.add.image(beam3.width + beam3.x, 0, 'beam').setOrigin(0.5);
-        const beam5 = this.add.image(beam4.width + beam4.x, 0, 'beam').setOrigin(0.5);
-        beamContaier.add([beam1, beam2, beam3, beam4, beam5])
+        const beam1 = this.add.image(0, 0, "beam").setOrigin(0.5);
+        const beam2 = this.add.image(beam1.width, 0, "beam").setOrigin(0.5);
+        const beam3 = this.add.image(beam2.width + beam2.x, 0, "beam").setOrigin(0.5);
+        const beam4 = this.add.image(beam3.width + beam3.x, 0, "beam").setOrigin(0.5);
+        const beam5 = this.add.image(beam4.width + beam4.x, 0, "beam").setOrigin(0.5);
+        beamContaier.add([beam1, beam2, beam3, beam4, beam5]);
         Phaser.Display.Align.In.TopCenter(beamContaier, this.bgAlignZone, -this.cameras.main.width / 2, -130);
 
         //? lives systems
         this.createLives();
+        this.setupLevel();
     }
 
-    // createTrainLevel() {
-    //     const train1Container = this.add.container();
-    //     const pillar1 = this.add.image(0, 0, "train_line").setOrigin(0.5).setDepth(2);
-    //     const track1 = this.add.image(0, 0, "train_track").setOrigin(0.5).setDepth(3).setScale(1.1, 1);
+    private setupLevel() {
+        //? setup train
+        this.train1 = this.createTrain(300, 695, 3).setScale(0.8); // 3 compartments
+        this.train1.setName('train1');
 
-    //     Phaser.Display.Align.In.BottomCenter(pillar1, this.bgAlignZone, 0, 160);
-    //     Phaser.Display.Align.In.TopCenter(track1, pillar1, 0, 100);
-    // }
+        this.train2 = this.createTrain(300, 392, 3).setScale(0.8); // 3 compartments
+        this.train2.setName('train2');
 
-    cleanupLevel() {
+        //? setup track
+        this.track1 = this.add.image(0, 0, 'train_track').setOrigin(0.5).setDepth(9);
+        Phaser.Display.Align.In.Center(this.track1, this.bgAlignZone, 0, 300)
 
+        this.track2 = this.add.image(0, 0, 'train_track').setOrigin(0.5).setDepth(9);
+        Phaser.Display.Align.In.Center(this.track2, this.bgAlignZone, 0, 0)
     }
 
-    private setupLevel() { }
+    cleanupLevel() { }
 
     private createLives() {
         this.lives = [];
@@ -131,6 +140,27 @@ export class KuasaScene extends Scene {
                 empty: emptyHeart,
             });
         }
+    }
+
+    private createTrain(x: number, y: number, midCount: number = 1) {
+        const train = this.add.container(x, y).setDepth(10);
+
+        let offsetX = 0;
+        const left = this.add.image(offsetX - 36, 0, "left_train").setOrigin(0.5, 0.5);
+        offsetX += left.width;
+        train.add(left);
+
+        for (let i = 0; i < midCount; i++) {
+            const mid = this.add.image(offsetX, 0, "mid_train").setOrigin(0.5, 0.5);
+            offsetX += mid.width - 1;
+            train.add(mid);
+            mid.setDepth(-10);
+        }
+
+        const right = this.add.image(offsetX - 22, 0, "right_train").setOrigin(0.5, 0.5);
+        train.add(right);
+        train.setSize(offsetX + right.width, left.height);
+        return train;
     }
 
     private loseLife() {
@@ -202,7 +232,7 @@ export class KuasaScene extends Scene {
         this.registry.set("completedLevels", completed + 1);
     }
 
-    private track<T extends Phaser.GameObjects.GameObject>(obj: T, type: keyof typeof this.levelObjects): T {
+    private trackObject<T extends Phaser.GameObjects.GameObject>(obj: T, type: keyof typeof this.levelObjects): T {
         this.levelObjects[type].push(obj as any);
         return obj;
     }

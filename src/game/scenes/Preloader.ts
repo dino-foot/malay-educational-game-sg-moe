@@ -97,8 +97,6 @@ export class Preloader extends Scene {
             'left_train',
             'mid_train',
             'right_train',
-            'train_track_back',
-            'train_track_font',
             'kuasa-level-title-bg',
             'train_bg',
             'train_line',
