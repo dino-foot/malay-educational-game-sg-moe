@@ -44,6 +44,7 @@ export class KuasaScene extends Scene {
     train2: GameObjects.Container;
     track1: GameObjects.Image;
     track2: GameObjects.Image;
+    wordsContainersList: GameObjects.Container[] = [];
 
     constructor() {
         super("KuasaScene");
@@ -55,6 +56,7 @@ export class KuasaScene extends Scene {
         this.SCORE = 0;
         this.currentLevelIndex = 0;
         this.speedIncreasePerLevel = 0.1;
+        this.wordsContainersList = [];
         this.resetLives();
     }
 
@@ -153,20 +155,32 @@ export class KuasaScene extends Scene {
         // this.levelObjects.images?.forEach((item) => item.destroy());
         // this.levelObjects.containers?.forEach((item) => item.destroy());
         // this.levelObjects.zones?.forEach((item) => item.destroy());
+
+        //? update next question
         const showHintWord = Phaser.Math.Between(0, 1) === 0;
         const questionTextValue = showHintWord ? KUASA_LEVEL_DATA[this.currentLevelIndex].hintWord : KUASA_LEVEL_DATA[this.currentLevelIndex].hintSentence;
         this.questionText.setText(questionTextValue);
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
+        //? todo update random answers 
+        const newWords = ['hello-world'];
+        this.wordsContainersList.forEach((container, index) => {
+            // if (!newWords[index]) return;
+            const text = container.getData("text") as Phaser.GameObjects.Text;
+            container.setData("word", newWords[index]);
+            text.setText('hello');
+            // optional: re-center after text change
+            Phaser.Display.Align.In.Center(text, container.getData("bg"));
+        });
+
         // setup new level data
         if (this.currentLevelIndex >= 5) {
-            // todo spawn second train on opposite direction
+            //? spawn second train on opposite direction
             if (this.train2 == null || this.train2 == undefined) {
                 this.train2 = this.createTrain(0, 392, 3).setScale(0.8); // 3 compartments
                 this.train2.setName("train2");
                 this.startTrainMovement(this.train2, 'right');
             }
-
         }
 
         // todo respawn new words
@@ -214,6 +228,9 @@ export class KuasaScene extends Scene {
             wordContainer.setData("word", words[i]); // ✅ store word here
             const bg = this.add.image(0, 0, "kayak_rnd_word").setOrigin(0.5).setScale(1.1).setInteractive({ useHandCursor: true });
             const text = this.add.text(0, 0, words[i], this.geBlacktextStyle());
+            wordContainer.setData("text", text);
+            wordContainer.setData("bg", bg);
+
             Utils.MakeButton(this, bg, () => {
                 this.handleAnswerSubmit(wordContainer);
             });
@@ -222,6 +239,8 @@ export class KuasaScene extends Scene {
             Display.Align.In.Center(wordContainer, mid);
             Display.Align.In.Center(text, bg);
             train.add(wordContainer);
+
+            this.wordsContainersList.push(wordContainer);
         }
 
         const right = this.add.image(offsetX - 22, 0, "right_train").setOrigin(0.5, 0.5);
