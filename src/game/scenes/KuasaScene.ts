@@ -150,31 +150,31 @@ export class KuasaScene extends Scene {
             return;
         }
 
-        // cleanup
-        // this.levelObjects.texts?.forEach((item) => item.destroy());
-        // this.levelObjects.images?.forEach((item) => item.destroy());
-        // this.levelObjects.containers?.forEach((item) => item.destroy());
-        // this.levelObjects.zones?.forEach((item) => item.destroy());
-
         //? update next question
         const showHintWord = Phaser.Math.Between(0, 1) === 0;
         const questionTextValue = showHintWord ? KUASA_LEVEL_DATA[this.currentLevelIndex].hintWord : KUASA_LEVEL_DATA[this.currentLevelIndex].hintSentence;
         this.questionText.setText(questionTextValue);
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
-        //? todo update random answers 
-        const newWords = ['hello-world'];
+        // todo update random answers 
+        let words: string[] = [KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord,
+        ...this.getRandomWrongWords(this.currentLevelIndex, KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord, this.wordsContainersList.length - 1)];
+
+        console.log('next level words cont >> ', this.wordsContainersList.length);
+
+        words = Phaser.Utils.Array.Shuffle(words);
+        // const newWords = ['hello-world'];
         this.wordsContainersList.forEach((container, index) => {
-            // if (!newWords[index]) return;
+            if (!words[index]) return;
             const text = container.getData("text") as Phaser.GameObjects.Text;
-            container.setData("word", newWords[index]);
-            text.setText('hello');
+            container.setData("word", words[index]);
+            text.setText(words[index]);
             // optional: re-center after text change
             Phaser.Display.Align.In.Center(text, container.getData("bg"));
         });
 
         // setup new level data
-        if (this.currentLevelIndex >= 5) {
+        if (this.currentLevelIndex >= 1) {
             //? spawn second train on opposite direction
             if (this.train2 == null || this.train2 == undefined) {
                 this.train2 = this.createTrain(0, 392, 3).setScale(0.8); // 3 compartments
@@ -182,8 +182,6 @@ export class KuasaScene extends Scene {
                 this.startTrainMovement(this.train2, 'right');
             }
         }
-
-        // todo respawn new words
     }
 
     private createLives() {
@@ -277,9 +275,9 @@ export class KuasaScene extends Scene {
 
     private handleAnswerSubmit(container: Phaser.GameObjects.Container) {
         const selectedWord = container.getData("word");
-        const correctWord = 'bersiar-siar'; //KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord;
+        const correctWord = KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord;
 
-        console.log(selectedWord, correctWord);
+        console.log('clicked >> ', selectedWord, correctWord);
 
         if (selectedWord === correctWord) {
             // ✅ CORRECT ANSWER
