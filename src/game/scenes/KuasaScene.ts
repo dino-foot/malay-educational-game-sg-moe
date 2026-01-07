@@ -98,6 +98,9 @@ export class KuasaScene extends Scene {
         this.questionPanel.setScale(0.9).setDepth(11);
         Display.Align.In.TopCenter(this.questionPanel, this.bgAlignZone, 0, -170);
 
+        const trainLinePiller1 = this.add.image(800, 968, 'train_line').setOrigin(0.5).setDepth(10);
+        const trainLinePiller2 = this.add.image(800, 695, 'train_line').setOrigin(0.5).setDepth(9);
+
         //? lives systems
         this.createLives();
         this.setupLevel(this.currentLevelIndex);
@@ -200,18 +203,17 @@ export class KuasaScene extends Scene {
         if (selectedWord === correctWord) {
             // ✅ CORRECT ANSWER
             console.log("✅ Correct Answer:", selectedWord);
-
             this.SCORE += Utils.corectAnswerPoint;
-            this.scoreText.setText(this.SCORE.toString().padStart(4, "0"));
             // todo speed up train 
             // todo second train after level 5
 
         } else {
             // ❌ WRONG ANSWER
             console.log("❌ Wrong Answer:", selectedWord);
+            this.SCORE -= Utils.wrongAnswerPoint;
             this.loseLife();
-
         }
+        this.scoreText.setText(this.SCORE.toString());
     }
 
 
