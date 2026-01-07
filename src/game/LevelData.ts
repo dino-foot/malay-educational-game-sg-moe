@@ -8,8 +8,7 @@ export interface LevelData {
 
 export interface TrainLevelData {
     id: number;
-    imageKey: string;
-    trainWord: string;
+    correctWord: string;
     hintWord: string; // appea on HUD
     hintSentence: string; // appear on HUD
     audioKey?: string;

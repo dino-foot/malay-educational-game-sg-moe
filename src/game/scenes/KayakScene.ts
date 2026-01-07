@@ -119,22 +119,22 @@ export class KaysakScene extends Scene {
     }
 
     setupLevel(levelIndex = 0) {
-        this.questionPanel = this.add.image(0, 0, "kayak-sentence").setOrigin(0.5).setDepth(10).setScale(0.8);
-        Phaser.Display.Align.In.TopLeft(this.questionPanel, this.answerPanel, 50, 160);
+        this.questionPanel = this.add.image(0, 0, "kayak-sentence").setOrigin(0.5).setDepth(10).setScale(0.7);
+        Phaser.Display.Align.In.TopLeft(this.questionPanel, this.answerPanel, 200, 170);
         this.track(this.questionPanel, "images");
 
-        const padding = 24;
+        const padding = 10;
         const kayakFontStyle = this.getextStyle();
         let questionType = Math.random() > 0.5 ? "hintSentence" : "fillinTheGap";
 
         //? question text debug
-        questionType = "hintSentence";
+        // questionType = "hintSentence";
 
         if (questionType == "fillinTheGap") {
             this.createFillIntheGapZone(levelIndex);
         } else {
             this.questionText = this.add
-                .text(this.questionPanel.x - this.questionPanel.width / 2 + padding, this.questionPanel.y - this.questionPanel.height / 2 + padding, KAYAK_LEVEL_DATA[levelIndex][questionType], kayakFontStyle)
+                .text(0, 0, KAYAK_LEVEL_DATA[levelIndex][questionType], kayakFontStyle)
                 .setOrigin(0, 0)
                 .setDepth(13);
             Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
@@ -157,7 +157,8 @@ export class KaysakScene extends Scene {
 
             container.setSize(wordCell.width, wordCell.height);
             container.setInteractive({ useHandCursor: true });
-            Phaser.Display.Align.In.LeftCenter(container, this.answerPanel, -270 * index);
+            const startOffsetX = 60;
+            Phaser.Display.Align.In.LeftCenter(container, this.answerPanel, -270 * index - startOffsetX);
             container.setData({ word, isCorrect: word === KAYAK_LEVEL_DATA[levelIndex].correctWord });
 
             if (questionType == "hintSentence") {
@@ -197,14 +198,9 @@ export class KaysakScene extends Scene {
         const rightText = this.add.text(0, 0, parts[1], this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
 
         const sentenceContainer = this.add.container(0, 0, [leftText, blankText, rightText]).setDepth(14);
+        sentenceContainer.setSize(700, 100);
         this.track(sentenceContainer, "containers");
-
-        // todo fix it later for larger word
-        // console.log(`${parts[0].length + BLANK.length + parts[1].length}`);
-
-        // this.questionPanel.displayWidth += 170;
-        // this.questionPanel.x += 170;
-        Phaser.Display.Align.In.LeftCenter(sentenceContainer, this.questionPanel, -100);
+        Phaser.Display.Align.In.LeftCenter(sentenceContainer, this.questionPanel, 0);
 
         // inline layout
         blankText.x = leftText.width;
@@ -234,7 +230,7 @@ export class KaysakScene extends Scene {
         } else {
             this.SCORE -= Utils.wrongAnswerPoint;
             this.loseLife(); // loss 1 life
-            // todo Wrong answers cause a light ripple animation and slight backward drift.
+            // todo play wrong sound fx
         }
         this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
         this.scoreText.setText(this.SCORE.toString());
@@ -283,8 +279,8 @@ export class KaysakScene extends Scene {
     }
 
     private clearLevel() {
-        // todo clear level for
-        if (this.currentLevelIndex >= KAYAK_LEVEL_DATA.length - 1) {
+        //? clear level for
+        if (this.currentLevelIndex >= KAYAK_LEVEL_DATA.length) {
             console.log("🏁 Reached end of the level set!");
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
@@ -443,18 +439,10 @@ export class KaysakScene extends Scene {
         });
     }
 
-    private fitPanelToContent(panel: Phaser.GameObjects.Image, content: Phaser.GameObjects.Container | Phaser.GameObjects.Text, paddingX: number = 40) {
-        const contentWidth = content.getBounds().width;
-        const minWidth = panel.width;
-
-        const requiredWidth = contentWidth + paddingX * 2;
-        const finalWidth = Math.max(minWidth, requiredWidth);
-
-        const delta = finalWidth - panel.displayWidth;
-
-        panel.displayWidth = finalWidth;
-        panel.x += delta / 2;
-        Phaser.Display.Align.In.Center(content, panel);
+    //? on level completed
+    onLevelComplete() {
+        const completed = this.registry.get('completedLevels') || 0;
+        this.registry.set('completedLevels', completed + 1);
     }
 
     private track<T extends Phaser.GameObjects.GameObject>(obj: T, type: keyof typeof this.levelObjects): T {
