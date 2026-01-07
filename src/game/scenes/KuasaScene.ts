@@ -113,7 +113,6 @@ export class KuasaScene extends Scene {
 
         this.questionText = this.add.text(0, 0, KUASA_LEVEL_DATA[levelIndex].hintSentence, this.getextStyle()).setOrigin(0, 0).setDepth(13);
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
-        this.trackObject(this.questionText, "texts");
 
         //? setup train
         this.train1 = this.createTrain(300, 695, 4).setScale(0.8); // 3 compartments
@@ -139,7 +138,7 @@ export class KuasaScene extends Scene {
     cleanupLevel() {
         console.log('cleanup level ', this.currentLevelIndex);
 
-        if (this.currentLevelIndex >= KUASA_LEVEL_DATA.length - 1) {
+        if (this.currentLevelIndex >= KUASA_LEVEL_DATA.length) {
             console.log("Reached end of the level set!");
             this.onLevelComplete(); // level complete callback
             this.scene.launch("GameOver", {
@@ -154,6 +153,10 @@ export class KuasaScene extends Scene {
         // this.levelObjects.images?.forEach((item) => item.destroy());
         // this.levelObjects.containers?.forEach((item) => item.destroy());
         // this.levelObjects.zones?.forEach((item) => item.destroy());
+        const showHintWord = Phaser.Math.Between(0, 1) === 0;
+        const questionTextValue = showHintWord ? KUASA_LEVEL_DATA[this.currentLevelIndex].hintWord : KUASA_LEVEL_DATA[this.currentLevelIndex].hintSentence;
+        this.questionText.setText(questionTextValue);
+        Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
         // setup new level data
         if (this.currentLevelIndex >= 5) {

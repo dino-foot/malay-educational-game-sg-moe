@@ -280,7 +280,7 @@ export class KaysakScene extends Scene {
 
     private clearLevel() {
         //? clear level for
-        if (this.currentLevelIndex >= KAYAK_LEVEL_DATA.length - 1) {
+        if (this.currentLevelIndex >= KAYAK_LEVEL_DATA.length) {
             console.log("🏁 Reached end of the level set!");
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
