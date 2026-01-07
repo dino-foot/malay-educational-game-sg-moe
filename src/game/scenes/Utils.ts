@@ -6,6 +6,13 @@ export class Utils {
         fontStyle: "bold",
     };
 
+    public static fontStyleBlack = {
+        fontSize: "36px",
+        color: "black",
+        fontFamily: "nunito",
+        fontStyle: "bold",
+    };
+
     public static scoreFontStyle = {
         fontSize: "64px",
         color: "#000",

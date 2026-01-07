@@ -36,9 +36,9 @@ export class BasScene extends Scene {
     baseDuration = 1500; // slowest
     minDuration = 400; // fastest
     maxLevels = 10;
-    currentLevel = 1;
+    currentLevel = 0;
     currentStepIndex: number = 1;
-    levelDataIndex: number = 1; // should be 0
+    levelDataIndex: number = 0; // should be 0
     SCORE = 0;
     scoreBg: Phaser.GameObjects.Image;
     scoreText: Phaser.GameObjects.Text;
@@ -52,8 +52,8 @@ export class BasScene extends Scene {
     init() {
         this.SCORE = 0;
         this.maxLevels = 3;
-        this.currentStepIndex = 9;
-        this.levelDataIndex = 9;
+        this.currentStepIndex = 1;
+        this.levelDataIndex = 0;
         this.currentLives = 3;
         this.maxLives = 3;
         this.resetLives();
@@ -278,7 +278,7 @@ export class BasScene extends Scene {
             bg.setScale(this.getWordScaleConfig(letters.length).letterScale)
 
             const text = this.add
-                .text(0, 0, letters[i], Utils.fontStyle)
+                .text(0, 0, letters[i], Utils.fontStyleBlack)
                 .setOrigin(0.5);
 
             const rndRotation = Phaser.Math.Between(-20, 20);
