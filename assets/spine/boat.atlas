@@ -1,0 +1,25 @@
+boat.png
+    size:1024,128
+    filter:Linear,Linear
+    pma:true
+armback
+    bounds:802,79,55,35
+blink
+    bounds:465,37,70,77
+boat
+    bounds:2,25,461,89
+body
+    bounds:609,57,57,89
+    rotate:90
+front_arm
+    bounds:700,79,35,100
+    rotate:90
+hand
+    bounds:859,88,22,26
+head
+    bounds:537,37,70,77
+stick
+    bounds:2,15,8,257
+    rotate:90
+stick_ripple
+    bounds:2,2,46,11
