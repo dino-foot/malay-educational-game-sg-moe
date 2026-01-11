@@ -1,6 +1,7 @@
 import { Display, Scene } from "phaser";
 import { Utils } from "./Utils";
 import { BUS_LEVELS_DATA } from "../BusLevelData";
+import { LevelData } from "../LevelData";
 
 export class BasScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -37,31 +38,42 @@ export class BasScene extends Scene {
     minDuration = 400; // fastest
     maxLevels = 10;
     currentLevel = 0;
-    currentStepIndex: number = 1;
+    currentStepIndex: number = 0;
     levelDataIndex: number = 0; // should be 0
     SCORE = 0;
     scoreBg: Phaser.GameObjects.Image;
     scoreText: Phaser.GameObjects.Text;
     hintImg: Phaser.GameObjects.Image;
     draggableLetters: any[];
+    randomizedLevels: LevelData[] = [];
+    randomizeQuestion = false;
 
     constructor() {
         super("BasScene");
     }
 
     init() {
+        this.cameras.main.setBackgroundColor('white');
         this.SCORE = 0;
         this.maxLevels = 3;
         this.currentStepIndex = 1;
-        this.levelDataIndex = 0;
+        this.levelDataIndex = 1;
         this.currentLives = 3;
         this.maxLives = 3;
+        this.randomizeQuestion = true;
         this.resetLives();
     }
 
     create() {
         const { width, height } = this.cameras.main;
         const { x, y } = Utils.CenterXY(this.game);
+
+        //? randomized level data
+        if (this.randomizeQuestion) {
+            this.randomizedLevels = Phaser.Utils.Array.Shuffle([...BUS_LEVELS_DATA]);
+        } else {
+            this.randomizedLevels = BUS_LEVELS_DATA;
+        }
 
         this.bgAlignZone = this.add.zone(x, y, width, height);
         // Word Rects
@@ -87,15 +99,12 @@ export class BasScene extends Scene {
             .setDisplaySize(width, 239);
 
         const cityScape = this.add.image(x, y, "upper-bg").setOrigin(0.5).setDisplaySize(width, 401).setDepth(1);
-
         Utils.AlignTopCenter(cityScape, this.bgAlignZone, 0, 80);
-
         const sun = this.add.image(0, 0, "sun").setOrigin(0.5).setDepth(2).setScale(1);
-
         Utils.AlignTopRight(sun, this.bgAlignZone, -200, -50);
 
         const levelTitleBg = this.add.image(0, 0, "bus-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.9);
-        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, -80);
+        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, -10);
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
@@ -144,11 +153,13 @@ export class BasScene extends Scene {
     }
 
     setupGameplay() {
-        // console.log('level ' + BUS_LEVELS_DATA[this.levelDataIndex].correctWord.length)
-        const levelData = BUS_LEVELS_DATA[this.levelDataIndex];
-        const wordLength = BUS_LEVELS_DATA[this.levelDataIndex].correctWord.length;
+        const levelData = this.randomizedLevels[this.levelDataIndex];
+        const correctWord = levelData.correctWord;
+        const wordLength = correctWord.length;
+        const hintSentence = levelData.hintSentence;
+        const imageKey = levelData.imageKey;
 
-        this.hintImg = this.add.image(0, 0, levelData.imageKey).setOrigin(0.5).setScale(1).setDepth(11);
+        this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setScale(1).setDepth(11);
         Phaser.Display.Align.In.Center(this.hintImg, this.questionContainer);
 
         let spacing = this.getWordScaleConfig(wordLength).spacing;
