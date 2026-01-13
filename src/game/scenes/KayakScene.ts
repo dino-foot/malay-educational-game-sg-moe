@@ -1,6 +1,8 @@
 import { Scene } from "phaser";
 import { Utils } from "./Utils";
 import { KAYAK_LEVEL_DATA } from "../KayakLevelData";
+import { KayakLevelData } from "../LevelData";
+import { ScoreFeedbackUtil } from "./ScoreFeedbackUtil";
 
 export class KaysakScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -40,6 +42,8 @@ export class KaysakScene extends Scene {
         };
 
     stepsMarkers: any = [];
+    randomizedLevels: KayakLevelData[] = [];
+    randomizeQuestion = false;
 
     constructor() {
         super("KayakScene");
@@ -50,6 +54,9 @@ export class KaysakScene extends Scene {
         this.SCORE = 0;
         this.currentLevelIndex = 0;
         this.fillGapZone = null;
+        this.randomizeQuestion = true;
+        this.randomizedLevels = [];
+
         this.levelObjects.texts?.forEach((item) => item.destroy());
         this.levelObjects.images?.forEach((item) => item.destroy());
         this.levelObjects.containers?.forEach((item) => item.destroy());
@@ -62,9 +69,16 @@ export class KaysakScene extends Scene {
         const { x, y } = Utils.CenterXY(this.game);
         this.bgAlignZone = this.add.zone(x, y, width, height);
 
+        //? randomized level data
+        if (this.randomizeQuestion) {
+            this.randomizedLevels = Phaser.Utils.Array.Shuffle([...KAYAK_LEVEL_DATA]);
+        } else {
+            this.randomizedLevels = KAYAK_LEVEL_DATA;
+        }
+
         const background = this.add.image(x, y, "kayak-bg").setOrigin(0.5);
         const levelTitleBg = this.add.image(0, 0, "kayak_title").setOrigin(0.5).setDepth(11).setScale(0.9);
-        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, -80);
+        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 0);
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
@@ -134,7 +148,7 @@ export class KaysakScene extends Scene {
             this.createFillIntheGapZone(levelIndex);
         } else {
             this.questionText = this.add
-                .text(0, 0, KAYAK_LEVEL_DATA[levelIndex][questionType], kayakFontStyle)
+                .text(0, 0, this.randomizedLevels[levelIndex][questionType], kayakFontStyle)
                 .setOrigin(0, 0)
                 .setDepth(13);
             Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
@@ -144,7 +158,7 @@ export class KaysakScene extends Scene {
         // create 4 word container with wordcell and random word from level data
         // 1 word must be  KAYAK_LEVEL_DATA[levelIndex].correctWord and 3 random word no repeat of the KAYAK_LEVEL_DATA[levelIndex].correctWord
 
-        const words: string[] = [KAYAK_LEVEL_DATA[levelIndex].correctWord, ...this.getRandomWrongWords(levelIndex, KAYAK_LEVEL_DATA[levelIndex].correctWord)];
+        const words: string[] = [this.randomizedLevels[levelIndex].correctWord, ...this.getRandomWrongWords(levelIndex, this.randomizedLevels[levelIndex].correctWord)];
 
         Phaser.Utils.Array.Shuffle(words);
         words.forEach((word, index) => {
@@ -159,7 +173,7 @@ export class KaysakScene extends Scene {
             container.setInteractive({ useHandCursor: true });
             const startOffsetX = 60;
             Phaser.Display.Align.In.LeftCenter(container, this.answerPanel, -270 * index - startOffsetX);
-            container.setData({ word, isCorrect: word === KAYAK_LEVEL_DATA[levelIndex].correctWord });
+            container.setData({ word, isCorrect: word === this.randomizedLevels[levelIndex].correctWord });
 
             if (questionType == "hintSentence") {
                 Utils.MakeButton(this, container, () => {
@@ -173,7 +187,7 @@ export class KaysakScene extends Scene {
                     startX: container.x,
                     startY: container.y,
                     word,
-                    isCorrect: word === KAYAK_LEVEL_DATA[levelIndex].correctWord,
+                    isCorrect: word === this.randomizedLevels[levelIndex].correctWord,
                     isWord: true,
                     locked: false,
                 });
@@ -192,7 +206,7 @@ export class KaysakScene extends Scene {
 
     private createFillIntheGapZone(levelIndex) {
         const BLANK = "___________________";
-        const parts = KAYAK_LEVEL_DATA[levelIndex].fillinTheGap.split(BLANK);
+        const parts = this.randomizedLevels[levelIndex].fillinTheGap.split(BLANK);
         const leftText = this.add.text(0, 0, parts[0], this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
         const blankText = this.add.text(0, 0, BLANK, this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
         const rightText = this.add.text(0, 0, parts[1], this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
@@ -210,7 +224,7 @@ export class KaysakScene extends Scene {
 
         this.track(this.fillGapZone, "containers");
         // Optional debug
-        Utils.DebugGraphics(this, this.fillGapZone);
+        // Utils.DebugGraphics(this, this.fillGapZone);
     }
 
     private handleCorrectAnswer(container) {
@@ -226,9 +240,11 @@ export class KaysakScene extends Scene {
     private handleScore(isCorrect: boolean) {
         if (isCorrect) {
             this.SCORE += Utils.corectAnswerPoint;
+            ScoreFeedbackUtil.show(this, this.cameras.main.centerX, this.cameras.main.centerY, 10, true);
             this.OnEachStepComplete();
         } else {
             this.SCORE -= Utils.wrongAnswerPoint;
+            ScoreFeedbackUtil.show(this, this.cameras.main.centerX, this.cameras.main.centerY, 5, false);
             this.loseLife(); // loss 1 life
             // todo play wrong sound fx
         }

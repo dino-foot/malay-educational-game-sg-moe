@@ -61,6 +61,7 @@ export class BasScene extends Scene {
         this.currentLives = 3;
         this.maxLives = 3;
         this.randomizeQuestion = true;
+        this.randomizedLevels = [];
         this.resetLives();
     }
 
