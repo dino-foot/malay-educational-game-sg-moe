@@ -12,7 +12,7 @@ export class GameOver extends Scene {
     }
 
     init(data: { currentScore: number }) {
-        this.currentScore = Phaser.Math.Clamp(data.currentScore, 0, 150);
+        this.currentScore = Phaser.Math.Clamp(data.currentScore, 0, 100);
         console.log('gameover >> ', this.currentScore);
     }
 
