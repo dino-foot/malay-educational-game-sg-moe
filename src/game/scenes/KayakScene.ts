@@ -7,6 +7,7 @@ import { ScoreFeedbackUtil } from "./ScoreFeedbackUtil";
 export class KaysakScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
     bgAlignZone: Phaser.GameObjects.Zone;
+    settingsBtn: Phaser.GameObjects.Image;
     backButton: Phaser.GameObjects.Image;
     questionPanel: Phaser.GameObjects.Image;
     questionText: Phaser.GameObjects.Text;
@@ -106,13 +107,14 @@ export class KaysakScene extends Scene {
             Phaser.Display.Align.In.LeftCenter(stepMarker, this.kayak, -250 + i * -115, 20);
         }
 
+        this.handleSettings();
         this.createHUD();
     }
 
     createHUD() {
         this.scoreBg = this.add.image(0, 0, "score").setOrigin(0.5).setDepth(12).setScale(0.9);
         this.scoreText = this.add.text(0, 0, "0000", Utils.fontStyle).setOrigin(0.5).setDepth(13);
-        Phaser.Display.Align.In.TopRight(this.scoreBg, this.bgAlignZone);
+        Phaser.Display.Align.In.TopRight(this.scoreBg, this.bgAlignZone, -80);
         Phaser.Display.Align.In.RightCenter(this.scoreText, this.scoreBg, -70, 0);
 
         // HUD elements can be created here
@@ -452,6 +454,20 @@ export class KaysakScene extends Scene {
                 this.resetWordPosition(gameObject);
                 this.handleScore(false);
             }
+        });
+    }
+
+    handleSettings() {
+        // settings button (top-right)
+        this.settingsBtn = this.add
+            .image(0, 0, "settings")
+            .setOrigin(0.5)
+            .setScale(0.9)
+            .setInteractive({ useHandCursor: true });
+
+        Utils.AlignTopRight(this.settingsBtn, this.bgAlignZone, -5, 0);
+        Utils.MakeButton(this, this.settingsBtn, () => {
+            Utils.openSettings(this);
         });
     }
 
