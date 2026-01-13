@@ -38,16 +38,14 @@ export class MainMenu extends Scene {
 
         // settings button (top-right)
         this.settingsBtn = this.add
-            .image(x + 450, y - 270, "settings")
+            .image(0, 0, "settings")
             .setOrigin(0.5)
             .setScale(0.9)
             .setInteractive({ useHandCursor: true });
 
-        Utils.AlignTopRight(this.settingsBtn, this.background, -20, -20);
+        Utils.AlignTopRight(this.settingsBtn, this.background, -20, -10);
         Utils.MakeButton(this, this.settingsBtn, () => {
-            this.scene.launch("SettingsMenu");
-            this.scene.sendToBack();
-            this.scene.pause();
+            Utils.openSettings(this);
         });
 
         const characterCointainer = this.add.container();
@@ -81,7 +79,7 @@ export class MainMenu extends Scene {
         this.updateProgress(completedLevels);
 
         //? debug start bas scene directly
-        this.scene.start("KayakScene");
+        // this.scene.start("KayakScene");
     } // end
 
     private createMenuButtons(x: number, y: number) {

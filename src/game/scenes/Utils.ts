@@ -166,4 +166,10 @@ export class Utils {
         });
         camera.fadeOut(fadeOutDuration, color.r, color.g, color.b);
     }
+
+    static openSettings(scene: Phaser.Scene) {
+        scene.scene.launch("SettingsMenu", { from: scene.scene.key });
+        scene.scene.pause();
+    }
+
 }

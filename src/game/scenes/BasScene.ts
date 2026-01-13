@@ -6,6 +6,7 @@ import { LevelData } from "../LevelData";
 export class BasScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
+    settingsBtn: Phaser.GameObjects.Image;
     wordRects: Phaser.GameObjects.Image;
     bgAlignZone: Phaser.GameObjects.Zone;
     busTrack: Phaser.GameObjects.Image;
