@@ -5,9 +5,14 @@ export class SettingsScene extends Phaser.Scene {
     private soundOn: boolean = true;
     private musicOn: boolean = true;
     private voiceover: boolean = false;
+    fromScene!: string;
 
     constructor() {
         super({ key: "SettingsMenu" });
+    }
+
+    init(data: { from: string }) {
+        this.fromScene = data.from;
     }
 
     create() {
@@ -50,9 +55,11 @@ export class SettingsScene extends Phaser.Scene {
         Phaser.Display.Align.In.BottomCenter(closeBtn, panelBg, 0, 10);
 
         Utils.MakeButton(this, closeBtn, () => {
-            this.scene.launch('MainMenu');
-            this.scene.sendToBack();
-            this.scene.pause();
+            this.scene.stop(); // 🔥 stop ONLY SettingsMenu
+            this.scene.resume(this.fromScene); // resume previous scene
+            // this.scene.launch('MainMenu');
+            // this.scene.sendToBack();
+            // this.scene.pause();
         });
 
         checkMark.setVisible(this.musicOn);
