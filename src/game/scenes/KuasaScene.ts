@@ -7,6 +7,7 @@ export class KuasaScene extends Scene {
     background: Phaser.GameObjects.Image;
     bgAlignZone: Phaser.GameObjects.Zone;
     backButton: Phaser.GameObjects.Image;
+    settingsBtn: Phaser.GameObjects.Image;
 
     lives: {
         container: Phaser.GameObjects.Container;
