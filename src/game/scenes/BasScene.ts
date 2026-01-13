@@ -110,6 +110,7 @@ export class BasScene extends Scene {
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
+        this.handleSettings();
         this.createHUD();
     }
 
@@ -117,7 +118,7 @@ export class BasScene extends Scene {
 
         this.scoreBg = this.add.image(0, 0, 'score').setOrigin(0.5).setDepth(12).setScale(0.9);
         this.scoreText = this.add.text(0, 0, '0000', Utils.fontStyle).setOrigin(0.5).setDepth(13);
-        Phaser.Display.Align.In.TopRight(this.scoreBg, this.bgAlignZone);
+        Phaser.Display.Align.In.TopRight(this.scoreBg, this.bgAlignZone, -80);
         Phaser.Display.Align.In.RightCenter(this.scoreText, this.scoreBg, -70, 0);
 
         // HUD elements can be created here
@@ -493,6 +494,22 @@ export class BasScene extends Scene {
     onLevelComplete() {
         const completed = this.registry.get('completedLevels') || 0;
         this.registry.set('completedLevels', completed + 1);
+    }
+
+    handleSettings() {
+        // settings button (top-right)
+        this.settingsBtn = this.add
+            .image(0, 0, "settings")
+            .setOrigin(0.5)
+            .setScale(0.9)
+            .setName('settingsButton')
+            .setDepth(100)
+            .setInteractive({ useHandCursor: true });
+
+        Utils.AlignTopRight(this.settingsBtn, this.bgAlignZone, -5, 0);
+        Utils.MakeButton(this, this.settingsBtn, () => {
+            Utils.openSettings(this);
+        });
     }
 
 

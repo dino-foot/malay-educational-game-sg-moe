@@ -463,6 +463,8 @@ export class KaysakScene extends Scene {
             .image(0, 0, "settings")
             .setOrigin(0.5)
             .setScale(0.9)
+            .setName('settingsButton')
+            .setDepth(100)
             .setInteractive({ useHandCursor: true });
 
         Utils.AlignTopRight(this.settingsBtn, this.bgAlignZone, -5, 0);
