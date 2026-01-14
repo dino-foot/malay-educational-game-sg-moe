@@ -68,7 +68,7 @@ export class KuasaScene extends Scene {
         this.bgAlignZone = this.add.zone(x, y, width, height);
         const background = this.add.image(x, y, "train_bg").setOrigin(0.5);
         const levelTitleBg = this.add.image(0, 0, "kuasa-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.9);
-        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, -10);
+        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 0);
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
