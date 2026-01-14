@@ -2,6 +2,7 @@ import { Display, GameObjects, Scene } from "phaser";
 import { Utils } from "./Utils";
 import { KUASA_LEVEL_DATA } from "../KuasaLevelData";
 import { SoundUtil } from "./SoundUtil";
+import { TrainLevelData } from "../LevelData";
 
 export class KuasaScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -47,6 +48,8 @@ export class KuasaScene extends Scene {
     track1: GameObjects.Image;
     track2: GameObjects.Image;
     wordsContainersList: GameObjects.Container[] = [];
+    randomizedLevels: TrainLevelData[] = [];
+    randomizeQuestion = false;
 
     constructor() {
         super("KuasaScene");
@@ -59,6 +62,8 @@ export class KuasaScene extends Scene {
         this.currentLevelIndex = 0;
         this.speedIncreasePerLevel = 0.1;
         this.wordsContainersList = [];
+        this.randomizeQuestion = true;
+        this.randomizedLevels = [];
         this.resetLives();
     }
 
@@ -71,6 +76,13 @@ export class KuasaScene extends Scene {
         Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 0);
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
+
+        //? randomized level data
+        if (this.randomizeQuestion) {
+            this.randomizedLevels = Phaser.Utils.Array.Shuffle([...KUASA_LEVEL_DATA]);
+        } else {
+            this.randomizedLevels = KUASA_LEVEL_DATA;
+        }
 
         this.handleSettings();
         this.createHUD();
@@ -115,9 +127,9 @@ export class KuasaScene extends Scene {
     private setupLevel(levelIndex = 0) {
         // setup question
         const showHintWord = Phaser.Math.Between(0, 1) === 0;
-        const questionTextValue = showHintWord ? KUASA_LEVEL_DATA[levelIndex].hintWord : KUASA_LEVEL_DATA[levelIndex].hintSentence;
+        const questionTextValue = showHintWord ? this.randomizedLevels[levelIndex].hintWord : this.randomizedLevels[levelIndex].hintSentence;
 
-        this.questionText = this.add.text(0, 0, KUASA_LEVEL_DATA[levelIndex].hintSentence, this.getextStyle()).setOrigin(0, 0).setDepth(13);
+        this.questionText = this.add.text(0, 0, this.randomizedLevels[levelIndex].hintSentence, this.getextStyle()).setOrigin(0, 0).setDepth(13);
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
         //? setup train
@@ -144,7 +156,7 @@ export class KuasaScene extends Scene {
     cleanupLevel() {
         console.log('cleanup level ', this.currentLevelIndex);
 
-        if (this.currentLevelIndex >= KUASA_LEVEL_DATA.length) {
+        if (this.currentLevelIndex >= this.randomizedLevels.length) {
             console.log("Reached end of the level set!");
             this.onLevelComplete(); // level complete callback
             this.scene.launch("GameOver", {
@@ -156,13 +168,13 @@ export class KuasaScene extends Scene {
 
         //? update next question
         const showHintWord = Phaser.Math.Between(0, 1) === 0;
-        const questionTextValue = showHintWord ? KUASA_LEVEL_DATA[this.currentLevelIndex].hintWord : KUASA_LEVEL_DATA[this.currentLevelIndex].hintSentence;
+        const questionTextValue = showHintWord ? this.randomizedLevels[this.currentLevelIndex].hintWord : this.randomizedLevels[this.currentLevelIndex].hintSentence;
         this.questionText.setText(questionTextValue);
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
         // todo update random answers 
-        let words: string[] = [KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord,
-        ...this.getRandomWrongWords(this.currentLevelIndex, KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord, this.wordsContainersList.length - 1)];
+        let words: string[] = [this.randomizedLevels[this.currentLevelIndex].correctWord,
+        ...this.getRandomWrongWords(this.currentLevelIndex, this.randomizedLevels[this.currentLevelIndex].correctWord, this.wordsContainersList.length - 1)];
 
         console.log('next level words cont >> ', this.wordsContainersList.length);
 
@@ -217,7 +229,7 @@ export class KuasaScene extends Scene {
         offsetX += left.width;
         train.add(left);
 
-        const words: string[] = [KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord, ...this.getRandomWrongWords(this.currentLevelIndex, KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord, midCount)];
+        const words: string[] = [this.randomizedLevels[this.currentLevelIndex].correctWord, ...this.getRandomWrongWords(this.currentLevelIndex, this.randomizedLevels[this.currentLevelIndex].correctWord, midCount)];
 
         //? only for mid train add word card
         for (let i = 0; i < words.length - 1; i++) {
@@ -279,7 +291,7 @@ export class KuasaScene extends Scene {
 
     private handleAnswerSubmit(container: Phaser.GameObjects.Container) {
         const selectedWord = container.getData("word");
-        const correctWord = KUASA_LEVEL_DATA[this.currentLevelIndex].correctWord;
+        const correctWord = this.randomizedLevels[this.currentLevelIndex].correctWord;
 
         console.log('clicked >> ', selectedWord, correctWord);
 
@@ -335,7 +347,7 @@ export class KuasaScene extends Scene {
     }
 
     private getRandomWrongWords(currentIndex: number, correctWord: string, count = 3): string[] {
-        const pool = KUASA_LEVEL_DATA.filter((_, index) => index !== currentIndex)
+        const pool = this.randomizedLevels.filter((_, index) => index !== currentIndex)
             .map((level) => level.correctWord)
             .filter((word) => word !== correctWord);
         Phaser.Utils.Array.Shuffle(pool);
