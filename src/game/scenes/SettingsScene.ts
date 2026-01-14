@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Utils } from "./Utils";
+import { SoundUtil } from "./SoundUtil";
 
 export class SettingsScene extends Phaser.Scene {
     private soundOn: boolean = true;
@@ -16,6 +17,12 @@ export class SettingsScene extends Phaser.Scene {
     }
 
     create() {
+        SoundUtil.init(this);
+
+        // sync UI with global state
+        this.musicOn = SoundUtil.musicEnabled;
+        this.soundOn = SoundUtil.sfxEnabled;
+
         const { x, y } = Utils.CenterXY(this.game);
 
         const darkBg = this.add.graphics().fillStyle(0x000000, 0.7).fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
@@ -55,7 +62,8 @@ export class SettingsScene extends Phaser.Scene {
         Phaser.Display.Align.In.BottomCenter(closeBtn, panelBg, 0, 10);
 
         Utils.MakeButton(this, closeBtn, () => {
-            this.scene.stop(); // 🔥 stop ONLY SettingsMenu
+            SoundUtil.playClick();
+            this.scene.stop(); //  stop ONLY SettingsMenu
             this.scene.resume(this.fromScene); // resume previous scene
             // this.scene.launch('MainMenu');
             // this.scene.sendToBack();
@@ -66,25 +74,33 @@ export class SettingsScene extends Phaser.Scene {
         checkMark1.setVisible(this.soundOn);
         checkMark2.setVisible(this.voiceover);
 
-        music.on('pointerdown', () => {
-            this.musicOn = this.toggleOption(
-                this.musicOn,
-                checkMark,
-                "Music"
-            );
+        checkMark.setVisible(this.musicOn);
+        checkMark1.setVisible(this.soundOn);
 
-            // TODO: Hook real music mute/unmute
-            // this.sound.mute = !this.musicOn;
+        music.on('pointerdown', () => {
+            // this.musicOn = this.toggleOption(
+            //     this.musicOn,
+            //     checkMark,
+            //     "Music"
+            // );
+
+            this.musicOn = this.toggleOption(this.musicOn, checkMark, "Music");
+            SoundUtil.setMusicEnabled(this.musicOn);
+
+            // resume music if turned ON
+            if (this.musicOn) {
+                SoundUtil.playBg('mainMenuMusic');
+            }
         });
 
         sound.on('pointerdown', () => {
-            this.soundOn = this.toggleOption(
-                this.soundOn,
-                checkMark1,
-                "Sound FX"
-            );
-
-            // TODO: Hook sound FX enable/disable
+            // this.soundOn = this.toggleOption(
+            //     this.soundOn,
+            //     checkMark1,
+            //     "Sound FX"
+            // );
+            this.soundOn = this.toggleOption(this.soundOn, checkMark1, "Sound FX");
+            SoundUtil.setSfxEnabled(this.soundOn);
         });
 
 

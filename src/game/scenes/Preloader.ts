@@ -36,6 +36,20 @@ export class Preloader extends Scene {
         this.load.image('red_light', 'assets/menu/red_light.png');
         this.load.image('yellow_light', 'assets/menu/yellow_light.png');
 
+        // Sounds
+
+        this.load.audio('mainMenuMusic', 'assets/sounds/no-wait-to-you.mp3');
+        this.load.audio('busBgMusic', 'assets/sounds/urban-street-city-music.mp3');
+        this.load.audio('buttonClick', 'assets/sounds/button-click.mp3');
+        this.load.audio('busRollForward', 'assets/sounds/bus-idle-to-drive-off.mp3');
+        this.load.audio('correctAnswer', 'assets/sounds/correct-answer.mp3');
+        this.load.audio('wrongAnswer', 'assets/sounds/wrong-answer.mp3');
+        this.load.audio('kuasaBgMusic', 'assets/sounds/train-to-paris.mp3');
+        this.load.audio('trainPassing', 'assets/sounds/train-passing.mp3');
+
+        this.load.audio('kayakBgMusic', 'assets/sounds/by-the-sea.mp3');
+        this.load.audio('paddleBoat', 'assets/sounds/paddle-boat-on-waterway.mp3');
+        // this.load.audio('menuSelectButton', 'assets/sounds/menu-select-button.mp3');
         //  Load the assets for the game - Replace with your own assets
         // this.load.setPath('assets');
 
@@ -163,6 +177,8 @@ export class Preloader extends Scene {
         gameoverImgKeys.forEach(key => {
             this.load.image(key, `assets/gameover/${key}.png`);
         });
+
+
 
     } // end 
 

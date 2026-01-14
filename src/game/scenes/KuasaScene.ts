@@ -1,6 +1,7 @@
 import { Display, GameObjects, Scene } from "phaser";
 import { Utils } from "./Utils";
 import { KUASA_LEVEL_DATA } from "../KuasaLevelData";
+import { SoundUtil } from "./SoundUtil";
 
 export class KuasaScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -85,6 +86,7 @@ export class KuasaScene extends Scene {
         this.backButton = this.add.image(50, 50, "back").setOrigin(0.5).setScale(0.7).setDepth(10).setInteractive({ useHandCursor: true });
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
+            SoundUtil.playClick();
             this.scene.start("MainMenu");
         });
 

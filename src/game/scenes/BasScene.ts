@@ -2,6 +2,7 @@ import { Display, Scene } from "phaser";
 import { Utils } from "./Utils";
 import { BUS_LEVELS_DATA } from "../BusLevelData";
 import { LevelData } from "../LevelData";
+import { SoundUtil } from "./SoundUtil";
 
 export class BasScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -127,6 +128,7 @@ export class BasScene extends Scene {
 
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
+            SoundUtil.playClick();
             this.scene.start('MainMenu');
         });
 

@@ -3,6 +3,7 @@ import { Utils } from "./Utils";
 import { KAYAK_LEVEL_DATA } from "../KayakLevelData";
 import { KayakLevelData } from "../LevelData";
 import { ScoreFeedbackUtil } from "./ScoreFeedbackUtil";
+import { SoundUtil } from "./SoundUtil";
 
 export class KaysakScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -121,6 +122,7 @@ export class KaysakScene extends Scene {
         this.backButton = this.add.image(50, 50, "back").setOrigin(0.5).setScale(0.7).setDepth(10).setInteractive({ useHandCursor: true });
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
+            SoundUtil.playClick();
             this.scene.start("MainMenu");
         });
 

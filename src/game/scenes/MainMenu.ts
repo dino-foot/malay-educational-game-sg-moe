@@ -1,5 +1,6 @@
 import { Scene, GameObjects } from "phaser";
 import { Utils } from "./Utils";
+import { SoundUtil } from "./SoundUtil";
 
 const menuButtons = [
     { key: "bas", scene: "BasScene" },
@@ -27,6 +28,10 @@ export class MainMenu extends Scene {
     create() {
         const { x, y } = this.centerXY;
 
+        SoundUtil.loadSettings();
+        SoundUtil.init(this);
+        SoundUtil.playBg('mainMenuMusic');
+
         // Background
         this.background = this.add.image(x, y, "bg").setOrigin(0.5);
         // Logo (top-left style like mockup)
@@ -45,6 +50,7 @@ export class MainMenu extends Scene {
 
         Utils.AlignTopRight(this.settingsBtn, this.background, -20, -10);
         Utils.MakeButton(this, this.settingsBtn, () => {
+            SoundUtil.playClick();
             Utils.openSettings(this);
         });
 
@@ -95,7 +101,8 @@ export class MainMenu extends Scene {
                 .setInteractive({ useHandCursor: true });
 
             Utils.MakeButton(this, button, () => {
-                console.log(`Start scene: ${btn.key}`);
+                // console.log(`Start scene: ${btn.key}`);
+                SoundUtil.playClick();
                 Utils.FadeToScene(this, btn.scene);
                 // this.scene.start(btn.scene);
             });
