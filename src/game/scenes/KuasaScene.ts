@@ -17,7 +17,7 @@ export class KuasaScene extends Scene {
         empty: Phaser.GameObjects.Image;
     }[] = [];
 
-    speedIncreasePerLevel = 0.1;
+    speedIncreasePerLevel = 0.01;
     totalSteps: number = 10;
     currentLives: number = 3;
     baseDuration = 1500; // slowest
@@ -43,13 +43,15 @@ export class KuasaScene extends Scene {
             zones: [],
         };
 
-    train1: GameObjects.Container;
-    train2: GameObjects.Container;
+    bottomTrain: GameObjects.Container;
+    topTrain: GameObjects.Container;
+
     track1: GameObjects.Image;
     track2: GameObjects.Image;
     wordsContainersList: GameObjects.Container[] = [];
     randomizedLevels: TrainLevelData[] = [];
     randomizeQuestion = false;
+    isCrossLevel5 = false;
 
     constructor() {
         super("KuasaScene");
@@ -60,10 +62,11 @@ export class KuasaScene extends Scene {
         this.maxLives = 3;
         this.SCORE = 0;
         this.currentLevelIndex = 0;
-        this.speedIncreasePerLevel = 0.1;
+        this.speedIncreasePerLevel = 0.01;
         this.wordsContainersList = [];
         this.randomizeQuestion = true;
         this.randomizedLevels = [];
+        this.isCrossLevel5 = false;
         this.resetLives();
     }
 
@@ -83,6 +86,14 @@ export class KuasaScene extends Scene {
         } else {
             this.randomizedLevels = KUASA_LEVEL_DATA;
         }
+
+        //! debug level
+        const debugButton = this.add.image(400, 400, 'close-btn').setDepth(1000).setScale(0.5);
+        Utils.MakeButton(this, debugButton, () => {
+            SoundUtil.playClick();
+            this.currentLevelIndex += 1;
+            console.log('level ', this.currentLevelIndex);
+        });
 
         this.handleSettings();
         this.createHUD();
@@ -132,13 +143,6 @@ export class KuasaScene extends Scene {
         this.questionText = this.add.text(0, 0, this.randomizedLevels[levelIndex].hintSentence, this.getextStyle()).setOrigin(0, 0).setDepth(13);
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
-        //? setup train
-        this.train1 = this.createTrain(300, 695, 4).setScale(0.8); // bottom train 3 compartment
-        this.train1.setName("train1");
-
-        // this.train2 = this.createTrain(300, 392, 3).setScale(0.8); // 3 compartments
-        // this.train2.setName("train2");
-
         //? setup track
         this.track1 = this.add.image(0, 0, "train_track").setOrigin(0.5).setDepth(9);
         Phaser.Display.Align.In.Center(this.track1, this.bgAlignZone, 0, 300);
@@ -146,15 +150,32 @@ export class KuasaScene extends Scene {
         this.track2 = this.add.image(0, 0, "train_track").setOrigin(0.5).setDepth(9);
         Phaser.Display.Align.In.Center(this.track2, this.bgAlignZone, 0, 0);
 
-        // train enters from left → right first
-        this.startTrainMovement(this.train1, "right");
+        // this.startTrainSpawners(0);
+        this.spawnBottomTrain();
+        // this.spawnTopTrain();
+    }
 
-        // train enters from right → left first
-        // this.startTrainMovement(this.train2, "right");
+    private startTrainRpeat(delay = 100) {
+        // bottom train always exists
+        this.time.addEvent({
+            delay: Utils.GetTrainSpeedByLevel(this.currentLevelIndex),
+            loop: true,
+            callback: () => {
+                this.spawnBottomTrain();
+            }
+        });
+
+        this.time.addEvent({
+            delay: Utils.GetTrainSpeedByLevel(this.currentLevelIndex),
+            loop: true,
+            callback: () => {
+                this.spawnTopTrain();
+            }
+        });
     }
 
     cleanupLevel() {
-        console.log('cleanup level ', this.currentLevelIndex);
+        console.log("cleanup level ", this.currentLevelIndex);
 
         if (this.currentLevelIndex >= this.randomizedLevels.length) {
             console.log("Reached end of the level set!");
@@ -172,11 +193,13 @@ export class KuasaScene extends Scene {
         this.questionText.setText(questionTextValue);
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
-        // todo update random answers 
-        let words: string[] = [this.randomizedLevels[this.currentLevelIndex].correctWord,
-        ...this.getRandomWrongWords(this.currentLevelIndex, this.randomizedLevels[this.currentLevelIndex].correctWord, this.wordsContainersList.length - 1)];
+        //? update random answers
+        let words: string[] = [
+            this.randomizedLevels[this.currentLevelIndex].correctWord,
+            ...this.getRandomWrongWords(this.currentLevelIndex, this.randomizedLevels[this.currentLevelIndex].correctWord, this.wordsContainersList.length - 1),
+        ];
 
-        console.log('next level words cont >> ', this.wordsContainersList.length);
+        console.log("next level words cont >> ", this.wordsContainersList.length);
 
         words = Phaser.Utils.Array.Shuffle(words);
         // const newWords = ['hello-world'];
@@ -188,16 +211,6 @@ export class KuasaScene extends Scene {
             // optional: re-center after text change
             Phaser.Display.Align.In.Center(text, container.getData("bg"));
         });
-
-        // setup new level data
-        if (this.currentLevelIndex >= 4) {
-            //? spawn second train on opposite direction
-            if (this.train2 == null || this.train2 == undefined) {
-                this.train2 = this.createTrain(0, 392, 3).setScale(0.8); // 3 compartments
-                this.train2.setName("train2");
-                this.startTrainMovement(this.train2, 'left');
-            }
-        }
     }
 
     private createLives() {
@@ -229,7 +242,10 @@ export class KuasaScene extends Scene {
         offsetX += left.width;
         train.add(left);
 
-        const words: string[] = [this.randomizedLevels[this.currentLevelIndex].correctWord, ...this.getRandomWrongWords(this.currentLevelIndex, this.randomizedLevels[this.currentLevelIndex].correctWord, midCount)];
+        const words: string[] = [
+            this.randomizedLevels[this.currentLevelIndex].correctWord,
+            ...this.getRandomWrongWords(this.currentLevelIndex, this.randomizedLevels[this.currentLevelIndex].correctWord, midCount),
+        ];
 
         //? only for mid train add word card
         for (let i = 0; i < words.length - 1; i++) {
@@ -263,37 +279,31 @@ export class KuasaScene extends Scene {
         return train;
     }
 
-    private startTrainMovement(train: Phaser.GameObjects.Container, startDirection: "left" | "right" = "left") {
+    private startTrainOneWay(train: GameObjects.Container, direction: "left" | "right", onComplete?: () => void) {
         const cam = this.cameras.main;
-        const leftOutX = -train.getBounds().width;
-        const rightOutX = cam.width + train.getBounds().width;
-        let direction = startDirection === "left" ? 1 : -1;
-        // set initial position based on start direction
-        train.x = direction === 1 ? leftOutX : rightOutX;
+        const trainWidth = train.getBounds().width;
+        const startX = direction === "left" ? cam.width + trainWidth / 2 : -trainWidth;
+        const endX = direction === "left" ? -trainWidth : cam.width + trainWidth / 2;
+        console.log(endX, startX);
 
-        const move = () => {
-            const targetX = direction === 1 ? rightOutX : leftOutX;
-
-            this.tweens.add({
-                targets: train,
-                x: targetX,
-                duration: this.getTrainDuration(),
-                ease: "Linear",
-                onComplete: () => {
-                    direction *= -1; // flip direction
-                    move();
-                },
-            });
-        };
-
-        move();
+        train.x = startX;
+        this.tweens.add({
+            targets: train,
+            x: endX,
+            duration: Utils.GetTrainSpeedByLevel(this.currentLevelIndex),
+            ease: "Linear",
+            onComplete: () => {
+                train.destroy();
+                onComplete?.();
+            },
+        });
     }
 
     private handleAnswerSubmit(container: Phaser.GameObjects.Container) {
         const selectedWord = container.getData("word");
         const correctWord = this.randomizedLevels[this.currentLevelIndex].correctWord;
 
-        console.log('clicked >> ', selectedWord, correctWord);
+        console.log("clicked >> ", selectedWord, correctWord);
 
         if (selectedWord === correctWord) {
             // ✅ CORRECT ANSWER
@@ -312,20 +322,6 @@ export class KuasaScene extends Scene {
         this.scoreText.setText(this.SCORE.toString());
     }
 
-    private getTrainDuration(): number {
-        const initialDuration = 20000; // 10 seconds (level 0)
-        this.speedIncreasePerLevel = 0.07; // 10%
-        // duration reduces by 10% per level
-        const levelMultiplier = 1 - 4 * this.speedIncreasePerLevel;
-        const duration = initialDuration * levelMultiplier;
-        const finalSpeed = Phaser.Math.Clamp(
-            duration,
-            this.minDuration, // e.g. 400 ms
-            initialDuration
-        );
-        console.log("train final speed ", finalSpeed);
-        return finalSpeed;
-    }
 
     //? on level completed
     onLevelComplete() {
@@ -333,9 +329,32 @@ export class KuasaScene extends Scene {
         this.registry.set("completedLevels", completed + 1);
     }
 
-    private trackObject<T extends Phaser.GameObjects.GameObject>(obj: T, type: keyof typeof this.levelObjects): T {
-        this.levelObjects[type].push(obj as any);
-        return obj;
+    private spawnBottomTrain() {
+        const train = this.createTrain(0, 695, 4).setScale(0.8);
+        train.setName("bottomTrain");
+        this.startTrainOneWay(train, "left", () => {
+            // till level 4 less single train
+            if (this.currentLevelIndex < 5) {
+                this.spawnTopTrain();
+            }
+            else if (this.currentLevelIndex >= 5 && this.isCrossLevel5 == false) {
+                this.startTrainRpeat();
+                this.isCrossLevel5 = true;
+            }
+        });
+    }
+
+    private spawnTopTrain() {
+        const train = this.createTrain(0, 392, 3).setScale(0.8);
+        train.setName("topTrain");
+        this.startTrainOneWay(train, "right", () => {
+            if (this.currentLevelIndex < 5) {
+                this.spawnBottomTrain();
+            } else if (this.currentLevelIndex >= 5 && this.isCrossLevel5 == false) {
+                this.startTrainRpeat();
+                this.isCrossLevel5 = true;
+            }
+        });
     }
 
     private resetLives() {
@@ -347,7 +366,8 @@ export class KuasaScene extends Scene {
     }
 
     private getRandomWrongWords(currentIndex: number, correctWord: string, count = 3): string[] {
-        const pool = this.randomizedLevels.filter((_, index) => index !== currentIndex)
+        const pool = this.randomizedLevels
+            .filter((_, index) => index !== currentIndex)
             .map((level) => level.correctWord)
             .filter((word) => word !== correctWord);
         Phaser.Utils.Array.Shuffle(pool);
@@ -377,13 +397,7 @@ export class KuasaScene extends Scene {
 
     handleSettings() {
         // settings button (top-right)
-        this.settingsBtn = this.add
-            .image(0, 0, "settings")
-            .setOrigin(0.5)
-            .setScale(0.9)
-            .setDepth(100)
-            .setInteractive({ useHandCursor: true })
-            .setName('settingsButton');
+        this.settingsBtn = this.add.image(0, 0, "settings").setOrigin(0.5).setScale(0.9).setDepth(100).setInteractive({ useHandCursor: true }).setName("settingsButton");
 
         Utils.AlignTopRight(this.settingsBtn, this.bgAlignZone, -5, 0);
         Utils.MakeButton(this, this.settingsBtn, () => {
