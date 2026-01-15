@@ -182,7 +182,7 @@ export class Utils {
 
         // optional randomization (±8%)
         if (randomize) {
-            const variance = speed * 0.08;
+            const variance = speed * 0.07;
             speed += Phaser.Math.Between(-variance, variance);
         }
 

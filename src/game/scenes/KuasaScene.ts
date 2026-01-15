@@ -290,7 +290,7 @@ export class KuasaScene extends Scene {
         this.tweens.add({
             targets: train,
             x: endX,
-            duration: Utils.GetTrainSpeedByLevel(this.currentLevelIndex),
+            duration: Utils.GetTrainSpeedByLevel(this.currentLevelIndex, (this.currentLevelIndex >= 5) ? true : false),
             ease: "Linear",
             onComplete: () => {
                 train.destroy();
