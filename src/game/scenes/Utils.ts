@@ -172,4 +172,15 @@ export class Utils {
         scene.scene.pause();
     }
 
+    static GetTrainSpeedByLevel(levelIndex) {
+        const BASE_SPEED = 15500;   // level 1
+        const SPEED_DECREMENT = 1500;
+        const MIN_SPEED = 4000;     // safety clamp
+        // levelIndex starts from 1
+        const speed = BASE_SPEED - ((levelIndex) * SPEED_DECREMENT);
+        const finalspeed = Math.max(speed, MIN_SPEED);
+        console.log('final speed ', finalspeed);
+        return finalspeed;
+    }
+
 }
