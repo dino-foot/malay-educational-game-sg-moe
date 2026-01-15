@@ -176,7 +176,6 @@ export class Utils {
         const BASE_SPEED = 15500;   // level 1
         const SPEED_DECREMENT = 1500;
         const MIN_SPEED = 4000;     // safety clamp
-
         // base speed calculation
         let speed = BASE_SPEED - (levelIndex * SPEED_DECREMENT);
 
@@ -188,7 +187,6 @@ export class Utils {
 
         const finalSpeed = Math.max(speed, MIN_SPEED);
         console.log("final speed", finalSpeed);
-
         return finalSpeed;
     }
 
