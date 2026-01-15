@@ -133,7 +133,7 @@ export class KuasaScene extends Scene {
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
         //? setup train
-        this.train1 = this.createTrain(300, 695, 4).setScale(0.8); // 3 compartments
+        this.train1 = this.createTrain(300, 695, 4).setScale(0.8); // bottom train 3 compartment
         this.train1.setName("train1");
 
         // this.train2 = this.createTrain(300, 392, 3).setScale(0.8); // 3 compartments
@@ -147,7 +147,7 @@ export class KuasaScene extends Scene {
         Phaser.Display.Align.In.Center(this.track2, this.bgAlignZone, 0, 0);
 
         // train enters from left → right first
-        this.startTrainMovement(this.train1, "left");
+        this.startTrainMovement(this.train1, "right");
 
         // train enters from right → left first
         // this.startTrainMovement(this.train2, "right");
@@ -190,12 +190,12 @@ export class KuasaScene extends Scene {
         });
 
         // setup new level data
-        if (this.currentLevelIndex >= 5) {
+        if (this.currentLevelIndex >= 4) {
             //? spawn second train on opposite direction
             if (this.train2 == null || this.train2 == undefined) {
                 this.train2 = this.createTrain(0, 392, 3).setScale(0.8); // 3 compartments
                 this.train2.setName("train2");
-                this.startTrainMovement(this.train2, 'right');
+                this.startTrainMovement(this.train2, 'left');
             }
         }
     }
