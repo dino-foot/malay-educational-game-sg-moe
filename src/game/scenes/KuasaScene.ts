@@ -52,6 +52,7 @@ export class KuasaScene extends Scene {
     randomizedLevels: TrainLevelData[] = [];
     randomizeQuestion = false;
     isCrossLevel5 = false;
+    wordsList = [];
 
     constructor() {
         super("KuasaScene");
@@ -67,6 +68,7 @@ export class KuasaScene extends Scene {
         this.randomizeQuestion = true;
         this.randomizedLevels = [];
         this.isCrossLevel5 = false;
+        this.wordsList = [];
         this.resetLives();
     }
 
@@ -151,6 +153,7 @@ export class KuasaScene extends Scene {
         Phaser.Display.Align.In.Center(this.track2, this.bgAlignZone, 0, 0);
 
         // this.startTrainSpawners(0);
+        this.wordsList = this.getLevelWords(4);
         this.spawnBottomTrain();
         // this.spawnTopTrain();
     }
@@ -356,6 +359,26 @@ export class KuasaScene extends Scene {
             }
         });
     }
+
+    private getLevelWords(totalCount = 4): string[] {
+        return [
+            this.randomizedLevels[this.currentLevelIndex].correctWord,
+            ...this.getRandomWrongWords(
+                this.currentLevelIndex,
+                this.randomizedLevels[this.currentLevelIndex].correctWord,
+                totalCount - 1
+            ),
+        ];
+    }
+
+    private getSplitWords() {
+        const words = Phaser.Utils.Array.Shuffle(this.getLevelWords(4));
+        return {
+            bottom: words.slice(0, 2),
+            top: words.slice(2, 4),
+        };
+    }
+
 
     private resetLives() {
         this.currentLives = this.maxLives;
