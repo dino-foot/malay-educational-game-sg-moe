@@ -186,22 +186,23 @@ export class BasScene extends Scene {
         const question = this.textBoxContainer.getByName("question") as Phaser.GameObjects.Text;
 
         // Case 1: No image → always show text
-        if (imageKey === null) {
+        if (levelData.id === 1 || levelData.id === 10) {
             question.setText(hintSentence);
             this.textBoxContainer.setVisible(true);
-        }
-
-        // Case 2: Image exists → random choice
-        const showImage = Phaser.Math.Between(0, 1) === 1;
-        if (showImage) {
-            this.hintImg?.destroy(); // cleanup old image if any
-            this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setDepth(11);
-            Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
-            this.imageBoxContainer.setVisible(true);
         }
         else {
-            question.setText(hintSentence);
-            this.textBoxContainer.setVisible(true);
+            // Case 2: Image exists → random choice
+            const showImage = Phaser.Math.Between(0, 1) === 1;
+            if (showImage) {
+                this.hintImg?.destroy(); // cleanup old image if any
+                this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setDepth(11);
+                Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
+                this.imageBoxContainer.setVisible(true);
+            }
+            else {
+                question.setText(hintSentence);
+                this.textBoxContainer.setVisible(true);
+            }
         }
 
         // this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setScale(1).setDepth(11);
