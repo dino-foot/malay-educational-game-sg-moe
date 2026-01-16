@@ -1,4 +1,4 @@
-import { Display, Scene } from "phaser";
+import { Display, GameObjects, Scene } from "phaser";
 import { Utils } from "./Utils";
 import { BUS_LEVELS_DATA } from "../BusLevelData";
 import { LevelData } from "../LevelData";
@@ -6,16 +6,17 @@ import { SoundUtil } from "./SoundUtil";
 
 export class BasScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
-    settingsBtn: Phaser.GameObjects.Image;
-    wordRects: Phaser.GameObjects.Image;
-    bgAlignZone: Phaser.GameObjects.Zone;
-    busTrack: Phaser.GameObjects.Image;
-    answerSubmitBtn: Phaser.GameObjects.Image;
-    backButton: Phaser.GameObjects.Image;
-    questionContainer: Phaser.GameObjects.Container;
-    wordsZone: Phaser.GameObjects.Zone; // scatter words here
-    road: Phaser.GameObjects.Image;
+    background: GameObjects.Image;
+    settingsBtn: GameObjects.Image;
+    wordRects: GameObjects.Image;
+    bgAlignZone: GameObjects.Zone;
+    busTrack: GameObjects.Image;
+    answerSubmitBtn: GameObjects.Image;
+    backButton: GameObjects.Image;
+    imageBoxContainer: GameObjects.Container;
+    textBoxContainer: GameObjects.Container;
+    wordsZone: GameObjects.Zone; // scatter words here
+    road: GameObjects.Image;
 
     roadMarksList: {
         container: Phaser.GameObjects.Container;
@@ -55,6 +56,10 @@ export class BasScene extends Scene {
     }
 
     init() {
+        this.initData();
+    }
+
+    private initData() {
         this.cameras.main.setBackgroundColor('white');
         this.SCORE = 0;
         this.maxLevels = 3;
@@ -88,26 +93,30 @@ export class BasScene extends Scene {
             .setOrigin(0.5)
             .setScale(1);
 
-        //? question box container
-        this.questionContainer = this.add.container(0, 0).setDepth(10);
-        Phaser.Display.Align.In.LeftCenter(this.questionContainer, this.road, -180, 20);
+        //? image box container
+        this.imageBoxContainer = this.add.container(0, 0).setDepth(10);
+        Phaser.Display.Align.In.LeftCenter(this.imageBoxContainer, this.road, -180, 20);
+        const imageBox = this.add.image(0, 0, "image_box").setOrigin(0.5).setScale(0.9);
+        this.imageBoxContainer.add(imageBox);
 
-        const imageBox = this.add.image(0, 0, "question_box").setOrigin(0.5).setScale(0.9);
-        this.questionContainer.add(imageBox);
+        //? text box container
+        this.textBoxContainer = this.add.container(0, 0).setDepth(11).setName('text-container');
+        const textBox = this.add.image(0, 0, "text-box").setOrigin(0.5).setScale(0.9);
+        const text = this.add.text(0, 0, BUS_LEVELS_DATA[9].hintSentence, this.getQuestionTxtStyle(textBox)).setOrigin(0.5);
+        this.textBoxContainer.add(textBox);
+        this.textBoxContainer.add(text)
+        Phaser.Display.Align.In.TopCenter(this.textBoxContainer, this.bgAlignZone, 0, -240);
+        // Phaser.Display.Align.In.Center(this.textBoxContainer, this.bgAlignZone, 0, -240);
 
-        this.busTrack = this.add
-            .image(x, y - 110, "small_road")
-            .setOrigin(0.5)
-            .setDepth(2)
-            .setDisplaySize(width, 239);
+        this.busTrack = this.add.image(x, y - 110, "small_road").setOrigin(0.5).setDepth(2).setDisplaySize(width, 239);
 
         const cityScape = this.add.image(x, y, "upper-bg").setOrigin(0.5).setDisplaySize(width, 401).setDepth(1);
         Utils.AlignTopCenter(cityScape, this.bgAlignZone, 0, 80);
         const sun = this.add.image(0, 0, "sun").setOrigin(0.5).setDepth(2).setScale(1);
         Utils.AlignTopRight(sun, this.bgAlignZone, -200, -50);
 
-        const levelTitleBg = this.add.image(0, 0, "bus-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.9);
-        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, -10);
+        const levelTitleBg = this.add.image(0, 0, "bus-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.8);
+        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 0);
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
@@ -165,7 +174,7 @@ export class BasScene extends Scene {
         const imageKey = levelData.imageKey;
 
         this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setScale(1).setDepth(11);
-        Phaser.Display.Align.In.Center(this.hintImg, this.questionContainer);
+        Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
 
         let spacing = this.getWordScaleConfig(wordLength).spacing;
         const scale = this.getWordScaleConfig(wordLength).slotScale;
@@ -512,6 +521,19 @@ export class BasScene extends Scene {
         Utils.MakeButton(this, this.settingsBtn, () => {
             Utils.openSettings(this);
         });
+    }
+
+    private getQuestionTxtStyle(imageToBoundIn) {
+        return {
+            fontSize: "28px",
+            color: "#000",
+            fontFamily: "nunito",
+            fontStyle: "bold",
+            align: "center",
+            wordWrap: {
+                width: imageToBoundIn.getBounds().width,
+            },
+        };
     }
 
 
