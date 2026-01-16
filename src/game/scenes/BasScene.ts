@@ -64,7 +64,7 @@ export class BasScene extends Scene {
         this.SCORE = 0;
         this.maxLevels = 3;
         this.currentStepIndex = 1;
-        this.levelDataIndex = 1;
+        this.levelDataIndex = 0;
         this.currentLives = 3;
         this.maxLives = 3;
         this.randomizeQuestion = true;
@@ -83,6 +83,8 @@ export class BasScene extends Scene {
             this.randomizedLevels = BUS_LEVELS_DATA;
         }
 
+        console.log(this.randomizedLevels)
+
         this.bgAlignZone = this.add.zone(x, y, width, height);
         // Word Rects
         this.wordRects = this.add.image(x, y, "rect_bus").setOrigin(0.5).setScale(1);
@@ -98,15 +100,17 @@ export class BasScene extends Scene {
         Phaser.Display.Align.In.LeftCenter(this.imageBoxContainer, this.road, -180, 20);
         const imageBox = this.add.image(0, 0, "image_box").setOrigin(0.5).setScale(0.9);
         this.imageBoxContainer.add(imageBox);
+        this.imageBoxContainer.setVisible(false); // disable by default
+
 
         //? text box container
         this.textBoxContainer = this.add.container(0, 0).setDepth(11).setName('text-container');
         const textBox = this.add.image(0, 0, "text-box").setOrigin(0.5).setScale(0.9);
-        const text = this.add.text(0, 0, BUS_LEVELS_DATA[9].hintSentence, this.getQuestionTxtStyle(textBox)).setOrigin(0.5);
+        const text = this.add.text(0, 0, BUS_LEVELS_DATA[9].hintSentence, this.getQuestionTxtStyle(textBox)).setOrigin(0.5).setName('question');
         this.textBoxContainer.add(textBox);
         this.textBoxContainer.add(text)
         Phaser.Display.Align.In.TopCenter(this.textBoxContainer, this.bgAlignZone, 0, -240);
-        // Phaser.Display.Align.In.Center(this.textBoxContainer, this.bgAlignZone, 0, -240);
+        this.textBoxContainer.setVisible(false); // disable by default
 
         this.busTrack = this.add.image(x, y - 110, "small_road").setOrigin(0.5).setDepth(2).setDisplaySize(width, 239);
 
@@ -162,7 +166,6 @@ export class BasScene extends Scene {
         this.bus = this.add.image(0, 0, "bus").setOrigin(0.5).setScale(1).setDepth(12);
         Phaser.Display.Align.In.LeftCenter(this.bus, this.busTrack, -200, 40);
 
-
         this.setupGameplay();
     }
 
@@ -173,8 +176,36 @@ export class BasScene extends Scene {
         const hintSentence = levelData.hintSentence;
         const imageKey = levelData.imageKey;
 
-        this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setScale(1).setDepth(11);
-        Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
+        // Reset UI
+        this.textBoxContainer.setVisible(false);
+        this.imageBoxContainer.setVisible(false);
+
+        // todo image or question 
+        // todo if imgkey = null show question
+        // Get question text object once
+        const question = this.textBoxContainer.getByName("question") as Phaser.GameObjects.Text;
+
+        // Case 1: No image → always show text
+        if (imageKey === null) {
+            question.setText(hintSentence);
+            this.textBoxContainer.setVisible(true);
+        }
+
+        // Case 2: Image exists → random choice
+        const showImage = Phaser.Math.Between(0, 1) === 1;
+        if (showImage) {
+            this.hintImg?.destroy(); // cleanup old image if any
+            this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setDepth(11);
+            Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
+            this.imageBoxContainer.setVisible(true);
+        }
+        else {
+            question.setText(hintSentence);
+            this.textBoxContainer.setVisible(true);
+        }
+
+        // this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setScale(1).setDepth(11);
+        // Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
 
         let spacing = this.getWordScaleConfig(wordLength).spacing;
         const scale = this.getWordScaleConfig(wordLength).slotScale;
