@@ -180,8 +180,8 @@ export class BasScene extends Scene {
         this.textBoxContainer.setVisible(false);
         this.imageBoxContainer.setVisible(false);
 
-        // todo image or question 
-        // todo if imgkey = null show question
+        // image or question 
+        // if imgkey = null show question
         // Get question text object once
         const question = this.textBoxContainer.getByName("question") as Phaser.GameObjects.Text;
 
@@ -438,7 +438,8 @@ export class BasScene extends Scene {
         if (wrongAttempt) {
             //? wrong answer minue point
             this.SCORE -= Utils.wrongAnswerPoint;
-            this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 150);
+            this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
+            this.scoreText.setText(this.SCORE.toString());
 
             this.loseLife();
             this.disableButton(this.answerSubmitBtn);
@@ -524,6 +525,7 @@ export class BasScene extends Scene {
         this.SCORE += Utils.corectAnswerPoint;
         if (addBonus) {
             this.SCORE += Utils.correctAnswerBonus;
+            this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
         }
         this.scoreText.setText(this.SCORE.toString());
         // todo handle wrong answer point for wrong answer
