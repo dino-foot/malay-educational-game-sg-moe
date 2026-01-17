@@ -50,6 +50,7 @@ export class BasScene extends Scene {
     draggableLetters: any[];
     randomizedLevels: LevelData[] = [];
     randomizeQuestion = false;
+    private lifePulseTween?: Phaser.Tweens.Tween;
 
     constructor() {
         super("BasScene");
@@ -511,22 +512,36 @@ export class BasScene extends Scene {
         this.lives = [];
         this.currentLives = this.maxLives;
 
+        let target = null;
+
         for (let i = 0; i < this.maxLives; i++) {
             const container = this.add.container(0, 0).setDepth(10);
-            const fullHeart = this.add.image(0, 0, "heart").setOrigin(0.5).setScale(0.8);
-            const emptyHeart = this.add.image(0, 0, "empty_heart").setOrigin(0.5).setScale(0.8).setVisible(false);
+            const fullHeart = this.add.image(0, 0, "heart").setOrigin(0.5).setScale(1);
+            const emptyHeart = this.add.image(0, 0, "empty_heart").setOrigin(0.5).setScale(1).setVisible(false);
 
             container.setSize(fullHeart.width, fullHeart.height);
             container.add([fullHeart, emptyHeart]);
-            Phaser.Display.Align.In.TopLeft(container, this.bgAlignZone, -100 - i * 60, -25);
+            Phaser.Display.Align.In.TopLeft(container, this.bgAlignZone, -100 - i * 80, -25);
 
             this.lives.push({
                 container,
                 full: fullHeart,
                 empty: emptyHeart,
             });
+            target = fullHeart;
         }
+
+        this.tweens.add({
+            targets: [this.lives[0].container, this.lives[1].container, this.lives[2].container],
+            scale: 1.15,
+            duration: 2000,
+            // repeatDelay: 2000,
+            ease: Phaser.Math.Easing.Elastic.Out,
+            repeat: -1,
+            delay: this.tweens.stagger(500, {})
+        });
     }
+
 
     private loseLife() {
         if (this.currentLives <= 0) {
@@ -534,6 +549,7 @@ export class BasScene extends Scene {
             return;
         }
         SoundUtil.playSfx('wrongAnswer');
+
         this.currentLives--;
         const life = this.lives[this.currentLives];
         life.full.setVisible(false);
