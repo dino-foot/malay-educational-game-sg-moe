@@ -65,7 +65,7 @@ export class BasScene extends Scene {
         this.cameras.main.setBackgroundColor("white");
         this.SCORE = 0;
         this.maxLevels = 3;
-        this.currentStepIndex = 1;
+        this.currentStepIndex = 0;
         this.levelDataIndex = 0;
         this.currentLives = 3;
         this.maxLives = 3;
@@ -113,7 +113,7 @@ export class BasScene extends Scene {
         const text = this.add.text(0, 0, BUS_LEVELS_DATA[9].hintSentence, this.getQuestionTxtStyle(textBox)).setOrigin(0.5).setName("question");
         this.textBoxContainer.add(textBox);
         this.textBoxContainer.add(text);
-        Phaser.Display.Align.In.TopCenter(this.textBoxContainer, this.bgAlignZone, 0, -240);
+        Phaser.Display.Align.In.TopCenter(this.textBoxContainer, this.bgAlignZone, 0, -230);
         this.textBoxContainer.setVisible(false); // disable by default
 
         this.busTrack = this.add
@@ -173,10 +173,20 @@ export class BasScene extends Scene {
         this.bus = this.add.image(0, 0, "bus").setOrigin(0.5).setScale(1).setDepth(12);
         Phaser.Display.Align.In.LeftCenter(this.bus, this.busTrack, -200, 40);
 
+        this.input.on("drag", this.onDragLetter, this);
+        this.input.on("dragend", this.onDragEndLetter, this);
+
         this.setupGameplay();
+
     }
 
     setupGameplay() {
+
+        if (this.levelDataIndex >= this.randomizedLevels.length) {
+            console.log('setupGameplay >> ', this.levelDataIndex)
+            return;
+        }
+
         const levelData = this.randomizedLevels[this.levelDataIndex];
         const correctWord = levelData.correctWord;
         const wordLength = correctWord.length;
@@ -186,6 +196,7 @@ export class BasScene extends Scene {
         // Reset UI
         this.textBoxContainer.setVisible(false);
         this.imageBoxContainer.setVisible(false);
+        this.hintImg?.setVisible(false);
 
         // image or question
         // if imgkey = null show question
@@ -248,14 +259,20 @@ export class BasScene extends Scene {
         // this.OnEachStepComplete();
         // this.time.addEvent({
         //     delay: 10000,
-        //     loop: true,
+        //     repeat: 10,
         //     callback: () => this.OnEachStepComplete()
+        // });
+        // this.scene.launch("GameOver", {
+        //     currentScore: this.SCORE,
         // });
     }
 
     private OnEachStepComplete() {
         // stop if reached end
         if (this.currentStepIndex >= this.roadMarksList.length) {
+            // this.scene.launch("GameOver", {
+            //     currentScore: this.SCORE,
+            // });
             return;
         }
 
@@ -276,24 +293,30 @@ export class BasScene extends Scene {
             },
             onComplete: () => {
                 // show cheked flag
-                this.roadMarksList[this.currentStepIndex - 1].mark.setVisible(false);
-                this.roadMarksList[this.currentStepIndex - 1].tick.setVisible(true);
-                this.roadMarksList[this.currentStepIndex - 1].flag.setVisible(true);
+                this.roadMarksList[this.currentStepIndex].mark.setVisible(false);
+                this.roadMarksList[this.currentStepIndex].tick.setVisible(true);
+                this.roadMarksList[this.currentStepIndex].flag.setVisible(true);
 
-                this.currentStepIndex++;
-                if (this.currentStepIndex >= this.roadMarksList.length) {
-                    //? load next scene
-                    console.log("level completed");
-                    this.onLevelComplete();
-                    Utils.FadeToScene(this, "MainMenu");
-                } else {
-                    // correct answer increment score
-                    this.incrementScore();
-                    this.time.delayedCall(2, () => this.cleanupLevel());
-                    // this.cleanupLevel();
-                }
+                // this.currentStepIndex++;
+                // if (this.currentStepIndex >= this.randomizedLevels.length) {
+                //     //? load next scene
+                //     console.log("level completed ", this.levelDataIndex);
+                //     this.onLevelComplete();
+                // } else {
+                //     // correct answer increment score
+                //     this.incrementScore();
+                //     this.time.delayedCall(2, () => this.cleanupLevel());
+                //     // this.cleanupLevel();
+                // }
+
+                console.log("level completed ", this.levelDataIndex);
+                this.onLevelComplete()
+                this.incrementScore();
+                this.time.delayedCall(2, () => this.cleanupLevel());
+                // this.cleanupLevel();
+
                 SoundUtil.stopSfx('busRollForward');
-                console.log(`Level ${this.currentLevel} | Bus speed duration: ${Math.round(duration)}ms`);
+                // console.log(`Level ${this.currentLevel} | Bus speed duration: ${Math.round(duration)}ms`);
             },
         });
     }
@@ -309,6 +332,14 @@ export class BasScene extends Scene {
 
         if (this.levelDataIndex < BUS_LEVELS_DATA.length) {
             this.levelDataIndex += 1;
+            this.currentStepIndex += 1;
+        }
+
+        if (this.levelDataIndex == 10) {
+            console.log('cleanup level gameover ', this.levelDataIndex, this.currentStepIndex)
+            this.scene.launch("GameOver", {
+                currentScore: this.SCORE,
+            });
         }
 
         this.setupGameplay();
@@ -358,8 +389,8 @@ export class BasScene extends Scene {
         }
 
         // register drag events ONCE
-        this.input.on("drag", this.onDragLetter, this);
-        this.input.on("dragend", this.onDragEndLetter, this);
+        // this.input.on("drag", this.onDragLetter, this);
+        // this.input.on("dragend", this.onDragEndLetter, this);
         return draggableLetters;
     }
 
@@ -394,9 +425,12 @@ export class BasScene extends Scene {
 
     private checkAllSlotsFilled() {
         const allFilled = this.letterSlots.every((slot) => slot.getData("occupied"));
-        this.answerSubmitBtn.setAlpha(allFilled ? 1 : 0.5);
-        this.answerSubmitBtn.disableInteractive();
-        if (allFilled) this.answerSubmitBtn.setInteractive({ useHandCursor: true });
+        if (allFilled) {
+            this.answerSubmitBtn.setAlpha(1);
+            this.answerSubmitBtn.setInteractive({ useHandCursor: true });
+        } else {
+            this.disableButton(this.answerSubmitBtn);
+        }
     }
 
     private onDragLetter(pointer: Phaser.Input.Pointer, gameObject: GameObjects.Container, dragX: number, dragY: number) {
