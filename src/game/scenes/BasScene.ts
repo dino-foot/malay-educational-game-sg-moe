@@ -3,6 +3,7 @@ import { Utils } from "./Utils";
 import { BUS_LEVELS_DATA } from "../BusLevelData";
 import { LevelData } from "../LevelData";
 import { SoundUtil } from "./SoundUtil";
+import { ScoreFeedbackUtil } from "./ScoreFeedbackUtil";
 
 export class BasScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -552,8 +553,9 @@ export class BasScene extends Scene {
             console.log("No lives left!");
             return;
         }
-        SoundUtil.playSfx('wrongAnswer');
 
+        SoundUtil.playSfx('wrongAnswer');
+        ScoreFeedbackUtil.show(this, this.cameras.main.centerX, this.cameras.main.centerY, 5, false);
         this.currentLives--;
         const life = this.lives[this.currentLives];
         life.full.setVisible(false);
@@ -586,6 +588,7 @@ export class BasScene extends Scene {
     private incrementScore(addBonus: boolean = false) {
         SoundUtil.playSfx('correctAnswer');
         this.SCORE += Utils.corectAnswerPoint;
+        ScoreFeedbackUtil.show(this, this.cameras.main.centerX, this.cameras.main.centerY, 10, true);
         if (addBonus) {
             this.SCORE += Utils.correctAnswerBonus;
             this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
