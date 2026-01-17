@@ -1,4 +1,4 @@
-import { Display, GameObjects, Scene } from "phaser";
+import { Display, GameObjects, Scene, Time } from "phaser";
 import { Utils } from "./Utils";
 import { BUS_LEVELS_DATA } from "../BusLevelData";
 import { LevelData } from "../LevelData";
@@ -289,8 +289,10 @@ export class BasScene extends Scene {
                 } else {
                     // correct answer increment score
                     this.incrementScore();
-                    this.cleanupLevel();
+                    this.time.delayedCall(2, () => this.cleanupLevel());
+                    // this.cleanupLevel();
                 }
+                SoundUtil.stopSfx('busRollForward');
                 console.log(`Level ${this.currentLevel} | Bus speed duration: ${Math.round(duration)}ms`);
             },
         });
@@ -389,37 +391,6 @@ export class BasScene extends Scene {
         // dropped on road → snap back
         this.resetLetterPosition(letterObj);
     }
-
-    // private onDragEndLetter(pointer: Phaser.Input.Pointer, letterObj: Phaser.GameObjects.Container) {
-    //     if (letterObj.getData("locked")) return;
-
-    //     for (const slot of this.letterSlots) {
-    //         if (slot.getData("occupied")) continue;
-
-    //         if (Phaser.Geom.Intersects.RectangleToRectangle(letterObj.getBounds(), slot.getBounds())) {
-    //             // SNAP TO ANY EMPTY SLOT
-    //             letterObj.setPosition(slot.x, slot.y);
-    //             letterObj.setRotation(0);
-
-    //             slot.setData({
-    //                 occupied: true,
-    //                 currentLetter: letterObj,
-    //             });
-
-    //             letterObj.setData({
-    //                 locked: true,
-    //                 slot,
-    //             });
-
-    //             letterObj.disableInteractive();
-
-    //             this.checkAllSlotsFilled();
-    //             return;
-    //         }
-    //     }
-
-    //     this.resetLetterPosition(letterObj);
-    // }
 
     private checkAllSlotsFilled() {
         const allFilled = this.letterSlots.every((slot) => slot.getData("occupied"));
@@ -568,9 +539,6 @@ export class BasScene extends Scene {
             .map(l => l.container)
         );
 
-        // console.log('lives ', this.lives
-        //     .filter(l => l.full.visible == true)
-        //     .map(l => l.container))
 
         if (this.currentLives === 0) {
             console.log("Game Over - No lives left");

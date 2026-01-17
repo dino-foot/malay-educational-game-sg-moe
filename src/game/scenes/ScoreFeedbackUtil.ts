@@ -10,10 +10,10 @@ export class ScoreFeedbackUtil {
             .text(x, y, text, {
                 fontFamily: "nunito",
                 fontStyle: "bold",
-                fontSize: "50px",
+                fontSize: "60px",
                 color: color,
                 stroke: 'black',
-                strokeThickness: 4,
+                strokeThickness: 10,
             })
             .setOrigin(0.5)
             .setDepth(1000);

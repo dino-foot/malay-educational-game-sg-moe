@@ -57,6 +57,18 @@ export class SoundUtil {
         sfx.play();
     }
 
+    static stopSfx(key: string, volume = 1) {
+        if (!this.sfxEnabled) return;
+        let sfx = this.sfxCache.get(key);
+        if (!sfx) {
+            sfx = this.scene.sound.add(key, { volume });
+            this.sfxCache.set(key, sfx);
+        }
+        // prevent overlap spam
+        if (sfx.isPlaying) {
+            sfx.stop();
+        }
+    }
 
     static stopBg() {
         if (this.bgMusic) {
