@@ -46,6 +46,7 @@ export class KaysakScene extends Scene {
     stepsMarkers: any = [];
     randomizedLevels: KayakLevelData[] = [];
     randomizeQuestion = false;
+    lifePulseTween: Phaser.Tweens.Tween;
 
     constructor() {
         super("KayakScene");
@@ -401,12 +402,12 @@ export class KaysakScene extends Scene {
 
         for (let i = 0; i < this.maxLives; i++) {
             const container = this.add.container(0, 0).setDepth(10);
-            const fullHeart = this.add.image(0, 0, "heart").setOrigin(0.5).setScale(0.8);
-            const emptyHeart = this.add.image(0, 0, "empty_heart").setOrigin(0.5).setScale(0.8).setVisible(false);
+            const fullHeart = this.add.image(0, 0, "heart").setOrigin(0.5).setScale(1);
+            const emptyHeart = this.add.image(0, 0, "empty_heart").setOrigin(0.5).setScale(1).setVisible(false);
 
             container.setSize(fullHeart.width, fullHeart.height);
             container.add([fullHeart, emptyHeart]);
-            Phaser.Display.Align.In.TopLeft(container, this.bgAlignZone, -100 - i * 60, -25);
+            Phaser.Display.Align.In.TopLeft(container, this.bgAlignZone, -100 - i * 80, -25);
 
             this.lives.push({
                 container,
@@ -414,6 +415,10 @@ export class KaysakScene extends Scene {
                 empty: emptyHeart,
             });
         }
+        this.lifePulseTween = Utils.StartLifePulseTween(
+            this,
+            this.lives.map(l => l.container)
+        );
     }
 
     private registerDragEvents() {
