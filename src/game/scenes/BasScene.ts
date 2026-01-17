@@ -60,7 +60,7 @@ export class BasScene extends Scene {
     }
 
     private initData() {
-        this.cameras.main.setBackgroundColor('white');
+        this.cameras.main.setBackgroundColor("white");
         this.SCORE = 0;
         this.maxLevels = 3;
         this.currentStepIndex = 1;
@@ -83,7 +83,7 @@ export class BasScene extends Scene {
             this.randomizedLevels = BUS_LEVELS_DATA;
         }
 
-        console.log(this.randomizedLevels)
+        console.log(this.randomizedLevels);
 
         this.bgAlignZone = this.add.zone(x, y, width, height);
         // Word Rects
@@ -102,17 +102,20 @@ export class BasScene extends Scene {
         this.imageBoxContainer.add(imageBox);
         this.imageBoxContainer.setVisible(false); // disable by default
 
-
         //? text box container
-        this.textBoxContainer = this.add.container(0, 0).setDepth(11).setName('text-container');
+        this.textBoxContainer = this.add.container(0, 0).setDepth(11).setName("text-container");
         const textBox = this.add.image(0, 0, "text-box").setOrigin(0.5).setScale(0.9);
-        const text = this.add.text(0, 0, BUS_LEVELS_DATA[9].hintSentence, this.getQuestionTxtStyle(textBox)).setOrigin(0.5).setName('question');
+        const text = this.add.text(0, 0, BUS_LEVELS_DATA[9].hintSentence, this.getQuestionTxtStyle(textBox)).setOrigin(0.5).setName("question");
         this.textBoxContainer.add(textBox);
-        this.textBoxContainer.add(text)
+        this.textBoxContainer.add(text);
         Phaser.Display.Align.In.TopCenter(this.textBoxContainer, this.bgAlignZone, 0, -240);
         this.textBoxContainer.setVisible(false); // disable by default
 
-        this.busTrack = this.add.image(x, y - 110, "small_road").setOrigin(0.5).setDepth(2).setDisplaySize(width, 239);
+        this.busTrack = this.add
+            .image(x, y - 110, "small_road")
+            .setOrigin(0.5)
+            .setDepth(2)
+            .setDisplaySize(width, 239);
 
         const cityScape = this.add.image(x, y, "upper-bg").setOrigin(0.5).setDisplaySize(width, 401).setDepth(1);
         Utils.AlignTopCenter(cityScape, this.bgAlignZone, 0, 80);
@@ -129,9 +132,8 @@ export class BasScene extends Scene {
     }
 
     createHUD() {
-
-        this.scoreBg = this.add.image(0, 0, 'score').setOrigin(0.5).setDepth(12).setScale(0.9);
-        this.scoreText = this.add.text(0, 0, '0000', Utils.fontStyle).setOrigin(0.5).setDepth(13);
+        this.scoreBg = this.add.image(0, 0, "score").setOrigin(0.5).setDepth(12).setScale(0.9);
+        this.scoreText = this.add.text(0, 0, "0000", Utils.fontStyle).setOrigin(0.5).setDepth(13);
         Phaser.Display.Align.In.TopRight(this.scoreBg, this.bgAlignZone, -80);
         Phaser.Display.Align.In.RightCenter(this.scoreText, this.scoreBg, -70, 0);
 
@@ -142,7 +144,7 @@ export class BasScene extends Scene {
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
             SoundUtil.playClick();
-            this.scene.start('MainMenu');
+            this.scene.start("MainMenu");
         });
 
         // submit button
@@ -180,7 +182,7 @@ export class BasScene extends Scene {
         this.textBoxContainer.setVisible(false);
         this.imageBoxContainer.setVisible(false);
 
-        // image or question 
+        // image or question
         // if imgkey = null show question
         // Get question text object once
         const question = this.textBoxContainer.getByName("question") as Phaser.GameObjects.Text;
@@ -189,8 +191,7 @@ export class BasScene extends Scene {
         if (levelData.id === 1 || levelData.id === 10) {
             question.setText(hintSentence);
             this.textBoxContainer.setVisible(true);
-        }
-        else {
+        } else {
             // Case 2: Image exists → random choice
             const showImage = Phaser.Math.Between(0, 1) === 1;
             if (showImage) {
@@ -198,8 +199,7 @@ export class BasScene extends Scene {
                 this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setDepth(11);
                 Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
                 this.imageBoxContainer.setVisible(true);
-            }
-            else {
+            } else {
                 question.setText(hintSentence);
                 this.textBoxContainer.setVisible(true);
             }
@@ -239,14 +239,13 @@ export class BasScene extends Scene {
         this.draggableLetters = this.createPatternWordSlots(levelData.correctWord, wordZone);
 
         //? on each correct answer
-        //! debug 
+        //! debug
         // this.OnEachStepComplete();
         // this.time.addEvent({
         //     delay: 10000,
         //     loop: true,
         //     callback: () => this.OnEachStepComplete()
         // });
-
     }
 
     private OnEachStepComplete() {
@@ -268,7 +267,6 @@ export class BasScene extends Scene {
             duration: duration,
             ease: Phaser.Math.Easing.Linear,
             onComplete: () => {
-
                 // show cheked flag
                 this.roadMarksList[this.currentStepIndex - 1].mark.setVisible(false);
                 this.roadMarksList[this.currentStepIndex - 1].tick.setVisible(true);
@@ -279,9 +277,8 @@ export class BasScene extends Scene {
                     //? load next scene
                     console.log("level completed");
                     this.onLevelComplete();
-                    Utils.FadeToScene(this, 'MainMenu');
-                }
-                else {
+                    Utils.FadeToScene(this, "MainMenu");
+                } else {
                     // correct answer increment score
                     this.incrementScore();
                     this.cleanupLevel();
@@ -308,7 +305,6 @@ export class BasScene extends Scene {
         this.disableButton(this.answerSubmitBtn);
     }
 
-
     private createMarker(x: number, y: number) {
         const container = this.add.container(x, y).setDepth(10);
         const mark = this.add.image(0, 0, "grey_mark").setDepth(9);
@@ -320,7 +316,7 @@ export class BasScene extends Scene {
     }
 
     private createPatternWordSlots(word: string, zone: Phaser.GameObjects.Zone, slotSize: number = 100, spacing: number = 100) {
-        const letters = Phaser.Utils.Array.Shuffle(word.split(''));
+        const letters = Phaser.Utils.Array.Shuffle(word.split(""));
         const center = zone.getCenter(new Phaser.Math.Vector2());
         spacing = this.getWordScaleConfig(letters.length).spacingOfRandomLetter;
 
@@ -332,11 +328,9 @@ export class BasScene extends Scene {
             const x = startX + i * spacing;
             const y = center.y + (i % 2 === 0 ? -50 : 50);
             const bg = this.add.image(0, 0, "letter").setDisplaySize(slotSize, slotSize).setOrigin(0.5);
-            bg.setScale(this.getWordScaleConfig(letters.length).letterScale)
+            bg.setScale(this.getWordScaleConfig(letters.length).letterScale);
 
-            const text = this.add
-                .text(0, 0, letters[i], Utils.fontStyleBlack)
-                .setOrigin(0.5);
+            const text = this.add.text(0, 0, letters[i], Utils.fontStyleBlack).setOrigin(0.5);
 
             const rndRotation = Phaser.Math.Between(-20, 20);
             const container = this.add.container(x, y, [bg, text]).setDepth(11).setSize(slotSize, slotSize).setInteractive({ useHandCursor: true });
@@ -360,13 +354,11 @@ export class BasScene extends Scene {
     }
 
     private onDragEndLetter(pointer: Phaser.Input.Pointer, letterObj: Phaser.GameObjects.Container) {
-        if (letterObj.getData("locked")) return;
-
         for (const slot of this.letterSlots) {
             if (slot.getData("occupied")) continue;
 
             if (Phaser.Geom.Intersects.RectangleToRectangle(letterObj.getBounds(), slot.getBounds())) {
-                // SNAP TO ANY EMPTY SLOT
+                // snap into slot
                 letterObj.setPosition(slot.x, slot.y);
                 letterObj.setRotation(0);
 
@@ -380,15 +372,45 @@ export class BasScene extends Scene {
                     slot,
                 });
 
-                letterObj.disableInteractive();
-
                 this.checkAllSlotsFilled();
                 return;
             }
         }
 
+        // dropped on road → snap back
         this.resetLetterPosition(letterObj);
     }
+
+    // private onDragEndLetter(pointer: Phaser.Input.Pointer, letterObj: Phaser.GameObjects.Container) {
+    //     if (letterObj.getData("locked")) return;
+
+    //     for (const slot of this.letterSlots) {
+    //         if (slot.getData("occupied")) continue;
+
+    //         if (Phaser.Geom.Intersects.RectangleToRectangle(letterObj.getBounds(), slot.getBounds())) {
+    //             // SNAP TO ANY EMPTY SLOT
+    //             letterObj.setPosition(slot.x, slot.y);
+    //             letterObj.setRotation(0);
+
+    //             slot.setData({
+    //                 occupied: true,
+    //                 currentLetter: letterObj,
+    //             });
+
+    //             letterObj.setData({
+    //                 locked: true,
+    //                 slot,
+    //             });
+
+    //             letterObj.disableInteractive();
+
+    //             this.checkAllSlotsFilled();
+    //             return;
+    //         }
+    //     }
+
+    //     this.resetLetterPosition(letterObj);
+    // }
 
     private checkAllSlotsFilled() {
         const allFilled = this.letterSlots.every((slot) => slot.getData("occupied"));
@@ -397,12 +419,25 @@ export class BasScene extends Scene {
         if (allFilled) this.answerSubmitBtn.setInteractive({ useHandCursor: true });
     }
 
-    private onDragLetter(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.Container, dragX: number, dragY: number) {
-        if (gameObject.getData("locked")) return;
-        if (gameObject.getData("permanent")) return;
+    private onDragLetter(pointer: Phaser.Input.Pointer, gameObject: GameObjects.Container, dragX: number, dragY: number) {
+        const slot = gameObject.getData("slot");
 
+        // 🔓 If dragging from slot → free the slot
+        if (slot) {
+            slot.setData({ occupied: false, currentLetter: null });
+            gameObject.setData({ locked: false, slot: null });
+            // disable submit again
+            this.disableButton(this.answerSubmitBtn);
+        }
         gameObject.setPosition(dragX, dragY);
     }
+
+    // private onDragLetter(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.Container, dragX: number, dragY: number) {
+    //     if (gameObject.getData("locked")) return;
+    //     if (gameObject.getData("permanent")) return;
+
+    //     gameObject.setPosition(dragX, dragY);
+    // }
 
     // correct > move bus
     // incorrect > remove lives
@@ -416,7 +451,7 @@ export class BasScene extends Scene {
             const placedLetter = letterObj.getData("letter");
             if (placedLetter === expected) {
                 // STAY LOCKED
-                letterObj.setData("permanent", true);
+                // letterObj.setData("permanent", true);
             } else {
                 wrongAttempt = true;
                 // RESET LETTER
@@ -500,8 +535,8 @@ export class BasScene extends Scene {
         if (this.currentLives === 0) {
             console.log("Game Over - No lives left");
             //? show gameover scene
-            this.scene.launch('GameOver', {
-                currentScore: this.SCORE
+            this.scene.launch("GameOver", {
+                currentScore: this.SCORE,
             });
         } else {
             console.log(`Lives left: ${this.currentLives}`);
@@ -537,19 +572,13 @@ export class BasScene extends Scene {
 
     //? on level completed
     onLevelComplete() {
-        const completed = this.registry.get('completedLevels') || 0;
-        this.registry.set('completedLevels', completed + 1);
+        const completed = this.registry.get("completedLevels") || 0;
+        this.registry.set("completedLevels", completed + 1);
     }
 
     handleSettings() {
         // settings button (top-right)
-        this.settingsBtn = this.add
-            .image(0, 0, "settings")
-            .setOrigin(0.5)
-            .setScale(0.9)
-            .setName('settingsButton')
-            .setDepth(100)
-            .setInteractive({ useHandCursor: true });
+        this.settingsBtn = this.add.image(0, 0, "settings").setOrigin(0.5).setScale(0.9).setName("settingsButton").setDepth(100).setInteractive({ useHandCursor: true });
 
         Utils.AlignTopRight(this.settingsBtn, this.bgAlignZone, -5, 0);
         Utils.MakeButton(this, this.settingsBtn, () => {
@@ -569,6 +598,4 @@ export class BasScene extends Scene {
             },
         };
     }
-
-
 }
