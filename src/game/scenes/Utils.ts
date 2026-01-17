@@ -173,11 +173,11 @@ export class Utils {
     }
 
     static GetTrainSpeedByLevel(levelIndex, randomize = false) {
-        const BASE_SPEED = 15500;   // level 1
+        const BASE_SPEED = 15500; // level 1
         const SPEED_DECREMENT = 1500;
-        const MIN_SPEED = 4000;     // safety clamp
+        const MIN_SPEED = 4000; // safety clamp
         // base speed calculation
-        let speed = BASE_SPEED - (levelIndex * SPEED_DECREMENT);
+        let speed = BASE_SPEED - levelIndex * SPEED_DECREMENT;
 
         // optional randomization (±8%)
         if (randomize) {
@@ -190,5 +190,28 @@ export class Utils {
         return finalSpeed;
     }
 
+    static StartLifePulseTween(
+        scene: Phaser.Scene,
+        targets: Phaser.GameObjects.Container[]
+    ): Phaser.Tweens.Tween {
 
-}
+        return scene.tweens.add({
+            targets,
+            scale: 1.15,
+            duration: 2000,
+            ease: Phaser.Math.Easing.Elastic.Out,
+            repeat: -1,
+            delay: scene.tweens.stagger(500, {})
+        });
+    }
+
+    static StopLifePulseTween(
+        scene: Phaser.Scene,
+        targets: Phaser.GameObjects.Container[]
+    ) {
+        scene.tweens.killTweensOf(targets);
+        // Optional: reset scale if you want a clean state
+        targets.forEach(t => t.setScale(1));
+    }
+
+} // end class
