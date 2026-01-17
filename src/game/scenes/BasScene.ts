@@ -531,15 +531,19 @@ export class BasScene extends Scene {
             target = fullHeart;
         }
 
-        this.tweens.add({
-            targets: [this.lives[0].container, this.lives[1].container, this.lives[2].container],
-            scale: 1.15,
-            duration: 2000,
-            // repeatDelay: 2000,
-            ease: Phaser.Math.Easing.Elastic.Out,
-            repeat: -1,
-            delay: this.tweens.stagger(500, {})
-        });
+        this.lifePulseTween = Utils.StartLifePulseTween(
+            this,
+            this.lives.map(l => l.container)
+        );
+        // this.tweens.add({
+        //     targets: [this.lives[0].container, this.lives[1].container, this.lives[2].container],
+        //     scale: 1.15,
+        //     duration: 2000,
+        //     // repeatDelay: 2000,
+        //     ease: Phaser.Math.Easing.Elastic.Out,
+        //     repeat: -1,
+        //     delay: this.tweens.stagger(500, {})
+        // });
     }
 
 
