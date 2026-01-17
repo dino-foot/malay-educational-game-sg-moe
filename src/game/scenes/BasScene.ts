@@ -369,6 +369,7 @@ export class BasScene extends Scene {
                 // snap into slot
                 letterObj.setPosition(slot.x, slot.y);
                 letterObj.setRotation(0);
+                SoundUtil.playSfx('buttonClick');
 
                 slot.setData({
                     occupied: true,
@@ -532,10 +533,7 @@ export class BasScene extends Scene {
             target = fullHeart;
         }
 
-        this.lifePulseTween = Utils.StartLifePulseTween(
-            this,
-            this.lives.map(l => l.container)
-        );
+        this.lifePulseTween = Utils.StartLifePulseTween(this, this.lives.map(l => l.container));
         // this.tweens.add({
         //     targets: [this.lives[0].container, this.lives[1].container, this.lives[2].container],
         //     scale: 1.15,
@@ -560,6 +558,19 @@ export class BasScene extends Scene {
         const life = this.lives[this.currentLives];
         life.full.setVisible(false);
         life.empty.setVisible(true);
+
+        // stop all tween
+        Utils.StopLifePulseTween(this, this.lives.map(l => l.container));
+
+        // re-apply 
+        Utils.StartLifePulseTween(this, this.lives
+            .filter(l => l.full.visible == true)
+            .map(l => l.container)
+        );
+
+        // console.log('lives ', this.lives
+        //     .filter(l => l.full.visible == true)
+        //     .map(l => l.container))
 
         if (this.currentLives === 0) {
             console.log("Game Over - No lives left");

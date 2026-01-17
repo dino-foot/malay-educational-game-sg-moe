@@ -343,6 +343,15 @@ export class KaysakScene extends Scene {
         life.full.setVisible(false);
         life.empty.setVisible(true);
 
+        // stop all tween
+        Utils.StopLifePulseTween(this, this.lives.map(l => l.container));
+
+        // re-apply 
+        Utils.StartLifePulseTween(this, this.lives
+            .filter(l => l.full.visible == true)
+            .map(l => l.container)
+        );
+
         if (this.currentLives === 0) {
             console.log("Game Over - No lives left");
             //? show gameover scene
@@ -415,10 +424,8 @@ export class KaysakScene extends Scene {
                 empty: emptyHeart,
             });
         }
-        this.lifePulseTween = Utils.StartLifePulseTween(
-            this,
-            this.lives.map(l => l.container)
-        );
+
+        this.lifePulseTween = Utils.StartLifePulseTween(this, this.lives.map(l => l.container));
     }
 
     private registerDragEvents() {
