@@ -14,7 +14,7 @@ export class SoundUtil {
         this.scene = scene;
 
         if (!this.clickSfx) {
-            this.clickSfx = scene.sound.add("buttonClick", { volume: 1 });
+            this.clickSfx = scene.sound.add("buttonClick1", { volume: 1 });
         }
 
         this.applySettings();

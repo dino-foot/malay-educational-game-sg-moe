@@ -40,6 +40,7 @@ export class Preloader extends Scene {
         this.load.audio("busBgMusic", "assets/sounds/urban-street-city-music.mp3");
 
         this.load.audio("buttonClick", "assets/sounds/button-click.mp3");
+        this.load.audio("buttonClick1", "assets/sounds/Click.wav");
         this.load.audio("busRollForward", "assets/sounds/bus-idle-to-drive-off.mp3");
         this.load.audio("correctAnswer", "assets/sounds/correct-answer.mp3");
         this.load.audio("wrongAnswer", "assets/sounds/wrong-answer.mp3");
