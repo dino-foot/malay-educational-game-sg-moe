@@ -70,6 +70,9 @@ export class BasScene extends Scene {
         this.randomizeQuestion = true;
         this.randomizedLevels = [];
         this.resetLives();
+
+        SoundUtil.init(this);
+        SoundUtil.playBg('busBgMusic');
     }
 
     create() {
@@ -582,6 +585,7 @@ export class BasScene extends Scene {
 
         Utils.AlignTopRight(this.settingsBtn, this.bgAlignZone, -5, 0);
         Utils.MakeButton(this, this.settingsBtn, () => {
+            SoundUtil.playClick();
             Utils.openSettings(this);
         });
     }

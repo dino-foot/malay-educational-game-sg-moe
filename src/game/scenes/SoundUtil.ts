@@ -27,20 +27,18 @@ export class SoundUtil {
     // 🎵 BG MUSIC
     static playBg(key: string, volume = 0.35) {
         if (!this.musicEnabled) return;
-
-        if (this.bgMusic && this.bgMusic.key === key && this.bgMusic.isPlaying) {
+        // 🔁 already playing this track
+        if (this.bgMusic?.key === key && this.bgMusic.isPlaying) {
             return;
         }
-
         this.stopBg();
-
         this.bgMusic = this.scene.sound.add(key, {
             loop: true,
             volume,
         });
-
         this.bgMusic.play();
     }
+
 
     static stopBg() {
         if (this.bgMusic) {

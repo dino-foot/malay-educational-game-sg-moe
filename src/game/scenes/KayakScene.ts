@@ -52,6 +52,10 @@ export class KaysakScene extends Scene {
     }
 
     init() {
+
+        SoundUtil.init(this);
+        SoundUtil.playBg('kayakBgMusic');
+
         this.maxLives = 3;
         this.SCORE = 0;
         this.currentLevelIndex = 0;
