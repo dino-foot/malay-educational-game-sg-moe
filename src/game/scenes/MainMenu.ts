@@ -30,7 +30,7 @@ export class MainMenu extends Scene {
 
         SoundUtil.loadSettings();
         SoundUtil.init(this);
-        SoundUtil.playBg('mainMenuMusic');
+        SoundUtil.playBgMusic('mainMenuMusic');
 
         // Background
         this.background = this.add.image(x, y, "bg").setOrigin(0.5);
@@ -85,7 +85,7 @@ export class MainMenu extends Scene {
         this.updateProgress(completedLevels);
 
         //? debug start bas scene directly
-        // this.scene.start("KayakScene");
+        // this.scene.start("BasScene");
     } // end
 
     private createMenuButtons(x: number, y: number) {
