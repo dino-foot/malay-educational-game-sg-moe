@@ -530,6 +530,7 @@ export class BasScene extends Scene {
             console.log("No lives left!");
             return;
         }
+        SoundUtil.playSfx('wrongAnswer');
         this.currentLives--;
         const life = this.lives[this.currentLives];
         life.full.setVisible(false);
@@ -560,6 +561,7 @@ export class BasScene extends Scene {
     }
 
     private incrementScore(addBonus: boolean = false) {
+        SoundUtil.playSfx('correctAnswer');
         this.SCORE += Utils.corectAnswerPoint;
         if (addBonus) {
             this.SCORE += Utils.correctAnswerBonus;

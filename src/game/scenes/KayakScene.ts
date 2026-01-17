@@ -336,6 +336,7 @@ export class KaysakScene extends Scene {
             console.log("No lives left!");
             return;
         }
+        SoundUtil.playSfx('wrongAnswer');
         this.currentLives--;
         const life = this.lives[this.currentLives];
         life.full.setVisible(false);

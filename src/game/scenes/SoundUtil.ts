@@ -7,6 +7,8 @@ export class SoundUtil {
     static musicEnabled = true;
     static sfxEnabled = true;
 
+    static sfxCache: Map<string, Phaser.Sound.BaseSound> = new Map()
+
     // 🔹 init once per scene
     static init(scene: Phaser.Scene) {
         this.scene = scene;
@@ -37,6 +39,22 @@ export class SoundUtil {
             volume,
         });
         this.bgMusic.play();
+    }
+
+
+    // 🔊 GENERIC SFX PLAYER
+    static playSfx(key: string, volume = 1) {
+        if (!this.sfxEnabled) return;
+        let sfx = this.sfxCache.get(key);
+        if (!sfx) {
+            sfx = this.scene.sound.add(key, { volume });
+            this.sfxCache.set(key, sfx);
+        }
+        // prevent overlap spam
+        if (sfx.isPlaying) {
+            sfx.stop();
+        }
+        sfx.play();
     }
 
 
