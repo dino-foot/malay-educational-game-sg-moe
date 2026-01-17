@@ -37,11 +37,12 @@ export class Preloader extends Scene {
 
         // menu/bas music
         this.load.audio("mainMenuMusic", "assets/sounds/no-wait-to-you.mp3");
+
         this.load.audio("busBgMusic", "assets/sounds/urban-street-city-music.mp3");
+        this.load.audio("busRollForward", "assets/sounds/bus-idle-to-drive-off.mp3");
 
         this.load.audio("buttonClick", "assets/sounds/button-click.mp3");
         this.load.audio("buttonClick1", "assets/sounds/Click.wav");
-        this.load.audio("busRollForward", "assets/sounds/bus-idle-to-drive-off.mp3");
         this.load.audio("correctAnswer", "assets/sounds/correct-answer.mp3");
         this.load.audio("wrongAnswer", "assets/sounds/wrong-answer.mp3");
         // kuasa
@@ -54,7 +55,9 @@ export class Preloader extends Scene {
         // Load the assets for the game - Replace with your own assets
         // this.load.setPath('assets');
 
-        const basImageKeys = ["bus_stop", "checkmark",
+        const basImageKeys = ["bus_stop",
+            "sparkle",
+            "checkmark",
             "ellipse",
             "flag",
             "green_tick",
