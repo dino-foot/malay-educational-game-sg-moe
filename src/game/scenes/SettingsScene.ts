@@ -89,7 +89,7 @@ export class SettingsScene extends Phaser.Scene {
 
             // resume music if turned ON
             if (this.musicOn) {
-                SoundUtil.playBg('mainMenuMusic');
+                SoundUtil.playBgMusic('mainMenuMusic');
             }
         });
 

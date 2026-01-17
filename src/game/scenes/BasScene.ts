@@ -72,7 +72,7 @@ export class BasScene extends Scene {
         this.resetLives();
 
         SoundUtil.init(this);
-        SoundUtil.playBg('busBgMusic');
+        SoundUtil.playBgMusic('busBgMusic');
     }
 
     create() {
@@ -269,6 +269,9 @@ export class BasScene extends Scene {
             x: targetMark.x,
             duration: duration,
             ease: Phaser.Math.Easing.Linear,
+            onStart: () => {
+                SoundUtil.playSfx('busRollForward');
+            },
             onComplete: () => {
                 // show cheked flag
                 this.roadMarksList[this.currentStepIndex - 1].mark.setVisible(false);

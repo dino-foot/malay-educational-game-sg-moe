@@ -27,7 +27,7 @@ export class SoundUtil {
     }
 
     // 🎵 BG MUSIC
-    static playBg(key: string, volume = 0.35) {
+    static playBgMusic(key: string, volume = 0.35) {
         if (!this.musicEnabled) return;
         // 🔁 already playing this track
         if (this.bgMusic?.key === key && this.bgMusic.isPlaying) {
