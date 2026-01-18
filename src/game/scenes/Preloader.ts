@@ -50,7 +50,7 @@ export class Preloader extends Scene {
         this.load.audio("trainPassing", "assets/sounds/train-passing.mp3");
         // kayak
         this.load.audio("kayakBgMusic", "assets/sounds/by-the-sea.mp3");
-        this.load.audio("paddleBoat", "assets/sounds/paddle-boat-on-waterway.mp3");
+        this.load.audio("paddleBoat", "assets/sounds/paddle-boat-on-waterwav.mp3");
         // this.load.audio('menuSelectButton', 'assets/sounds/menu-select-button.mp3');
         // Load the assets for the game - Replace with your own assets
         // this.load.setPath('assets');
