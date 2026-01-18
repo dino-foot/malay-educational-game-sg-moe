@@ -82,6 +82,7 @@ export class MainMenu extends Scene {
         [...this.watchBars, ...this.watchLights].forEach(item => item.setVisible(false));
 
         const completedLevels = this.registry.get('completedLevels') || 0;
+        console.log('completedLevels >> ', completedLevels);
         this.updateProgress(completedLevels);
 
         //? debug start bas scene directly

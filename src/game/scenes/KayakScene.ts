@@ -250,6 +250,7 @@ export class KaysakScene extends Scene {
         if (isCorrect) {
             this.SCORE += Utils.corectAnswerPoint;
             ScoreFeedbackUtil.show(this, this.cameras.main.centerX, this.cameras.main.centerY, 10, true);
+            SoundUtil.playSfx('correctAnswer');
             this.OnEachStepComplete();
         } else {
             this.SCORE -= Utils.wrongAnswerPoint;
@@ -282,6 +283,7 @@ export class KaysakScene extends Scene {
             duration: duration,
             ease: Phaser.Math.Easing.Linear,
             onStart: () => {
+                SoundUtil.playSfx('paddleBoat');
                 const state = this.kayak.animationState;
                 // clear any running animation
                 state.clearTrack(0);
@@ -292,26 +294,29 @@ export class KaysakScene extends Scene {
             onComplete: () => {
                 // this.currentStepIndex++;
                 this.clearLevel();
-                if (this.currentLevelIndex >= this.stepsMarkers.length) {
-                    //? load next scene
-                    console.log("level completed");
-                    Utils.FadeToScene(this, "MainMenu");
-                }
+                this.time.delayedCall(2, () => SoundUtil.stopSfx('paddleBoat'));
 
-                console.log(`Level ${this.currentLevelIndex} | speed duration: ${Math.round(duration)}ms`);
+                // if (this.currentLevelIndex >= this.stepsMarkers.length) {
+                //     //? load next scene
+                //     console.log("level completed");
+                //     Utils.FadeToScene(this, "MainMenu");
+                // }
+                // console.log(`Level ${this.currentLevelIndex} | speed duration: ${Math.round(duration)}ms`);
             },
         });
     }
 
     private clearLevel() {
         //? clear level for
-        if (this.currentLevelIndex >= KAYAK_LEVEL_DATA.length) {
-            console.log("🏁 Reached end of the level set!");
+        if (this.currentLevelIndex >= KAYAK_LEVEL_DATA.length - 1) {
+            console.log("CleanupLevel Gameover >> ", this.currentLevelIndex, this.randomizedLevels);
+            this.onLevelComplete();
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
             });
             return;
         }
+
 
         // cleanup
         this.levelObjects.texts?.forEach((item) => item.destroy());

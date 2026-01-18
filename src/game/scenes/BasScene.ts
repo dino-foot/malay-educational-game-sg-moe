@@ -270,9 +270,6 @@ export class BasScene extends Scene {
     private OnEachStepComplete() {
         // stop if reached end
         if (this.currentStepIndex >= this.roadMarksList.length) {
-            // this.scene.launch("GameOver", {
-            //     currentScore: this.SCORE,
-            // });
             return;
         }
 
@@ -297,20 +294,6 @@ export class BasScene extends Scene {
                 this.roadMarksList[this.currentStepIndex].tick.setVisible(true);
                 this.roadMarksList[this.currentStepIndex].flag.setVisible(true);
 
-                // this.currentStepIndex++;
-                // if (this.currentStepIndex >= this.randomizedLevels.length) {
-                //     //? load next scene
-                //     console.log("level completed ", this.levelDataIndex);
-                //     this.onLevelComplete();
-                // } else {
-                //     // correct answer increment score
-                //     this.incrementScore();
-                //     this.time.delayedCall(2, () => this.cleanupLevel());
-                //     // this.cleanupLevel();
-                // }
-
-                console.log("level completed ", this.levelDataIndex);
-                this.onLevelComplete()
                 this.incrementScore();
                 this.time.delayedCall(2, () => this.cleanupLevel());
                 // this.cleanupLevel();
@@ -337,6 +320,7 @@ export class BasScene extends Scene {
 
         if (this.levelDataIndex == 10) {
             console.log('cleanup level gameover ', this.levelDataIndex, this.currentStepIndex)
+            this.onLevelComplete();
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
             });
