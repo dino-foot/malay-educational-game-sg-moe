@@ -31,34 +31,34 @@ export class SettingsScene extends Phaser.Scene {
         const panelBg = this.add.image(x, y, "setting-bg").setOrigin(0.5);
         panelBg.setDisplaySize(panelBg.width, panelBg.height + 80);
 
-        const title = this.add.image(0, 0, 'settings-title').setOrigin(0.5).setDepth(11);
+        const title = this.add.image(0, 0, "settings-title").setOrigin(0.5).setDepth(11);
         Phaser.Display.Align.In.TopCenter(title, panelBg, 0, -30);
 
         const musicContainer = this.add.container();
-        const music = this.add.image(0, 0, 'music-fx').setOrigin(0.5).setDepth(11).setInteractive({ useHandCursor: true });
-        const checkMark = this.add.image(0, 0, 'checkmark-green').setOrigin(0.5).setDepth(12);
+        const music = this.add.image(0, 0, "music-fx").setOrigin(0.5).setDepth(11).setInteractive({ useHandCursor: true });
+        const checkMark = this.add.image(0, 0, "checkmark-green").setOrigin(0.5).setDepth(12);
         musicContainer.setSize(music.width, music.height);
         musicContainer.add([music, checkMark]);
         Phaser.Display.Align.In.TopCenter(musicContainer, panelBg, 0, -150);
         Phaser.Display.Align.In.RightCenter(checkMark, music, 0, 0);
 
         const soundContainer = this.add.container();
-        const sound = this.add.image(0, 0, 'sound-fx').setOrigin(0.5).setDepth(11).setInteractive({ useHandCursor: true });
-        const checkMark1 = this.add.image(0, 0, 'checkmark-green').setOrigin(0.5).setDepth(12);
+        const sound = this.add.image(0, 0, "sound-fx").setOrigin(0.5).setDepth(11).setInteractive({ useHandCursor: true });
+        const checkMark1 = this.add.image(0, 0, "checkmark-green").setOrigin(0.5).setDepth(12);
         soundContainer.setSize(sound.width, sound.height);
         soundContainer.add([sound, checkMark1]);
         Phaser.Display.Align.In.TopCenter(soundContainer, panelBg, 0, -250);
         Phaser.Display.Align.In.RightCenter(checkMark1, sound, 0, 0);
 
         const voiceOverContainer = this.add.container();
-        const voice = this.add.image(0, 0, 'voice-over').setOrigin(0.5).setDepth(11).setInteractive({ useHandCursor: true });
-        const checkMark2 = this.add.image(0, 0, 'checkmark-green').setOrigin(0.5).setDepth(12);
+        const voice = this.add.image(0, 0, "voice-over").setOrigin(0.5).setDepth(11).setInteractive({ useHandCursor: true });
+        const checkMark2 = this.add.image(0, 0, "checkmark-green").setOrigin(0.5).setDepth(12);
         voiceOverContainer.setSize(voice.width, voice.height);
         voiceOverContainer.add([voice, checkMark2]);
         Phaser.Display.Align.In.TopCenter(voiceOverContainer, panelBg, 0, -350);
         Phaser.Display.Align.In.RightCenter(checkMark2, voice, 0, 0);
 
-        const closeBtn = this.add.image(0, 0, 'close-btn').setOrigin(0.5).setDepth(12).setScale(0.9);
+        const closeBtn = this.add.image(0, 0, "close-btn").setOrigin(0.5).setDepth(12).setScale(0.9);
         Phaser.Display.Align.In.BottomCenter(closeBtn, panelBg, 0, 10);
 
         Utils.MakeButton(this, closeBtn, () => {
@@ -77,7 +77,7 @@ export class SettingsScene extends Phaser.Scene {
         checkMark.setVisible(this.musicOn);
         checkMark1.setVisible(this.soundOn);
 
-        music.on('pointerdown', () => {
+        music.on("pointerdown", () => {
             // this.musicOn = this.toggleOption(
             //     this.musicOn,
             //     checkMark,
@@ -89,11 +89,11 @@ export class SettingsScene extends Phaser.Scene {
 
             // resume music if turned ON
             if (this.musicOn) {
-                SoundUtil.playBgMusic('mainMenuMusic');
+                SoundUtil.playBgMusic("mainMenuMusic");
             }
         });
 
-        sound.on('pointerdown', () => {
+        sound.on("pointerdown", () => {
             // this.soundOn = this.toggleOption(
             //     this.soundOn,
             //     checkMark1,
@@ -103,30 +103,17 @@ export class SettingsScene extends Phaser.Scene {
             SoundUtil.setSfxEnabled(this.soundOn);
         });
 
-
-        voice.on('pointerdown', () => {
-            this.voiceover = this.toggleOption(
-                this.voiceover,
-                checkMark2,
-                "Voice Over"
-            );
+        voice.on("pointerdown", () => {
+            this.voiceover = this.toggleOption(this.voiceover, checkMark2, "Voice Over");
 
             // TODO: Hook voice over system
         });
-
-
     }
 
-    private toggleOption(
-        currentValue: boolean,
-        checkMark: Phaser.GameObjects.Image,
-        label: string
-    ): boolean {
+    private toggleOption(currentValue: boolean, checkMark: Phaser.GameObjects.Image, label: string): boolean {
         const newValue = !currentValue;
         checkMark.setVisible(newValue);
         console.log(`[Settings] ${label}:`, newValue ? "ON" : "OFF");
         return newValue;
     }
-
-
 }
