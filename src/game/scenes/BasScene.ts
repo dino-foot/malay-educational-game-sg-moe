@@ -600,8 +600,9 @@ export class BasScene extends Scene {
 
     //? on level completed
     onLevelComplete() {
-        const completed = this.registry.get("completedLevels") || 0;
-        this.registry.set("completedLevels", completed + 1);
+        let completed = this.registry.get('completedLevels') || 0;
+        completed = Math.min(completed + 1, 3);
+        this.registry.set('completedLevels', completed);
     }
 
     handleSettings() {
