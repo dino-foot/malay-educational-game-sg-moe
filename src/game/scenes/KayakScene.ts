@@ -115,6 +115,14 @@ export class KaysakScene extends Scene {
 
         this.handleSettings();
         this.createHUD();
+
+        // debug 
+        this.time.delayedCall(2, () => {
+            // this.scene.pause();
+            this.scene.launch("GameOver", {
+                currentScore: this.SCORE,
+            });
+        });
     }
 
     createHUD() {

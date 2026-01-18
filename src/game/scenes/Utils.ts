@@ -169,6 +169,7 @@ export class Utils {
 
     static openSettings(scene: Phaser.Scene) {
         scene.scene.launch("SettingsMenu", { from: scene.scene.key });
+        scene.scene.bringToTop('SettingsMenu');
         scene.scene.pause();
     }
 

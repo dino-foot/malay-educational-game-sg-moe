@@ -44,9 +44,13 @@ export class GameOver extends Scene {
         const backToMenu = this.add.image(0, 0, "back-to-menu").setOrigin(0.5).setDepth(12).setScale(0.8);
         Phaser.Display.Align.In.BottomCenter(backToMenu, panelBg, 0, -20);
         Utils.MakeButton(this, backToMenu, () => {
-            console.log('back to menu');
+            // console.log('back to menu');
             this.scene.start('MainMenu');
             this.scene.bringToTop('MainMenu');
+
+            // this.scene.stop();                 // stop GameOver
+            // this.scene.resume('MainMenu');     // resume paused menu
+            // this.scene.bringToTop('MainMenu');
         });
     }
 }
