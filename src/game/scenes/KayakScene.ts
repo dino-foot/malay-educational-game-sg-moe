@@ -309,7 +309,7 @@ export class KaysakScene extends Scene {
     private clearLevel() {
         //? clear level for
         if (this.currentLevelIndex >= KAYAK_LEVEL_DATA.length - 1) {
-            console.log("CleanupLevel Gameover >> ", this.currentLevelIndex, this.randomizedLevels);
+            // console.log("CleanupLevel Gameover >> ", this.currentLevelIndex, this.randomizedLevels);
             this.onLevelComplete();
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
@@ -407,6 +407,7 @@ export class KaysakScene extends Scene {
             .map((level) => level.correctWord)
             .filter((word) => word !== correctWord);
         Phaser.Utils.Array.Shuffle(pool);
+        // console.log('getRandomWorngWord', pool.slice(0, count));
         return pool.slice(0, count);
     }
 
