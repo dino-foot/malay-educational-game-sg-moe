@@ -45,7 +45,7 @@ export const KAYAK_LEVEL_DATA: KayakLevelData[] = [
     },
     {
         id: 8,
-        correctWord: "Terbelalak",
+        correctWord: "Terbeliak",
         fillinTheGap: "Mata Umar ___________________ apabila ternampak Tanggang.",
         hintSentence: "Mata Ali terbelalak apabila dia melihat kek hari lahir yang besar dan cantik itu."
     },

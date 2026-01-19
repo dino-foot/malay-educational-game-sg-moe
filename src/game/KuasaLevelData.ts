@@ -45,7 +45,7 @@ export const KUASA_LEVEL_DATA: TrainLevelData[] = [
     },
     {
         id: 8,
-        correctWord: "Terbelalak",
+        correctWord: "Terbeliak",
         hintWord: "Membuka mata dengan besar.",
         hintSentence: "Mata Umar ______ apabila ternampak Tanggang.",
     },
