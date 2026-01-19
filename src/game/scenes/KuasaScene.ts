@@ -3,6 +3,7 @@ import { Utils } from "./Utils";
 import { KUASA_LEVEL_DATA } from "../KuasaLevelData";
 import { SoundUtil } from "./SoundUtil";
 import { TrainLevelData } from "../LevelData";
+import { ScoreFeedbackUtil } from "./ScoreFeedbackUtil";
 
 export class KuasaScene extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -53,6 +54,8 @@ export class KuasaScene extends Scene {
     randomizeQuestion = false;
     isCrossLevel5 = false;
     wordsList = [];
+    train1wordsList = [];
+    train2wordsList = [];
     lifePulseTween: Phaser.Tweens.Tween;
 
     constructor() {
@@ -70,7 +73,12 @@ export class KuasaScene extends Scene {
         this.randomizedLevels = [];
         this.isCrossLevel5 = false;
         this.wordsList = [];
+        this.train1wordsList = [];
+        this.train2wordsList = [];
         this.resetLives();
+
+        SoundUtil.init(this);
+        SoundUtil.playBgMusic('kuasaBgMusic');
     }
 
     create() {
@@ -90,13 +98,13 @@ export class KuasaScene extends Scene {
             this.randomizedLevels = KUASA_LEVEL_DATA;
         }
 
-        //! debug level
-        const debugButton = this.add.image(400, 400, 'close-btn').setDepth(1000).setScale(0.5);
-        Utils.MakeButton(this, debugButton, () => {
-            SoundUtil.playClick();
-            this.currentLevelIndex += 1;
-            console.log('level ', this.currentLevelIndex);
-        });
+        //? debug level
+        // const debugButton = this.add.image(400, 400, 'close-btn').setDepth(1000).setScale(0.5);
+        // Utils.MakeButton(this, debugButton, () => {
+        //     SoundUtil.playClick();
+        //     this.currentLevelIndex += 1;
+        //     console.log('level ', this.currentLevelIndex);
+        // });
 
         this.handleSettings();
         this.createHUD();
@@ -155,6 +163,9 @@ export class KuasaScene extends Scene {
 
         // this.startTrainSpawners(0);
         this.wordsList = this.getLevelWords(4);
+        this.train1wordsList = [this.wordsList[0], this.wordsList[1]];
+        this.train2wordsList = [this.wordsList[2], this.wordsList[3]];
+        // console.log('words-list ', this.wordsList);
         this.spawnBottomTrain();
         // this.spawnTopTrain();
     }
@@ -180,14 +191,11 @@ export class KuasaScene extends Scene {
 
     cleanupLevel() {
         console.log("cleanup level ", this.currentLevelIndex);
-
-        if (this.currentLevelIndex >= this.randomizedLevels.length) {
-            console.log("Reached end of the level set!");
+        if (this.currentLevelIndex >= this.randomizedLevels.length - 1) {
             this.onLevelComplete(); // level complete callback
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
             });
-
             return;
         }
 
@@ -198,74 +206,35 @@ export class KuasaScene extends Scene {
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
         //? update random answers
-        let words: string[] = [
-            this.randomizedLevels[this.currentLevelIndex].correctWord,
-            ...this.getRandomWrongWords(this.currentLevelIndex, this.randomizedLevels[this.currentLevelIndex].correctWord, this.wordsContainersList.length - 1),
-        ];
+        this.wordsList = this.getLevelWords(4);
+        this.train1wordsList = [this.wordsList[0], this.wordsList[1]];
+        this.train2wordsList = [this.wordsList[2], this.wordsList[3]];
 
-        console.log("next level words cont >> ", this.wordsContainersList.length);
-
-        words = Phaser.Utils.Array.Shuffle(words);
-        // const newWords = ['hello-world'];
-        this.wordsContainersList.forEach((container, index) => {
-            if (!words[index]) return;
-            const text = container.getData("text") as Phaser.GameObjects.Text;
-            container.setData("word", words[index]);
-            text.setText(words[index]);
-            // optional: re-center after text change
-            Phaser.Display.Align.In.Center(text, container.getData("bg"));
-        });
+        // this.wordsList = this.getLevelWords(2);
+        // console.log('cleanup ', this.wordsList, this.train1wordsList, this.train2wordsList);
     }
 
-    private createLives() {
-        this.lives = [];
-        this.currentLives = this.maxLives;
-
-        for (let i = 0; i < this.maxLives; i++) {
-            const container = this.add.container(0, 0).setDepth(10);
-            const fullHeart = this.add.image(0, 0, "heart").setOrigin(0.5).setScale(1);
-            const emptyHeart = this.add.image(0, 0, "empty_heart").setOrigin(0.5).setScale(1).setVisible(false);
-
-            container.setSize(fullHeart.width, fullHeart.height);
-            container.add([fullHeart, emptyHeart]);
-            Phaser.Display.Align.In.TopLeft(container, this.bgAlignZone, -100 - i * 80, -25);
-
-            this.lives.push({
-                container,
-                full: fullHeart,
-                empty: emptyHeart,
-            });
-        }
-        this.lifePulseTween = Utils.StartLifePulseTween(
-            this,
-            this.lives.map(l => l.container)
-        );
-    }
-
-    private createTrain(x: number, y: number, midCount: number = 1) {
+    private createTrain(x: number, y: number, words: string[]) {
         const train = this.add.container(x, y).setDepth(10);
 
         let offsetX = 0;
         const left = this.add.image(offsetX - 36, 0, "left_train").setOrigin(0.5, 0.5);
         offsetX += left.width;
         train.add(left);
-
-        const words: string[] = [
-            this.randomizedLevels[this.currentLevelIndex].correctWord,
-            ...this.getRandomWrongWords(this.currentLevelIndex, this.randomizedLevels[this.currentLevelIndex].correctWord, midCount),
-        ];
+        // console.log('create-train >> ', words);
 
         //? only for mid train add word card
-        for (let i = 0; i < words.length - 1; i++) {
+        for (let i = 0; i < words.length; i++) {
             const mid = this.add.image(offsetX, 0, "mid_train").setOrigin(0.5, 0.5);
             offsetX += mid.width - 1;
             train.add(mid);
 
             // rnd word that user must click
             const wordContainer = this.add.container(0, 0).setDepth(100).setSize(300, 100);
-            wordContainer.setData("word", words[i]); // ✅ store word here
             const bg = this.add.image(0, 0, "kayak_rnd_word").setOrigin(0.5).setScale(1.1).setInteractive({ useHandCursor: true });
             const text = this.add.text(0, 0, words[i], this.geBlacktextStyle());
+
+            wordContainer.setData("word", words[i]); // ✅ store word here
             wordContainer.setData("text", text);
             wordContainer.setData("bg", bg);
 
@@ -292,7 +261,7 @@ export class KuasaScene extends Scene {
         const trainWidth = train.getBounds().width;
         const startX = direction === "left" ? cam.width + trainWidth / 2 : -trainWidth;
         const endX = direction === "left" ? -trainWidth : cam.width + trainWidth / 2;
-        console.log(endX, startX);
+        // console.log(endX, startX);
 
         train.x = startX;
         this.tweens.add({
@@ -300,7 +269,11 @@ export class KuasaScene extends Scene {
             x: endX,
             duration: Utils.GetTrainSpeedByLevel(this.currentLevelIndex, (this.currentLevelIndex >= 5) ? true : false),
             ease: "Linear",
+            onStart: () => {
+                SoundUtil.playSfx('trainPassing');
+            },
             onComplete: () => {
+                SoundUtil.stopSfx('trainPassing');
                 train.destroy();
                 onComplete?.();
             },
@@ -308,21 +281,24 @@ export class KuasaScene extends Scene {
     }
 
     private handleAnswerSubmit(container: Phaser.GameObjects.Container) {
+        if (this.currentLevelIndex >= this.randomizedLevels.length - 1) {
+            return;
+        }
+
         const selectedWord = container.getData("word");
         const correctWord = this.randomizedLevels[this.currentLevelIndex].correctWord;
-
-        console.log("clicked >> ", selectedWord, correctWord);
-
+        // console.log("clicked >> ", selectedWord, correctWord);
         if (selectedWord === correctWord) {
-            // ✅ CORRECT ANSWER
-            console.log("✅ Correct Answer:", selectedWord);
+            // console.log("✅ Correct Answer:", selectedWord);
+            SoundUtil.playSfx('correctAnswer');
             this.SCORE += Utils.corectAnswerPoint;
+            ScoreFeedbackUtil.show(this, this.cameras.main.centerX, this.cameras.main.centerY, 10, true);
             this.currentLevelIndex += 1;
             this.cleanupLevel();
-            // todo second train after level 5
+            // second train after level 5
         } else {
-            // ❌ WRONG ANSWER
-            console.log("❌ Wrong Answer:", selectedWord);
+            // console.log("❌ Wrong Answer:", selectedWord);
+            ScoreFeedbackUtil.show(this, this.cameras.main.centerX, this.cameras.main.centerY, 5, false);
             this.SCORE -= Utils.wrongAnswerPoint;
             this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
             this.loseLife();
@@ -333,13 +309,18 @@ export class KuasaScene extends Scene {
 
     //? on level completed
     onLevelComplete() {
-        const completed = this.registry.get("completedLevels") || 0;
-        this.registry.set("completedLevels", completed + 1);
+        let completed = this.registry.get('completedLevels') || 0;
+        completed = Math.min(completed + 1, 3);
+        this.registry.set('completedLevels', completed);
     }
 
     private spawnBottomTrain() {
-        const train = this.createTrain(0, 695, 4).setScale(0.8);
+        const wordsToSpawn = this.currentLevelIndex <= 4 ? this.wordsList : this.train1wordsList;
+        console.log('bottom-train words ', wordsToSpawn);
+
+        const train = this.createTrain(0, 695, wordsToSpawn).setScale(0.8);
         train.setName("bottomTrain");
+
         this.startTrainOneWay(train, "left", () => {
             // till level 4 less single train
             if (this.currentLevelIndex < 5) {
@@ -353,8 +334,12 @@ export class KuasaScene extends Scene {
     }
 
     private spawnTopTrain() {
-        const train = this.createTrain(0, 392, 3).setScale(0.8);
+        const wordsToSpawn = this.currentLevelIndex < 5 ? this.wordsList : this.train2wordsList;
+        console.log('top-train words ', wordsToSpawn);
+
+        const train = this.createTrain(0, 392, wordsToSpawn).setScale(0.8);
         train.setName("topTrain");
+
         this.startTrainOneWay(train, "right", () => {
             if (this.currentLevelIndex < 5) {
                 this.spawnBottomTrain();
@@ -366,7 +351,7 @@ export class KuasaScene extends Scene {
     }
 
     private getLevelWords(totalCount = 4): string[] {
-        return [
+        let list = [
             this.randomizedLevels[this.currentLevelIndex].correctWord,
             ...this.getRandomWrongWords(
                 this.currentLevelIndex,
@@ -374,6 +359,9 @@ export class KuasaScene extends Scene {
                 totalCount - 1
             ),
         ];
+
+        Phaser.Utils.Array.Shuffle(list);
+        return list;
     }
 
     private getSplitWords() {
@@ -402,15 +390,48 @@ export class KuasaScene extends Scene {
         return pool.slice(0, count);
     }
 
+    private createLives() {
+        this.lives = [];
+        this.currentLives = this.maxLives;
+
+        for (let i = 0; i < this.maxLives; i++) {
+            const container = this.add.container(0, 0).setDepth(10);
+            const fullHeart = this.add.image(0, 0, "heart").setOrigin(0.5).setScale(1);
+            const emptyHeart = this.add.image(0, 0, "empty_heart").setOrigin(0.5).setScale(1).setVisible(false);
+
+            container.setSize(fullHeart.width, fullHeart.height);
+            container.add([fullHeart, emptyHeart]);
+            Phaser.Display.Align.In.TopLeft(container, this.bgAlignZone, -100 - i * 80, -25);
+
+            this.lives.push({
+                container,
+                full: fullHeart,
+                empty: emptyHeart,
+            });
+        }
+
+        this.lifePulseTween = Utils.StartLifePulseTween(this, this.lives.map(l => l.container));
+    }
+
     private loseLife() {
         if (this.currentLives <= 0) {
             console.log("No lives left!");
             return;
         }
+        SoundUtil.playSfx('wrongAnswer');
         this.currentLives--;
         const life = this.lives[this.currentLives];
         life.full.setVisible(false);
         life.empty.setVisible(true);
+
+        // stop all tween
+        Utils.StopLifePulseTween(this, this.lives.map(l => l.container));
+
+        // re-apply 
+        Utils.StartLifePulseTween(this, this.lives
+            .filter(l => l.full.visible == true)
+            .map(l => l.container)
+        );
 
         if (this.currentLives === 0) {
             console.log("Game Over - No lives left");

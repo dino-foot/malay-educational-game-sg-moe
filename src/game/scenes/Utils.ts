@@ -187,7 +187,7 @@ export class Utils {
         }
 
         const finalSpeed = Math.max(speed, MIN_SPEED);
-        console.log("final speed", finalSpeed);
+        // console.log("final speed", finalSpeed);
         return finalSpeed;
     }
 

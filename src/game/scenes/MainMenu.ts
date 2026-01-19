@@ -86,7 +86,7 @@ export class MainMenu extends Scene {
         this.updateProgress(completedLevels);
 
         //? debug start bas scene directly
-        // this.scene.start("BasScene");
+        // this.scene.start("KuasaScene");
     } // end
 
     private createMenuButtons(x: number, y: number) {
