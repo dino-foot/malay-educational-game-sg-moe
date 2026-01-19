@@ -175,8 +175,8 @@ export class Utils {
 
     static GetTrainSpeedByLevel(levelIndex, randomize = false) {
         const BASE_SPEED = 15500; // level 1
-        const SPEED_DECREMENT = 1500;
-        const MIN_SPEED = 4000; // safety clamp
+        const SPEED_DECREMENT = 1200;
+        const MIN_SPEED = 5000; // safety clamp
         // base speed calculation
         let speed = BASE_SPEED - levelIndex * SPEED_DECREMENT;
 
