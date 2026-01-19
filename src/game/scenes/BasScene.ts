@@ -149,6 +149,7 @@ export class BasScene extends Scene {
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
             SoundUtil.playClick();
+            SoundUtil.stopSfx('busRollForward');
             this.scene.start("MainMenu");
         });
 
@@ -320,6 +321,7 @@ export class BasScene extends Scene {
 
         if (this.levelDataIndex == 10) {
             console.log('cleanup level gameover ', this.levelDataIndex, this.currentStepIndex)
+            SoundUtil.stopSfx('busRollForward');
             this.onLevelComplete();
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
@@ -561,6 +563,7 @@ export class BasScene extends Scene {
         if (this.currentLives === 0) {
             console.log("Game Over - No lives left");
             //? show gameover scene
+            SoundUtil.stopSfx('busRollForward');
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
             });
