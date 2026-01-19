@@ -115,13 +115,6 @@ export class KaysakScene extends Scene {
 
         this.handleSettings();
         this.createHUD();
-
-        // debug 
-        // this.time.delayedCall(2, () => {
-        //     this.scene.launch("GameOver", {
-        //         currentScore: this.SCORE,
-        //     });
-        // });
     }
 
     createHUD() {
@@ -135,6 +128,7 @@ export class KaysakScene extends Scene {
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
             SoundUtil.playClick();
+            SoundUtil.stopSfx('paddleBoat');
             this.scene.start("MainMenu");
         });
 
@@ -302,12 +296,6 @@ export class KaysakScene extends Scene {
                 // this.currentStepIndex++;
                 this.clearLevel();
                 this.time.delayedCall(2, () => SoundUtil.stopSfx('paddleBoat'));
-
-                // if (this.currentLevelIndex >= this.stepsMarkers.length) {
-                //     //? load next scene
-                //     console.log("level completed");
-                //     Utils.FadeToScene(this, "MainMenu");
-                // }
                 // console.log(`Level ${this.currentLevelIndex} | speed duration: ${Math.round(duration)}ms`);
             },
         });
@@ -315,9 +303,10 @@ export class KaysakScene extends Scene {
 
     private clearLevel() {
         //? clear level for
-        if (this.currentLevelIndex >= KAYAK_LEVEL_DATA.length - 1) {
+        if (this.currentLevelIndex === this.randomizedLevels.length - 1) {
             // console.log("CleanupLevel Gameover >> ", this.currentLevelIndex, this.randomizedLevels);
             this.onLevelComplete();
+            SoundUtil.stopSfx('paddleBoat')
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
             });
@@ -367,6 +356,7 @@ export class KaysakScene extends Scene {
         if (this.currentLives === 0) {
             console.log("Game Over - No lives left");
             //? show gameover scene
+            SoundUtil.stopSfx('paddleBoat')
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
             });
