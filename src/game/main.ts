@@ -47,3 +47,5 @@ const StartGame = (parent: string) => {
 }
 
 export default StartGame;
+
+console.log('version 0.2 ❤️❤️❤️');
