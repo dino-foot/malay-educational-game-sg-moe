@@ -121,6 +121,7 @@ export class KuasaScene extends Scene {
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
             SoundUtil.playClick();
+            SoundUtil.stopSfx('trainPassing');
             this.scene.start("MainMenu");
         });
 
@@ -191,8 +192,9 @@ export class KuasaScene extends Scene {
 
     cleanupLevel() {
         console.log("cleanup level ", this.currentLevelIndex);
-        if (this.currentLevelIndex >= this.randomizedLevels.length - 1) {
+        if (this.currentLevelIndex === this.randomizedLevels.length) {
             this.onLevelComplete(); // level complete callback
+            SoundUtil.stopSfx('trainPassing');
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
             });
@@ -281,7 +283,7 @@ export class KuasaScene extends Scene {
     }
 
     private handleAnswerSubmit(container: Phaser.GameObjects.Container) {
-        if (this.currentLevelIndex >= this.randomizedLevels.length - 1) {
+        if (this.currentLevelIndex === this.randomizedLevels.length) {
             return;
         }
 
@@ -436,6 +438,7 @@ export class KuasaScene extends Scene {
         if (this.currentLives === 0) {
             console.log("Game Over - No lives left");
             //? show gameover scene
+            SoundUtil.stopSfx('trainPassing');
             this.scene.launch("GameOver", {
                 currentScore: this.SCORE,
             });
