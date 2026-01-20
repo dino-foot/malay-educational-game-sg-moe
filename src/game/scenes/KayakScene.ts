@@ -386,19 +386,6 @@ export class KaysakScene extends Scene {
         });
     }
 
-    private getextStyle() {
-        return {
-            fontSize: "30px",
-            color: "#000",
-            fontFamily: "nunito",
-            fontStyle: "bold",
-            align: "center",
-            wordWrap: {
-                width: this.questionPanel.getBounds().width,
-            },
-        };
-    }
-
     private getRandomWrongWords(currentIndex: number, correctWord: string, count = 3): string[] {
         const pool = KAYAK_LEVEL_DATA.filter((_, index) => index !== currentIndex)
             .map((level) => level.correctWord)
@@ -505,5 +492,18 @@ export class KaysakScene extends Scene {
     private track<T extends Phaser.GameObjects.GameObject>(obj: T, type: keyof typeof this.levelObjects): T {
         this.levelObjects[type].push(obj as any);
         return obj;
+    }
+
+    private getextStyle() {
+        return {
+            fontSize: "30px",
+            color: "#000",
+            fontFamily: "nunito",
+            fontStyle: "bold",
+            align: "center",
+            wordWrap: {
+                width: this.questionPanel.getBounds().width,
+            },
+        };
     }
 }
