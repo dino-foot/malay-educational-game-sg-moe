@@ -129,7 +129,8 @@ export class KaysakScene extends Scene {
         Utils.MakeButton(this, this.backButton, () => {
             SoundUtil.playClick();
             SoundUtil.stopSfx('paddleBoat');
-            this.scene.start("MainMenu");
+            // this.scene.start("MainMenu");
+            Utils.FadeToScene(this, 'MainMenu');
         });
 
         // dragable words

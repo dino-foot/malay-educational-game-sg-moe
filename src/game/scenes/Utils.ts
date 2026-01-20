@@ -39,7 +39,7 @@ export class Utils {
         letterScale: 0.75,
         slotScale: 0.9,
         spacing: 150,
-        spacingOfRandomLetter: 110,
+        spacingOfRandomLetter: 150,
     };
 
     public static WORD_SCALE_CONFIG: {
@@ -51,8 +51,8 @@ export class Utils {
         };
     } = {
             // 8: { letterScale: 0.8, slotScale: 0.7, spacing: 105, verticalOffset: 20 },
-            12: { letterScale: 0.7, slotScale: 0.7, spacing: 105, spacingOfRandomLetter: 90 },
-            14: { letterScale: 0.6, slotScale: 0.6, spacing: 90, spacingOfRandomLetter: 80 },
+            12: { letterScale: 0.75, slotScale: 0.7, spacing: 105, spacingOfRandomLetter: 120 },
+            14: { letterScale: 0.65, slotScale: 0.6, spacing: 90, spacingOfRandomLetter: 110 },
         };
 
     public static CenterXY(game: Phaser.Game): Phaser.Math.Vector2 {

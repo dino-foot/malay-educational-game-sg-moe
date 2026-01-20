@@ -138,7 +138,7 @@ export class Preloader extends Scene {
     } // end
 
     create() {
-        // this.scene.start("SplashScene");
-        this.scene.start("MainMenu"); //? debug only
+        this.scene.start("SplashScene");
+        // this.scene.start("MainMenu"); //? debug only
     }
 }

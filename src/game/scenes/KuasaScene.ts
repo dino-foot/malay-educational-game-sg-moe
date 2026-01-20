@@ -31,7 +31,6 @@ export class KuasaScene extends Scene {
     scoreText: Phaser.GameObjects.Text;
     questionPanel: GameObjects.Image;
     questionText: GameObjects.Text;
-    draggableLetters: any[];
     levelObjects: {
         texts: Phaser.GameObjects.Text[];
         images: Phaser.GameObjects.Image[];
@@ -122,7 +121,8 @@ export class KuasaScene extends Scene {
         Utils.MakeButton(this, this.backButton, () => {
             SoundUtil.playClick();
             SoundUtil.stopSfx('trainPassing');
-            this.scene.start("MainMenu");
+            Utils.FadeToScene(this, 'MainMenu');
+            // this.scene.start("MainMenu");
         });
 
         const beamContaier = this.add.container(0, 0).setName("beamContainer").setDepth(3);

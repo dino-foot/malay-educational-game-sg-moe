@@ -61,6 +61,6 @@ export const BUS_LEVELS_DATA: LevelData[] = [
         id: 10,
         correctWord: "TERUJA",
         hintSentence: "Sangat gembira atau bersemangat tentang sesuatu.",
-        imageKey: null // "teruja"
+        imageKey: null //! dont use image for this question use sentenece
     }
 ];

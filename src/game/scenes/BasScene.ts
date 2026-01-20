@@ -52,6 +52,7 @@ export class BasScene extends Scene {
     randomizedLevels: LevelData[] = [];
     randomizeQuestion = false;
     private lifePulseTween?: Phaser.Tweens.Tween;
+    hintModePool: boolean[];
 
     constructor() {
         super("BasScene");
@@ -73,6 +74,10 @@ export class BasScene extends Scene {
         this.randomizedLevels = [];
         this.resetLives();
         this.cleanupCheckPoints();
+        this.hintModePool = Phaser.Utils.Array.Shuffle([
+            true, true, true, true, true, // image
+            false, false, true, true, true           // text
+        ]);
 
         SoundUtil.init(this);
         SoundUtil.playBgMusic('busBgMusic');
@@ -137,6 +142,11 @@ export class BasScene extends Scene {
     }
 
     createHUD() {
+        this.hintModePool = Phaser.Utils.Array.Shuffle([
+            true, true, true, true, true, // image
+            false, false, false, false, false // text
+        ]);
+
         this.scoreBg = this.add.image(0, 0, "score").setOrigin(0.5).setDepth(12).setScale(0.9);
         this.scoreText = this.add.text(0, 0, "0", Utils.fontStyle).setOrigin(0.5).setDepth(13);
         Phaser.Display.Align.In.TopRight(this.scoreBg, this.bgAlignZone, -80);
@@ -189,7 +199,7 @@ export class BasScene extends Scene {
             return;
         }
 
-        const levelData = this.randomizedLevels[this.levelDataIndex]; //BUS_LEVELS_DATA[8];
+        const levelData = this.randomizedLevels[this.levelDataIndex]; //BUS_LEVELS_DATA[this.levelDataIndex];
         const correctWord = levelData.correctWord;
         const wordLength = correctWord.length;
         const hintSentence = levelData.hintSentence;
@@ -201,27 +211,51 @@ export class BasScene extends Scene {
         this.hintImg?.setVisible(false);
 
         // image or question
-        // if imgkey = null show question
+        //? if imgkey = null show question
         // Get question text object once
         const question = this.textBoxContainer.getByName("question") as Phaser.GameObjects.Text;
 
-        // Case 1: No image → always show text
-        if (levelData.id === 1 || levelData.id === 10) {
-            question.setText(hintSentence);
-            this.textBoxContainer.setVisible(true);
-        } else {
-            // Case 2: Image exists → random choice
-            const showImage = Phaser.Math.Between(0, 1) === 1;
-            if (showImage) {
-                this.hintImg?.destroy(); // cleanup old image if any
-                this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setDepth(11);
-                Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
-                this.imageBoxContainer.setVisible(true);
-            } else {
+        console.log('setupGameplay hint mode >> ', this.hintModePool);
+        if (this.hintModePool[this.levelDataIndex] === true) {
+            // show image
+            if (levelData.id === 1 || levelData.id === 10) {
                 question.setText(hintSentence);
                 this.textBoxContainer.setVisible(true);
+            } else {
+                this.hintImg?.destroy();
+                this.hintImg = this.add.image(0, 0, imageKey)
+                    .setOrigin(0.5)
+                    .setDepth(11);
+
+                Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
+                this.imageBoxContainer.setVisible(true);
             }
         }
+        else {
+            // show text
+            question.setText(hintSentence);
+            this.textBoxContainer.setVisible(true);
+        }
+
+        //? 50/50 img and text 
+        // if (levelData.id === 1 || levelData.id === 10) {
+        //     question.setText(hintSentence);
+        //     this.textBoxContainer.setVisible(true);
+        // } else {
+        //     const showImage = this.hintModePool[this.levelDataIndex]; // controlled randomness
+        //     if (showImage) {
+        //         this.hintImg?.destroy();
+        //         this.hintImg = this.add.image(0, 0, imageKey)
+        //             .setOrigin(0.5)
+        //             .setDepth(11);
+
+        //         Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
+        //         this.imageBoxContainer.setVisible(true);
+        //     } else {
+        //         question.setText(hintSentence);
+        //         this.textBoxContainer.setVisible(true);
+        //     }
+        // }
 
         // this.hintImg = this.add.image(0, 0, imageKey).setOrigin(0.5).setScale(1).setDepth(11);
         // Phaser.Display.Align.In.Center(this.hintImg, this.imageBoxContainer);
@@ -259,19 +293,18 @@ export class BasScene extends Scene {
 
         //? on each correct answer
         //! debug
-        // const debugButton = this.add.image(400, 600, 'close-btn').setDepth(1000).setScale(0.5);
+        // const debugButton = this.add.image(200, 600, 'close-btn').setDepth(1000).setScale(0.5);
         // Utils.MakeButton(this, debugButton, () => {
         //     this.validateWord();
         // });
+
         // this.OnEachStepComplete();
         // this.time.addEvent({
         //     delay: 10000,
         //     repeat: 10,
         //     callback: () => this.OnEachStepComplete()
         // });
-        // this.scene.launch("GameOver", {
-        //     currentScore: this.SCORE,
-        // });
+
     }
 
     private OnEachStepComplete() {

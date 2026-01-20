@@ -108,7 +108,7 @@ https://pixabay.com/sound-effects/nature-paddle-boat-on-waterwav-14861/
             // },
         });
 
-        this.time.delayedCall(10000, () => {
+        this.time.delayedCall(15000, () => {
             this.exitCredits();
         });
 
