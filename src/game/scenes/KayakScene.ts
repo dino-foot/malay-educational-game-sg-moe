@@ -150,10 +150,7 @@ export class KaysakScene extends Scene {
 
         const padding = 10;
         const kayakFontStyle = this.getextStyle();
-        let questionType = Math.random() > 0.5 ? "hintSentence" : "fillinTheGap";
-
-        //? question text debug
-        // questionType = "hintSentence";
+        let questionType = Math.random() > 0.5 ? "hintSentence" : "fillinTheGap"; //'fillinTheGap'; //? debug only
 
         if (questionType == "fillinTheGap") {
             this.createFillIntheGapZone(levelIndex);
@@ -193,6 +190,7 @@ export class KaysakScene extends Scene {
             } else {
                 // make them dragable to the fillInThegap
                 this.input.setDraggable(container);
+                this.input.dragDistanceThreshold = 30;
                 // store original position (important for reset)
                 container.setData({
                     startX: container.x,
@@ -459,9 +457,11 @@ export class KaysakScene extends Scene {
                 gameObject.disableInteractive();
 
                 this.snapToGap(gameObject);
+                console.log("Correct answer dropped in the gap!");
                 this.handleScore(true);
             } else {
                 this.resetWordPosition(gameObject);
+                console.log("Wrong answer or not over the gap.");
                 this.handleScore(false);
             }
         });
