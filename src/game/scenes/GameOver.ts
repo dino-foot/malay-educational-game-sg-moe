@@ -38,7 +38,7 @@ export class GameOver extends Scene {
         Phaser.Display.Align.In.Center(scoreTitle, panelBg);
 
         // console.log(this.currentScore, this.highScore)
-        this.scoreText = this.add.text(0, 0, `${this.currentScore} / ${this.highScore}`, Utils.scoreFontStyle);
+        this.scoreText = this.add.text(0, 0, `${this.currentScore} / ${100}`, Utils.scoreFontStyle);
         Phaser.Display.Align.In.Center(this.scoreText, panelBg, 0, 30);
 
         const backToMenu = this.add.image(0, 0, "back-to-menu").setOrigin(0.5).setDepth(12).setScale(0.8);
