@@ -17,6 +17,10 @@ export class SoundUtil {
             this.clickSfx = scene.sound.add("buttonClick1", { volume: 1 });
         }
 
+        // reset all the sfx
+        this.stopSfx('trainPassing');
+        this.stopSfx('paddleBoat');
+        this.stopSfx('busRollForward');
         this.applySettings();
     }
 

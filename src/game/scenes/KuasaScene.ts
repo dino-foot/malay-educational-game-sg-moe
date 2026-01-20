@@ -112,7 +112,7 @@ export class KuasaScene extends Scene {
 
     createHUD() {
         this.scoreBg = this.add.image(0, 0, "score").setOrigin(0.5).setDepth(12).setScale(0.9);
-        this.scoreText = this.add.text(0, 0, "0000", Utils.fontStyle).setOrigin(0.5).setDepth(13);
+        this.scoreText = this.add.text(0, 0, "0", Utils.fontStyle).setOrigin(0.5).setDepth(13);
         Phaser.Display.Align.In.TopRight(this.scoreBg, this.bgAlignZone, -80);
         Phaser.Display.Align.In.RightCenter(this.scoreText, this.scoreBg, -70, 0);
 
