@@ -42,7 +42,7 @@ export class BasScene extends Scene {
     minDuration = 400; // fastest
     maxLevels = 10;
     currentLevel = 0;
-    currentStepIndex: number = 0;
+    currentCheckPointIndex: number = 0;
     levelDataIndex: number = 0; // should be 0
     SCORE = 0;
     scoreBg: Phaser.GameObjects.Image;
@@ -65,13 +65,14 @@ export class BasScene extends Scene {
         this.cameras.main.setBackgroundColor("white");
         this.SCORE = 0;
         this.maxLevels = 3;
-        this.currentStepIndex = 0;
+        this.currentCheckPointIndex = 0;
         this.levelDataIndex = 0;
         this.currentLives = 3;
         this.maxLives = 3;
         this.randomizeQuestion = true;
         this.randomizedLevels = [];
         this.resetLives();
+        this.cleanupCheckPoints();
 
         SoundUtil.init(this);
         SoundUtil.playBgMusic('busBgMusic');
@@ -88,8 +89,6 @@ export class BasScene extends Scene {
             this.randomizedLevels = BUS_LEVELS_DATA;
         }
 
-        console.log(this.randomizedLevels);
-
         this.bgAlignZone = this.add.zone(x, y, width, height);
         // Word Rects
         this.wordRects = this.add.image(x, y, "rect_bus").setOrigin(0.5).setScale(1);
@@ -101,9 +100,10 @@ export class BasScene extends Scene {
             .setScale(1);
 
         //? image box container
-        this.imageBoxContainer = this.add.container(0, 0).setDepth(10);
-        Phaser.Display.Align.In.LeftCenter(this.imageBoxContainer, this.road, -180, 20);
-        const imageBox = this.add.image(0, 0, "image_box").setOrigin(0.5).setScale(0.9);
+        this.imageBoxContainer = this.add.container(0, 0).setDepth(11);
+        // Phaser.Display.Align.In.LeftCenter(this.imageBoxContainer, this.road, -180, 20);
+        Phaser.Display.Align.In.TopCenter(this.imageBoxContainer, this.bgAlignZone, 0, -240);
+        const imageBox = this.add.image(0, 0, "image_box").setOrigin(0.5).setScale(0.72);
         this.imageBoxContainer.add(imageBox);
         this.imageBoxContainer.setVisible(false); // disable by default
 
@@ -127,8 +127,8 @@ export class BasScene extends Scene {
         const sun = this.add.image(0, 0, "sun").setOrigin(0.5).setDepth(2).setScale(1);
         Utils.AlignTopRight(sun, this.bgAlignZone, -200, -50);
 
-        const levelTitleBg = this.add.image(0, 0, "bus-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.8);
-        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 0);
+        const levelTitleBg = this.add.image(0, 0, "bus-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.7);
+        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 20);
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
@@ -150,7 +150,8 @@ export class BasScene extends Scene {
         Utils.MakeButton(this, this.backButton, () => {
             SoundUtil.playClick();
             SoundUtil.stopSfx('busRollForward');
-            this.scene.start("MainMenu");
+            Utils.FadeToScene(this, 'MainMenu');
+            // this.scene.start('MainMenu');
         });
 
         // submit button
@@ -165,13 +166,13 @@ export class BasScene extends Scene {
 
         //? grey marks on bus track
         for (let i = 0; i < 10; i++) {
-            const { container, mark, flag, tick } = this.createMarker(0, 0);
+            const { container, mark, flag, tick } = this.createCheckPoints(0, 0);
             this.roadMarksList.push({ container, mark, flag, tick });
             Phaser.Display.Align.In.LeftCenter(container, this.busTrack, -280 + i * -115, 55);
         }
 
         // create bus
-        this.bus = this.add.image(0, 0, "bus").setOrigin(0.5).setScale(1).setDepth(12);
+        this.bus = this.add.image(0, 0, "bus").setOrigin(0.5).setScale(0.9).setDepth(12).setName("bus");
         Phaser.Display.Align.In.LeftCenter(this.bus, this.busTrack, -200, 40);
 
         this.input.on("drag", this.onDragLetter, this);
@@ -188,7 +189,7 @@ export class BasScene extends Scene {
             return;
         }
 
-        const levelData = this.randomizedLevels[this.levelDataIndex];
+        const levelData = this.randomizedLevels[this.levelDataIndex]; //BUS_LEVELS_DATA[8];
         const correctWord = levelData.correctWord;
         const wordLength = correctWord.length;
         const hintSentence = levelData.hintSentence;
@@ -253,10 +254,15 @@ export class BasScene extends Scene {
         Phaser.Display.Align.In.Center(wordZone, this.road);
 
         // create draggable letters
+        console.log('levelData.correctWord >> ', levelData.correctWord);
         this.draggableLetters = this.createPatternWordSlots(levelData.correctWord, wordZone);
 
         //? on each correct answer
         //! debug
+        // const debugButton = this.add.image(400, 600, 'close-btn').setDepth(1000).setScale(0.5);
+        // Utils.MakeButton(this, debugButton, () => {
+        //     this.validateWord();
+        // });
         // this.OnEachStepComplete();
         // this.time.addEvent({
         //     delay: 10000,
@@ -270,7 +276,8 @@ export class BasScene extends Scene {
 
     private OnEachStepComplete() {
         // stop if reached end
-        if (this.currentStepIndex >= this.roadMarksList.length) {
+        console.log(`checkpoint = ${this.currentCheckPointIndex} level data = ${this.levelDataIndex}`);
+        if (this.currentCheckPointIndex >= this.roadMarksList.length) {
             return;
         }
 
@@ -280,7 +287,8 @@ export class BasScene extends Scene {
         const progress = (this.currentLevel - 1) / (this.maxLevels - 1);
         const duration = Phaser.Math.Linear(this.baseDuration, this.minDuration, progress);
 
-        const targetMark = this.roadMarksList[this.currentStepIndex].container;
+        const checkPointIndex = this.currentCheckPointIndex + 1;
+        const targetMark = this.roadMarksList[checkPointIndex > 9 ? 9 : checkPointIndex].container;
         this.tweens.add({
             targets: this.bus,
             x: targetMark.x,
@@ -291,13 +299,12 @@ export class BasScene extends Scene {
             },
             onComplete: () => {
                 // show cheked flag
-                this.roadMarksList[this.currentStepIndex].mark.setVisible(false);
-                this.roadMarksList[this.currentStepIndex].tick.setVisible(true);
-                this.roadMarksList[this.currentStepIndex].flag.setVisible(true);
+                this.roadMarksList[this.currentCheckPointIndex].mark.setVisible(false);
+                this.roadMarksList[this.currentCheckPointIndex].tick.setVisible(true);
+                this.roadMarksList[this.currentCheckPointIndex].flag.setVisible(true);
 
                 this.incrementScore();
                 this.time.delayedCall(2, () => this.cleanupLevel());
-                // this.cleanupLevel();
 
                 SoundUtil.stopSfx('busRollForward');
                 // console.log(`Level ${this.currentLevel} | Bus speed duration: ${Math.round(duration)}ms`);
@@ -316,11 +323,11 @@ export class BasScene extends Scene {
 
         if (this.levelDataIndex < BUS_LEVELS_DATA.length) {
             this.levelDataIndex += 1;
-            this.currentStepIndex += 1;
+            this.currentCheckPointIndex += 1;
         }
 
         if (this.levelDataIndex == 10) {
-            console.log('cleanup level gameover ', this.levelDataIndex, this.currentStepIndex)
+            console.log('cleanup level gameover ', this.levelDataIndex, this.currentCheckPointIndex)
             SoundUtil.stopSfx('busRollForward');
             this.onLevelComplete();
             this.scene.launch("GameOver", {
@@ -332,9 +339,9 @@ export class BasScene extends Scene {
         this.disableButton(this.answerSubmitBtn);
     }
 
-    private createMarker(x: number, y: number) {
+    private createCheckPoints(x: number, y: number) {
         const container = this.add.container(x, y).setDepth(10);
-        const mark = this.add.image(0, 0, "grey_mark").setDepth(9);
+        const mark = this.add.image(0, 0, "grey_mark").setDepth(9).setScale(0.9);
         const flag = this.add.image(10, -70, "flag").setVisible(false).setOrigin(0.5).setDepth(10);
         const tick = this.add.image(0, 0, "green_tick").setVisible(false).setDepth(10);
 
@@ -342,13 +349,24 @@ export class BasScene extends Scene {
         return { container, mark, flag, tick };
     }
 
-    private createPatternWordSlots(word: string, zone: Phaser.GameObjects.Zone, slotSize: number = 100, spacing: number = 100) {
-        const letters = Phaser.Utils.Array.Shuffle(word.split(""));
+    private cleanupCheckPoints() {
+        this.roadMarksList.forEach((item) => {
+            item.container.destroy();
+            item.mark.destroy();
+            item.flag.destroy();
+            item.tick.destroy();
+        });
+        this.roadMarksList = [];
+    }
+
+    private createPatternWordSlots(words: string, zone: Phaser.GameObjects.Zone, slotSize: number = 100, spacing: number = 100) {
+        const letters = Phaser.Utils.Array.Shuffle(words.split(""));
         const center = zone.getCenter(new Phaser.Math.Vector2());
         spacing = this.getWordScaleConfig(letters.length).spacingOfRandomLetter;
+        // console.log('createPatternWordSlots >> ', spacing);
 
         const totalWidth = (letters.length - 1) * spacing;
-        const startX = center.x - totalWidth / 3;
+        const startX = 1 * center.x - totalWidth / 2;
         const draggableLetters = [];
 
         for (let i = 0; i < letters.length; i++) {
@@ -537,6 +555,40 @@ export class BasScene extends Scene {
     }
 
 
+    private incrementScore(addBonus: boolean = false) {
+        SoundUtil.playSfx('correctAnswer');
+        this.SCORE += Utils.corectAnswerPoint;
+        ScoreFeedbackUtil.show(this, this.cameras.main.centerX, this.cameras.main.centerY, 10, true);
+        if (addBonus) {
+            this.SCORE += Utils.correctAnswerBonus;
+            this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
+        }
+        this.scoreText.setText(this.SCORE.toString());
+        // todo handle wrong answer point for wrong answer
+    }
+
+    private getWordScaleConfig(wordLength: number) {
+        return Utils.WORD_SCALE_CONFIG[wordLength] ?? Utils.DEFAULT_WORD_SCALE_CONFIG;
+    }
+
+    //? on level completed
+    onLevelComplete() {
+        let completed = this.registry.get('completedLevels') || 0;
+        completed = Math.min(completed + 1, 3);
+        this.registry.set('completedLevels', completed);
+    }
+
+    handleSettings() {
+        // settings button (top-right)
+        this.settingsBtn = this.add.image(0, 0, "settings").setOrigin(0.5).setScale(0.9).setName("settingsButton").setDepth(100).setInteractive({ useHandCursor: true });
+
+        Utils.AlignTopRight(this.settingsBtn, this.bgAlignZone, -5, 0);
+        Utils.MakeButton(this, this.settingsBtn, () => {
+            SoundUtil.playClick();
+            Utils.openSettings(this);
+        });
+    }
+
     private loseLife() {
         if (this.currentLives <= 0) {
             console.log("No lives left!");
@@ -585,49 +637,15 @@ export class BasScene extends Scene {
         button.disableInteractive();
     }
 
-    private incrementScore(addBonus: boolean = false) {
-        SoundUtil.playSfx('correctAnswer');
-        this.SCORE += Utils.corectAnswerPoint;
-        ScoreFeedbackUtil.show(this, this.cameras.main.centerX, this.cameras.main.centerY, 10, true);
-        if (addBonus) {
-            this.SCORE += Utils.correctAnswerBonus;
-            this.SCORE = Phaser.Math.Clamp(this.SCORE, 0, 100);
-        }
-        this.scoreText.setText(this.SCORE.toString());
-        // todo handle wrong answer point for wrong answer
-    }
-
-    private getWordScaleConfig(wordLength: number) {
-        return Utils.WORD_SCALE_CONFIG[wordLength] ?? Utils.DEFAULT_WORD_SCALE_CONFIG;
-    }
-
-    //? on level completed
-    onLevelComplete() {
-        let completed = this.registry.get('completedLevels') || 0;
-        completed = Math.min(completed + 1, 3);
-        this.registry.set('completedLevels', completed);
-    }
-
-    handleSettings() {
-        // settings button (top-right)
-        this.settingsBtn = this.add.image(0, 0, "settings").setOrigin(0.5).setScale(0.9).setName("settingsButton").setDepth(100).setInteractive({ useHandCursor: true });
-
-        Utils.AlignTopRight(this.settingsBtn, this.bgAlignZone, -5, 0);
-        Utils.MakeButton(this, this.settingsBtn, () => {
-            SoundUtil.playClick();
-            Utils.openSettings(this);
-        });
-    }
-
     private getQuestionTxtStyle(imageToBoundIn) {
         return {
-            fontSize: "28px",
+            fontSize: "26px",
             color: "#000",
             fontFamily: "nunito",
             fontStyle: "bold",
             align: "center",
             wordWrap: {
-                width: imageToBoundIn.getBounds().width,
+                width: imageToBoundIn.getBounds().width - 20,
             },
         };
     }
