@@ -35,6 +35,8 @@ export class Preloader extends Scene {
         this.load.image("red_light", "assets/menu/red_light.png");
         this.load.image("yellow_light", "assets/menu/yellow_light.png");
 
+        this.load.video("splashVideo", "assets/videos/splash_video.mp4");
+
         // menu/bas music
         this.load.audio("mainMenuMusic", "assets/sounds/no-wait-to-you.mp3");
 
@@ -140,6 +142,6 @@ export class Preloader extends Scene {
         //  For example, you can define global animations here, so we can use them in other scenes.
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start("MainMenu");
+        this.scene.start("SplashSceneCre");
     }
 }

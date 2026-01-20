@@ -8,6 +8,8 @@ import { AUTO, Game } from 'phaser';
 import { Preloader } from './scenes/Preloader';
 import { SpinePlugin } from '@esotericsoftware/spine-phaser';
 import { SettingsScene } from './scenes/SettingsScene';
+import { SplashScene } from './scenes/SplashScene';
+import { CreditScene } from './scenes/CreditScene';
 
 const BASE_WIDTH = 1600;
 const BASE_HEIGHT = 900;
@@ -27,6 +29,8 @@ const config: Phaser.Types.Core.GameConfig = {
     scene: [
         Boot,
         Preloader,
+        SplashScene,
+        CreditScene,
         MainMenu,
         BasScene,
         KuasaScene,
