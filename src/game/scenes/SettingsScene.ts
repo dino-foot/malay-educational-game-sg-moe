@@ -78,19 +78,24 @@ export class SettingsScene extends Phaser.Scene {
         checkMark1.setVisible(this.soundOn);
 
         music.on("pointerdown", () => {
-            // this.musicOn = this.toggleOption(
-            //     this.musicOn,
-            //     checkMark,
-            //     "Music"
-            // );
-
             this.musicOn = this.toggleOption(this.musicOn, checkMark, "Music");
             SoundUtil.setMusicEnabled(this.musicOn);
 
-            // resume music if turned ON
             if (this.musicOn) {
-                SoundUtil.playBgMusic("mainMenuMusic");
+                if (this.fromScene === "BasScene") {
+                    SoundUtil.playBgMusic("busBgMusic");
+                }
+                else if (this.fromScene === "MainMenu") {
+                    SoundUtil.playBgMusic("mainMenuMusic");
+                }
+                else if (this.fromScene === "KuasaScene") {
+                    SoundUtil.playBgMusic("kuasaBgMusic");
+                }
+                else if (this.fromScene === "KayakScene") {
+                    SoundUtil.playBgMusic("kayakBgMusic");
+                }
             }
+
         });
 
         sound.on("pointerdown", () => {
