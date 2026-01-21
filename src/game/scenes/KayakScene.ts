@@ -224,7 +224,10 @@ export class KaysakScene extends Scene {
 
     private createFillIntheGapZone(levelIndex) {
         const BLANK = "___________________";
-        const parts = this.randomizedLevels[levelIndex].fillinTheGap.split(BLANK);
+        const parts = Math.random() > 0.5 ?
+            this.randomizedLevels[levelIndex].fillinTheGap.split(BLANK) :
+            this.randomizedLevels[levelIndex].hintSentence.split(BLANK);
+
         const leftText = this.add.text(0, 0, parts[0], this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
         const blankText = this.add.text(0, 0, BLANK, this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
         const rightText = this.add.text(0, 0, parts[1], this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
