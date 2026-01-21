@@ -105,6 +105,23 @@ export class MainMenu extends Scene {
                 // console.log(`Start scene: ${btn.key}`);
                 SoundUtil.playClick();
                 Utils.FadeToScene(this, btn.scene);
+
+
+                if (btn.scene === 'BasScene') {
+                    this.scene.stop('KayakScene');
+                    this.scene.stop('KuasaScene');
+                }
+
+                if (btn.scene === 'KuasaScene') {
+                    this.scene.stop('BasScene');
+                    this.scene.stop('KayakScene');
+                }
+
+                if (btn.scene === 'KayakScene') {
+                    this.scene.stop('BasScene');
+                    this.scene.stop('KuasaScene');
+                }
+
                 // this.scene.start(btn.scene);
             });
         });

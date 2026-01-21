@@ -141,6 +141,15 @@ export class KaysakScene extends Scene {
         this.createLives();
         this.setupLevel(this.currentLevelIndex);
         this.registerDragEvents();
+
+        //? debug
+        // const debugButton = this.add.image(400, 400, 'close-btn').setDepth(1000).setScale(0.5);
+        // Utils.MakeButton(this, debugButton, () => {
+        //     SoundUtil.playClick();
+        //     this.scene.launch("GameOver", {
+        //         currentScore: this.SCORE,
+        //     });
+        // });
     }
 
     setupLevel(levelIndex = 0) {

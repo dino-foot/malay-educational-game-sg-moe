@@ -143,7 +143,7 @@ export class Utils {
             .load()
             .then((loadedFont) => {
                 document.fonts.add(loadedFont);
-                console.log(`Font loaded: ${name}`);
+                // console.log(`Font loaded: ${name}`);
             })
             .catch((err) => {
                 console.error("Font loading failed", err);
