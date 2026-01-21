@@ -21,7 +21,7 @@ const config: Phaser.Types.Core.GameConfig = {
     width: BASE_WIDTH,
     height: BASE_HEIGHT,
     parent: 'game-container',
-    backgroundColor: '#ffffffff',
+    backgroundColor: 'rgb(0, 0, 0)',
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -52,4 +52,4 @@ const StartGame = (parent: string) => {
 
 export default StartGame;
 
-console.log('version 0.3 ❤️❤️❤️');
+console.log('version 0.5 ❤️❤️❤️');

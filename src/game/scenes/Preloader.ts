@@ -8,13 +8,13 @@ export class Preloader extends Scene {
 
     init() {
         //  We loaded this image in our Boot Scene, so we can display it here
-        this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, "background");
+        // this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, "background");
 
         //  A simple progress bar. This is the outline of the bar.
         this.add.rectangle(this.cameras.main.centerX, this.cameras.main.centerY, 468, 32).setStrokeStyle(2, 0xffffff);
 
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(this.cameras.main.centerX - 468 / 2 + 10, this.cameras.main.centerY, 10, 20, 0x00ff00);
+        const bar = this.add.rectangle(this.cameras.main.centerX - 468 / 2 + 10, this.cameras.main.centerY, 10, 20, 0xffffff);
 
         //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
         this.load.on("progress", (progress: number) => {
@@ -93,6 +93,7 @@ export class Preloader extends Scene {
             this.load.image(key, `assets/kuasa/${key}.png`);
         });
 
+        this.load.image('background', 'assets/menu/background.png');
         this.load.image("bas", "assets/menu/bas.png");
         this.load.image("battery_off", "assets/menu/battery_off.png");
         this.load.image("bar1", "assets/menu/bar1.png");

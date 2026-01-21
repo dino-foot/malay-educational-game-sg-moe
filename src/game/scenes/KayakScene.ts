@@ -150,7 +150,7 @@ export class KaysakScene extends Scene {
 
         const padding = 10;
         const kayakFontStyle = this.getextStyle();
-        let questionType = Math.random() > 0.5 ? "hintSentence" : "fillinTheGap"; //'fillinTheGap'; //? debug only
+        let questionType = 'fillinTheGap'; // Math.random() > 0.5 ? "hintSentence" : "fillinTheGap";  //? debug only
 
         if (questionType == "fillinTheGap") {
             this.createFillIntheGapZone(levelIndex);
