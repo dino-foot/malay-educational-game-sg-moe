@@ -459,13 +459,13 @@ export class KuasaScene extends Scene {
 
     private getextStyle() {
         return {
-            fontSize: "30px",
+            fontSize: "28px",
             color: "white",
             fontFamily: "nunito",
             fontStyle: "bold",
             align: "center",
             wordWrap: {
-                width: this.questionPanel.getBounds().width - 4,
+                width: this.questionPanel.getBounds().width - 20,
             },
         };
     }
