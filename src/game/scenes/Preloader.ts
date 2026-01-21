@@ -87,7 +87,7 @@ export class Preloader extends Scene {
             this.load.image(key, `assets/kayak/${key}.png`);
         });
 
-        const kuasaImageKeys = ["beam", "black_screen", "brige_pole", "button_2", "island", "left_train", "mid_train", "right_train", "kuasa-level-title-bg", "train_bg", "train_line", "train_track", "train_question_panel"];
+        const kuasaImageKeys = ["beam", "black_screen", "brige_pole", "button_2", "left_train", "mid_train", "right_train", "kuasa-level-title-bg", "train_bg", "train_line", "train_track", "train_question_panel"];
 
         kuasaImageKeys.forEach((key) => {
             this.load.image(key, `assets/kuasa/${key}.png`);
