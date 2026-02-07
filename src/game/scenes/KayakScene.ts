@@ -89,7 +89,7 @@ export class KaysakScene extends Scene {
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
-        const jetty = this.add.image(0, 0, "jetty").setOrigin(0.5).setDepth(10);
+        const jetty = this.add.image(0, 0, "jetty").setOrigin(0.5).setDepth(10).setScale(1.2);
         Phaser.Display.Align.In.RightCenter(jetty, this.bgAlignZone, 0, 50);
 
         //  spine boat later
