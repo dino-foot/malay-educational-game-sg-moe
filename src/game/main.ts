@@ -10,6 +10,7 @@ import { SpinePlugin } from '@esotericsoftware/spine-phaser';
 import { SettingsScene } from './scenes/SettingsScene';
 import { SplashScene } from './scenes/SplashScene';
 import { CreditScene } from './scenes/CreditScene';
+import { InstructionScene } from './scenes/InstructionScene';
 
 const BASE_WIDTH = 1600;
 const BASE_HEIGHT = 900;
@@ -36,7 +37,8 @@ const config: Phaser.Types.Core.GameConfig = {
         KuasaScene,
         KaysakScene,
         GameOver,
-        SettingsScene
+        SettingsScene,
+        InstructionScene,
     ],
 
     plugins: {
@@ -52,4 +54,4 @@ const StartGame = (parent: string) => {
 
 export default StartGame;
 
-console.log('version 0.7 ❤️❤️❤️');
+console.log('version 0.8 ❤️❤️❤️');
