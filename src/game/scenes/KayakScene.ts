@@ -511,7 +511,7 @@ export class KaysakScene extends Scene {
 
     private getextStyle() {
         return {
-            fontSize: "28px",
+            fontSize: "27px",
             color: "#000",
             fontFamily: "nunito-semi-bold",
             fontStyle: "bold",
