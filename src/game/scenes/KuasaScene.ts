@@ -137,6 +137,7 @@ export class KuasaScene extends Scene {
 
         this.questionPanel = this.add.image(0, 0, "train_question_panel").setOrigin(0.5).setDepth(10);
         this.questionPanel.setScale(0.9).setDepth(11);
+        this.questionPanel.displayWidth += 250;
         Display.Align.In.TopCenter(this.questionPanel, this.bgAlignZone, 0, -170);
 
         const trainLinePiller1 = this.add.image(800, 968, "train_line").setOrigin(0.5).setDepth(10);
@@ -459,9 +460,9 @@ export class KuasaScene extends Scene {
 
     private getextStyle() {
         return {
-            fontSize: "28px",
+            fontSize: "32px",
             color: "white",
-            fontFamily: "nunito",
+            fontFamily: "nunito-semi-bold",
             fontStyle: "bold",
             align: "center",
             wordWrap: {
