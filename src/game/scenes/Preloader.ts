@@ -26,6 +26,7 @@ export class Preloader extends Scene {
     preload() {
         Utils.LoadLocalFont("nunito", "assets/fonts/Nunito-VariableFont_wght.ttf");
         Utils.LoadLocalFont("nunito-bold", "assets/fonts/Nunito-Italic-VariableFont_wght.ttf");
+        Utils.LoadLocalFont("nunito-semi-bold", "assets/fonts/Nunito-SemiBold.ttf");
 
         this.load.spineJson("boat-data", "assets/spine/boat.json");
         this.load.spineAtlas("boat-atlas", "assets/spine/boat.atlas");
@@ -139,7 +140,7 @@ export class Preloader extends Scene {
     } // end
 
     create() {
-        this.scene.start("SplashScene");
-        // this.scene.start("MainMenu"); //? debug only
+        // this.scene.start("CreditScene");
+        this.scene.start("MainMenu"); //? debug only
     }
 }
