@@ -154,7 +154,9 @@ export class KaysakScene extends Scene {
 
     setupLevel(levelIndex = 0) {
         this.questionPanel = this.add.image(0, 0, "kayak-sentence").setOrigin(0.5).setDepth(10).setScale(0.7);
-        Phaser.Display.Align.In.TopLeft(this.questionPanel, this.answerPanel, 200, 170);
+        this.questionPanel.setDisplaySize(this.bgAlignZone.width - 100, this.questionPanel.height - 80);
+
+        Phaser.Display.Align.In.TopLeft(this.questionPanel, this.answerPanel, 140, 170);
         this.track(this.questionPanel, "images");
 
         const padding = 10;
@@ -233,7 +235,7 @@ export class KaysakScene extends Scene {
         const rightText = this.add.text(0, 0, parts[1], this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
 
         const sentenceContainer = this.add.container(0, 0, [leftText, blankText, rightText]).setDepth(14);
-        sentenceContainer.setSize(700, 100);
+        sentenceContainer.setSize(500, 100);
         this.track(sentenceContainer, "containers");
         Phaser.Display.Align.In.LeftCenter(sentenceContainer, this.questionPanel, 0);
 
@@ -509,9 +511,9 @@ export class KaysakScene extends Scene {
 
     private getextStyle() {
         return {
-            fontSize: "30px",
+            fontSize: "28px",
             color: "#000",
-            fontFamily: "nunito",
+            fontFamily: "nunito-semi-bold",
             fontStyle: "bold",
             align: "center",
             wordWrap: {
