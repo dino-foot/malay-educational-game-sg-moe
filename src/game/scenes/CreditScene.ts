@@ -3,6 +3,7 @@ import { Utils } from "./Utils";
 
 export class CreditScene extends Scene {
     private creditsContainer!: Phaser.GameObjects.Container;
+    private currentY = 0;
 
     constructor() {
         super("CreditScene");
@@ -13,110 +14,70 @@ export class CreditScene extends Scene {
         const centerX = cam.centerX;
 
         // Background
-        this.add.rectangle(0, 0, cam.width, cam.height, 0x000000).setOrigin(0).setDepth(0);
+        this.add.rectangle(0, 0, cam.width, cam.height, 0x000000).setOrigin(0);
 
-        // Credits text
-        const creditsText = `
-© 2026 Curriculum Planning & Development Division
-Ministry of Education, Singapore
+        this.creditsContainer = this.add.container(0, cam.height);
 
-All rights reserved
-
-────────────────────────
-
-Acknowledgements
-
-The Ministry of Education wishes to thank the following
-for permission to use copyright material:
-
-────────────────────────
-
-Audio
-
-“No Wait To You”
-by Fresh_Morning
-Licensed via Pixabay
-https://pixabay.com/music/smooth-jazz-no-wait-to-you-190-210152/
-
-“Menu Select Button”
-by VoiceBosch
-Licensed via Pixabay
-https://pixabay.com/sound-effects/search/menu%20select%20button/
-
-“Urban Street City Music”
-by BackgroundMusicForVideo
-Licensed via Pixabay
-https://pixabay.com/music/beats-urban-street-city-music-385623/
-
-“Bus idle to drive off”
-by rabbydaw (Freesound)
-Licensed via Pixabay
-https://pixabay.com/sound-effects/city-bus-idle-to-drive-off-65780/
-
-“Correct”
-by chrisiex1
-Licensed via Pixabay
-https://pixabay.com/sound-effects/film-special-effects-correct-156911/
-
-“Wrong Answer”
-by Universfield
-Licensed via Pixabay
-https://pixabay.com/sound-effects/film-special-effects-wrong-answer-129254/
-
-“Train to Paris”
-by MusicWorld
-Licensed via Pixabay
-https://pixabay.com/music/modern-classical-train-to-paris-234096/
-
-“Train passing”
-by AudioPapkin
-Licensed via Pixabay
-https://pixabay.com/sound-effects/film-special-effects-train-passing-298079/
-
-“By the Sea”
-by DJARTMUSIC
-Licensed via Pixabay
-https://pixabay.com/music/smooth-jazz-by-the-sea-254093/
-
-“Paddle boat on water.wav”
-by SpliceSound (Freesound)
-Licensed via Pixabay
-https://pixabay.com/sound-effects/nature-paddle-boat-on-waterwav-14861/
-`;
-
-        const text = this.add
-            .text(centerX, 0, creditsText, {
-                fontFamily: "Arial",
-                fontSize: "20px",
+        // Helper to add text blocks
+        const addText = (
+            content: string,
+            fontSize = 20,
+            bold = false,
+            spacing = 2
+        ) => {
+            const text = this.add.text(centerX, this.currentY, content, {
+                fontFamily: 'nunito-semi-bold',
+                fontSize: `${fontSize}px`,
                 color: "#ffffff",
                 align: "center",
+                fontStyle: bold ? "bold" : "normal",
                 wordWrap: { width: cam.width * 0.85 },
-            })
-            .setOrigin(0.5, 0);
+                lineSpacing: 6,
+            }).setOrigin(0.5, 0);
 
-        this.creditsContainer = this.add.container(0, 0, [text]);
+            this.creditsContainer.add(text);
+            this.currentY += text.height + spacing;
+        };
 
-        // Scroll animation
+        // ===== CONTENT (matches image) =====
+
+        addText("© 2026 Curriculum Planning & Development Division");
+        addText("Ministry of Education, Singapore", 20, false, 20);
+        addText("All rights reserved", 20, false, 20);
+
+        addText("Acknowledgements", 30, true);
+
+        addText(
+            "The Ministry of Education wishes to acknowledge the following\n" +
+            "source for licensed content used in this production:",
+            20,
+            false,
+            40
+        );
+
+        addText("Sound Effects by", 24, true);
+
+        addText("BlenderTimer\nhttps://pixabay.com/users/blendertimer-9538909/", 20, false, 20);
+        addText("freesound_community\nhttps://pixabay.com/users/freesound_community-46691455/", 20, false, 20);
+        addText("DenielCZ\nhttps://pixabay.com/users/denielcz-50993549/", 20, false, 20);
+        addText("Mrstokes302\nhttps://pixabay.com/users/mrstokes302-48032194/", 20, false, 20);
+        addText("DRAGON-STUDIO\nhttps://pixabay.com/users/dragon-studio-38165424/", 20, false, 40);
+
+        addText("Music by", 24, true);
+
+        addText("DziiTen\nhttps://pixabay.com/users/dziiten-37030569/", 20, false, 40);
+
+        // ===== SCROLL =====
         this.tweens.add({
             targets: this.creditsContainer,
-            y: -(text.height + cam.height / 2),
-            delay: 3000,
-            duration: 25000, // 5e seconds
+            y: -(this.currentY + cam.height),
+            duration: 30000,
             ease: "Linear",
-            // onComplete: () => {
-            //     this.exitCredits();
-            // },
+            onComplete: () => this.exitCredits(),
         });
 
-        this.time.delayedCall(15000, () => {
-            this.exitCredits();
-        });
-
-        // Exit on pointer down
-        this.input.once("pointerdown", () => {
-            this.exitCredits();
-        });
-
+        // Exit on tap
+        this.input.once("pointerdown", () => this.exitCredits());
     }
 
     private exitCredits() {
