@@ -85,8 +85,8 @@ export class KuasaScene extends Scene {
         const { x, y } = Utils.CenterXY(this.game);
         this.bgAlignZone = this.add.zone(x, y, width, height);
         const background = this.add.image(x, y, "train_bg").setOrigin(0.5);
-        const levelTitleBg = this.add.image(0, 0, "kuasa-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.9);
-        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 0);
+        // const levelTitleBg = this.add.image(0, 0, "kuasa-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.9);
+        // Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 0);
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
@@ -136,9 +136,9 @@ export class KuasaScene extends Scene {
         Phaser.Display.Align.In.TopCenter(beamContaier, this.bgAlignZone, -this.cameras.main.width / 2, -130);
 
         this.questionPanel = this.add.image(0, 0, "train_question_panel").setOrigin(0.5).setDepth(10);
-        this.questionPanel.setScale(0.9).setDepth(11);
-        this.questionPanel.displayWidth += 250;
-        Display.Align.In.TopCenter(this.questionPanel, this.bgAlignZone, 0, -170);
+        this.questionPanel.setScale(1.35, 1.2).setDepth(11);
+        // this.questionPanel.displayWidth += 250;
+        Display.Align.In.TopCenter(this.questionPanel, this.bgAlignZone, 0, -140);
 
         const trainLinePiller1 = this.add.image(800, 968, "train_line").setOrigin(0.5).setDepth(10);
         const trainLinePiller2 = this.add.image(800, 695, "train_line").setOrigin(0.5).setDepth(9);
@@ -460,7 +460,7 @@ export class KuasaScene extends Scene {
 
     private getextStyle() {
         return {
-            fontSize: "32px",
+            fontSize: "35px",
             color: "white",
             fontFamily: "nunito-semi-bold",
             fontStyle: "bold",
