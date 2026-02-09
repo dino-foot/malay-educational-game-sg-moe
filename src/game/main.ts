@@ -11,6 +11,7 @@ import { SettingsScene } from './scenes/SettingsScene';
 import { SplashScene } from './scenes/SplashScene';
 import { CreditScene } from './scenes/CreditScene';
 import { InstructionScene } from './scenes/InstructionScene';
+import { OnExitScene } from './scenes/OnExitScene';
 
 const BASE_WIDTH = 1600;
 const BASE_HEIGHT = 900;
@@ -39,6 +40,7 @@ const config: Phaser.Types.Core.GameConfig = {
         GameOver,
         SettingsScene,
         InstructionScene,
+        OnExitScene,
     ],
 
     plugins: {
