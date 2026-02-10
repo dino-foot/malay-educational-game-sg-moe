@@ -107,18 +107,19 @@ export class BasScene extends Scene {
         //? image box container
         this.imageBoxContainer = this.add.container(0, 0).setDepth(11);
         // Phaser.Display.Align.In.LeftCenter(this.imageBoxContainer, this.road, -180, 20);
-        Phaser.Display.Align.In.TopCenter(this.imageBoxContainer, this.bgAlignZone, 0, -240);
-        const imageBox = this.add.image(0, 0, "image_box").setOrigin(0.5).setScale(0.72);
+        Phaser.Display.Align.In.TopCenter(this.imageBoxContainer, this.bgAlignZone, 0, -160);
+        const imageBox = this.add.image(0, 0, "image_box").setOrigin(0.5).setScale(0.9);
         this.imageBoxContainer.add(imageBox);
         this.imageBoxContainer.setVisible(false); // disable by default
 
         //? text box container
         this.textBoxContainer = this.add.container(0, 0).setDepth(11).setName("text-container");
         const textBox = this.add.image(0, 0, "text-box").setOrigin(0.5).setScale(0.9);
+        textBox.setDisplaySize(900, textBox.height);
         const text = this.add.text(0, 0, BUS_LEVELS_DATA[9].hintSentence, this.getQuestionTxtStyle(textBox)).setOrigin(0.5).setName("question");
         this.textBoxContainer.add(textBox);
         this.textBoxContainer.add(text);
-        Phaser.Display.Align.In.TopCenter(this.textBoxContainer, this.bgAlignZone, 0, -230);
+        Phaser.Display.Align.In.TopCenter(this.textBoxContainer, this.bgAlignZone, 0, -190);
         this.textBoxContainer.setVisible(false); // disable by default
 
         this.busTrack = this.add
@@ -132,8 +133,8 @@ export class BasScene extends Scene {
         const sun = this.add.image(0, 0, "sun").setOrigin(0.5).setDepth(2).setScale(1);
         Utils.AlignTopRight(sun, this.bgAlignZone, -200, -50);
 
-        const levelTitleBg = this.add.image(0, 0, "bus-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.7);
-        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 20);
+        // const levelTitleBg = this.add.image(0, 0, "bus-level-title-bg").setOrigin(0.5).setDepth(11).setScale(0.7);
+        // Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 20);
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
@@ -222,6 +223,7 @@ export class BasScene extends Scene {
             } else {
                 this.hintImg?.destroy();
                 this.hintImg = this.add.image(0, 0, imageKey)
+                    .setScale(1.2)
                     .setOrigin(0.5)
                     .setDepth(11);
 
@@ -670,13 +672,13 @@ export class BasScene extends Scene {
 
     private getQuestionTxtStyle(imageToBoundIn) {
         return {
-            fontSize: "26px",
+            fontSize: "28px",
             color: "#000",
-            fontFamily: "nunito",
+            fontFamily: "nunito-semi-bold",//"nunito",
             fontStyle: "bold",
             align: "center",
             wordWrap: {
-                width: imageToBoundIn.getBounds().width - 20,
+                width: imageToBoundIn.getBounds().width - 30,
             },
         };
     }
