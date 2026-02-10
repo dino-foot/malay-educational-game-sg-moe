@@ -120,8 +120,10 @@ export class KuasaScene extends Scene {
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
             SoundUtil.playClick();
-            SoundUtil.stopSfx('trainPassing');
-            Utils.FadeToScene(this, 'MainMenu');
+            Utils.openOnExit(this);
+
+            // SoundUtil.stopSfx('trainPassing');
+            // Utils.FadeToScene(this, 'MainMenu');
             // this.scene.start("MainMenu");
         });
 

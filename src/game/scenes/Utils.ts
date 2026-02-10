@@ -153,16 +153,18 @@ export class Utils {
     static FadeToScene(
         scene: Phaser.Scene,
         nextSceneKey: string,
+        onComplete?: () => void,
         options?: {
             fadeOutDuration?: number;
             fadeInDuration?: number;
             color?: { r: number; g: number; b: number };
-        }
+        },
     ) {
         const camera = scene.cameras.main;
         const { fadeOutDuration = 700, fadeInDuration = 700, color = { r: 0, g: 0, b: 0 } } = options || {};
         camera.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             scene.scene.start(nextSceneKey);
+            onComplete?.();
         });
         camera.fadeOut(fadeOutDuration, color.r, color.g, color.b);
     }
@@ -170,6 +172,12 @@ export class Utils {
     static openSettings(scene: Phaser.Scene) {
         scene.scene.launch("SettingsMenu", { from: scene.scene.key });
         scene.scene.bringToTop('SettingsMenu');
+        scene.scene.pause();
+    }
+
+    static openOnExit(scene: Phaser.Scene) {
+        scene.scene.launch("OnExitScene", { from: scene.scene.key });
+        scene.scene.bringToTop('OnExitScene');
         scene.scene.pause();
     }
 

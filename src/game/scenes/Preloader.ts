@@ -111,6 +111,8 @@ export class Preloader extends Scene {
         this.load.image("back", "assets/menu/backBtn.png");
         this.load.image("ok", "assets/menu/ok.png");
         this.load.image("batal", "assets/menu/batal.png");
+        this.load.image("menu-title", "assets/menu/menu-title.png");
+        this.load.image("confirmation-text", "assets/menu/confirmation-text.png");
 
         const basLevelImageKeys = [
             "hinggap",

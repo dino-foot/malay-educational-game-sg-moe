@@ -159,9 +159,7 @@ export class BasScene extends Scene {
         // back button logic
         Utils.MakeButton(this, this.backButton, () => {
             SoundUtil.playClick();
-            SoundUtil.stopSfx('busRollForward');
-            Utils.FadeToScene(this, 'MainMenu');
-            // this.scene.start('MainMenu');
+            Utils.openOnExit(this);
         });
 
         // submit button
