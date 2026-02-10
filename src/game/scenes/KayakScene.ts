@@ -76,6 +76,8 @@ export class KaysakScene extends Scene {
         const { x, y } = Utils.CenterXY(this.game);
         this.bgAlignZone = this.add.zone(x, y, width, height);
 
+        this.scene.launch("InstructionScene", { from: 'KayakScene' });
+
         //? randomized level data
         if (this.randomizeQuestion) {
             this.randomizedLevels = Phaser.Utils.Array.Shuffle([...KAYAK_LEVEL_DATA]);

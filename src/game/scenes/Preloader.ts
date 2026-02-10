@@ -151,6 +151,6 @@ export class Preloader extends Scene {
 
     create() {
         // this.scene.start("CreditScene");
-        this.scene.start("MainMenu"); //? debug only
+        this.scene.start("SplashScene"); //? debug only
     }
 }

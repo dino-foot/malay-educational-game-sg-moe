@@ -90,6 +90,8 @@ export class KuasaScene extends Scene {
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
+        this.scene.launch("InstructionScene", { from: 'KuasaScene' });
+
         //? randomized level data
         if (this.randomizeQuestion) {
             this.randomizedLevels = Phaser.Utils.Array.Shuffle([...KUASA_LEVEL_DATA]);

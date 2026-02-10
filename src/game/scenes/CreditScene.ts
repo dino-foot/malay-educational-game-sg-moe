@@ -55,17 +55,17 @@ export class CreditScene extends Scene {
             40
         );
 
-        addText("Sound Effects by", 24, true);
+        addText("Sound Effects by", 30, true);
 
-        addText("BlenderTimer\nhttps://pixabay.com/users/blendertimer-9538909/", 20, false, 20);
-        addText("freesound_community\nhttps://pixabay.com/users/freesound_community-46691455/", 20, false, 20);
-        addText("DenielCZ\nhttps://pixabay.com/users/denielcz-50993549/", 20, false, 20);
-        addText("Mrstokes302\nhttps://pixabay.com/users/mrstokes302-48032194/", 20, false, 20);
-        addText("DRAGON-STUDIO\nhttps://pixabay.com/users/dragon-studio-38165424/", 20, false, 40);
+        addText("BlenderTimer\nhttps://pixabay.com/users/blendertimer-9538909/", 18, false, 20);
+        addText("freesound_community\nhttps://pixabay.com/users/freesound_community-46691455/", 18, false, 20);
+        addText("DenielCZ\nhttps://pixabay.com/users/denielcz-50993549/", 18, false, 20);
+        addText("Mrstokes302\nhttps://pixabay.com/users/mrstokes302-48032194/", 18, false, 20);
+        addText("DRAGON-STUDIO\nhttps://pixabay.com/users/dragon-studio-38165424/", 18, false, 40);
 
-        addText("Music by", 24, true);
+        addText("Music by", 30, true);
 
-        addText("DziiTen\nhttps://pixabay.com/users/dziiten-37030569/", 20, false, 40);
+        addText("DziiTen\nhttps://pixabay.com/users/dziiten-37030569/", 18, false, 40);
 
         // ===== SCROLL =====
         this.tweens.add({

@@ -87,6 +87,11 @@ export class MainMenu extends Scene {
 
         //? debug start bas scene directly
         // this.scene.start("BasScene");
+        // this.scene.launch("KuasaScene");
+        // this.scene.launch("KayakScene");
+        // this.scene.launch("InstructionScene");
+
+
     } // end
 
     private createMenuButtons(x: number, y: number) {

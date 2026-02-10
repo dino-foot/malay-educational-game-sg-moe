@@ -10,6 +10,7 @@ export class InstructionScene extends Scene {
 
     init(data: { from: string }) {
         this.fromScene = data.from;
+        this.scene.bringToTop();
     }
 
     create() {

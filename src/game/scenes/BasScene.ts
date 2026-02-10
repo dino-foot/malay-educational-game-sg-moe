@@ -87,6 +87,8 @@ export class BasScene extends Scene {
         const { width, height } = this.cameras.main;
         const { x, y } = Utils.CenterXY(this.game);
 
+        this.scene.launch("InstructionScene", { from: 'BasScene' });
+
         //? randomized level data
         if (this.randomizeQuestion) {
             this.randomizedLevels = Phaser.Utils.Array.Shuffle([...BUS_LEVELS_DATA]);
