@@ -114,6 +114,10 @@ export class Preloader extends Scene {
         this.load.image("menu-title", "assets/menu/menu-title.png");
         this.load.image("confirmation-text", "assets/menu/confirmation-text.png");
 
+        // this.load.image("insturction_1", "assets/menu/insturction_1.png");
+        // this.load.image("insturction_2", "assets/menu/insturction_2.png");
+        // this.load.image("insturction_3", "assets/menu/insturction_3.png");
+
         const basLevelImageKeys = [
             "hinggap",
             "kenderaan",
@@ -130,7 +134,9 @@ export class Preloader extends Scene {
             this.load.image(key, `assets/level_bas/${key}.png`);
         });
 
-        const settingsImgKeys = ["checkmark-green", "close-btn", "music-fx", "setting-bg", "sound-fx", "voice-over", "settings-title"];
+        const settingsImgKeys = ["checkmark-green", "close-btn", "music-fx", "insturction-bg", "setting-bg",
+            "insturction_1", "insturction_2", "insturction_3", "ins-btn",
+            "sound-fx", "voice-over", "settings-title"];
 
         settingsImgKeys.forEach((key) => {
             this.load.image(key, `assets/settings/${key}.png`);
