@@ -86,8 +86,8 @@ export class KaysakScene extends Scene {
         }
 
         const background = this.add.image(x, y, "kayak-bg").setOrigin(0.5);
-        const levelTitleBg = this.add.image(0, 0, "kayak_title").setOrigin(0.5).setDepth(11).setScale(0.9);
-        Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 0);
+        // const levelTitleBg = this.add.image(0, 0, "kayak_title").setOrigin(0.5).setDepth(11).setScale(0.9);
+        // Phaser.Display.Align.In.TopCenter(levelTitleBg, this.bgAlignZone, 0, 0);
         // Set camera bounds to the size of the background image
         this.cameras.main.setBounds(0, 0, this.bgAlignZone.width, this.bgAlignZone.height);
 
