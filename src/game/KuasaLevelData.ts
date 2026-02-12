@@ -41,7 +41,7 @@ export const KUASA_LEVEL_DATA: TrainLevelData[] = [
         id: 7,
         correctWord: "panduan",
         hintWord: "Arahan atau petunjuk yang membantu seseorang untuk mengetahui sesuatu.",
-        hintSentence: "Abang membaca ______ untuk memasang kereta mainan yang baru dibeli.",
+        hintSentence: "Abang membaca ______ untuk memasang kereta mainan yang baru dibelinya.",
     },
     {
         id: 8,

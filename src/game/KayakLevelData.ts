@@ -40,7 +40,7 @@ export const KAYAK_LEVEL_DATA: KayakLevelData[] = [
     {
         id: 7,
         correctWord: "panduan",
-        fillinTheGap: "Abang membaca ___________________ untuk memasang kereta mainan yang baru dibeli.",
+        fillinTheGap: "Abang membaca ___________________ untuk memasang kereta mainan yang baru dibelinya.",
         hintSentence: "Cikgu Siti memberikan ___________________ yang jelas supaya kami dapat menyiapkan projek sains dengan betul."
     },
     {
