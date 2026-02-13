@@ -54,6 +54,18 @@ export class Preloader extends Scene {
         // kayak
         this.load.audio("kayakBgMusic", "assets/sounds/by-the-sea.mp3");
         this.load.audio("paddleBoat", "assets/sounds/paddle-boat-on-waterwav.mp3");
+
+        // voice over 
+        this.load.audio("MisiPulang_a", "assets/VO/MisiPulang_a.wav");
+        this.load.audio("MisiPulang_b", "assets/VO/MisiPulang_b.wav");
+        this.load.audio("MisiPulang_c", "assets/VO/MisiPulang_c.wav");
+        this.load.audio("MisiPulang_d", "assets/VO/MisiPulang_d.wav");
+        this.load.audio("MisiPulang", "assets/VO/MisiPulang.wav");
+
+        this.load.audio("Peringkat-1", "assets/VO/Peringkat-1.wav");
+        this.load.audio("Peringkat-2", "assets/VO/Peringkat-2.wav");
+        this.load.audio("Peringkat-3", "assets/VO/Peringkat-3.wav");
+
         // this.load.audio('menuSelectButton', 'assets/sounds/menu-select-button.mp3');
         // Load the assets for the game - Replace with your own assets
         // this.load.setPath('assets');
