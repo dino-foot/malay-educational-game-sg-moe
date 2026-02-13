@@ -154,8 +154,8 @@ export class KuasaScene extends Scene {
 
     private setupLevel(levelIndex = 0) {
         // setup question
-        const showHintWord = Phaser.Math.Between(0, 1) === 0;
-        const questionTextValue = showHintWord ? this.randomizedLevels[levelIndex].hintWord : this.randomizedLevels[levelIndex].hintSentence;
+        // const showHintWord = Phaser.Math.Between(0, 1) === 0;
+        // const questionTextValue = showHintWord ? this.randomizedLevels[levelIndex].hintWord : this.randomizedLevels[levelIndex].hintSentence;
 
         this.questionText = this.add.text(0, 0, this.randomizedLevels[levelIndex].hintSentence, this.getextStyle()).setOrigin(0, 0).setDepth(13);
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
@@ -207,8 +207,10 @@ export class KuasaScene extends Scene {
         }
 
         //? update next question
-        const showHintWord = Phaser.Math.Between(0, 1) === 0;
-        const questionTextValue = showHintWord ? this.randomizedLevels[this.currentLevelIndex].hintWord : this.randomizedLevels[this.currentLevelIndex].hintSentence;
+        // const showHintWord = Phaser.Math.Between(0, 1) === 0;
+        // const questionTextValue = showHintWord ? this.randomizedLevels[this.currentLevelIndex].hintWord : this.randomizedLevels[this.currentLevelIndex].hintSentence;
+        const questionTextValue = this.randomizedLevels[this.currentLevelIndex].hintSentence;
+
         this.questionText.setText(questionTextValue);
         Phaser.Display.Align.In.Center(this.questionText, this.questionPanel);
 
