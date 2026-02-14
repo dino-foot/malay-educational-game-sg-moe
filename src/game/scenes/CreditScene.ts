@@ -86,6 +86,7 @@ export class CreditScene extends Scene {
     }
 
     private exitCredits() {
+        this.registry.set('isFirstEntry', true);
         Utils.FadeToScene(this, "MainMenu");
     }
 }
