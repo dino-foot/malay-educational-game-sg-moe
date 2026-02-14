@@ -48,6 +48,7 @@ export class GameTitlePopupScene extends Scene {
 
         this.registry.set('isFirstEntry', false);
         Utils.MakeButton(this, closeBtn, () => {
+            SoundUtil.stopAllSfx();
             SoundUtil.playClick();
 
             // Optional: Add a "Close" tween before stopping the scene

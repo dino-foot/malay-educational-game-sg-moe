@@ -87,15 +87,8 @@ export class MainMenu extends Scene {
         console.log('completedLevels >> ', completedLevels);
         this.updateProgress(completedLevels);
 
-        //? debug start bas scene directly
-        // this.scene.start("BasScene");
-        // this.scene.launch("KuasaScene");
-        // this.scene.launch("KayakScene");
-        // this.scene.launch("InstructionScene");
-
-        const isFirstEntry = true; //this.registry.get('isFirstEntry'); //
+        const isFirstEntry = this.registry.get('isFirstEntry');
         if (isFirstEntry) {
-
             const firstVO = SoundUtil.playSfx('MisiPulang');
             if (firstVO) {
                 firstVO.once('complete', () => {
@@ -105,6 +98,12 @@ export class MainMenu extends Scene {
             this.scene.launch("GameTitlePopupScene");
         }
 
+
+        //? debug start bas scene directly
+        // this.scene.start("BasScene");
+        // this.scene.launch("KuasaScene");
+        // this.scene.launch("KayakScene");
+        // this.scene.launch("InstructionScene");
 
     } // end
 
@@ -124,8 +123,12 @@ export class MainMenu extends Scene {
                 // console.log(`Start scene: ${btn.key}`);
                 // SoundUtil.playClick();
                 SoundUtil.stopAllSfx();
-                SoundUtil.playSfx(btn.soundKey);
-                Utils.FadeToScene(this, btn.scene);
+                const sfx = SoundUtil.playSfx(btn.soundKey);
+                if (sfx) {
+                    sfx.once('complete', () => {
+                        Utils.FadeToScene(this, btn.scene);
+                    });
+                }
 
                 if (btn.scene === 'BasScene') {
                     this.scene.stop('KayakScene');

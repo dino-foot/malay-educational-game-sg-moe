@@ -46,7 +46,7 @@ export class InstructionScene extends Scene {
         Display.Align.In.BottomCenter(okBtn, panelBg, 0, -10);
 
         Utils.MakeButton(this, okBtn, () => {
-            this.scene.sendToBack();
+            this.scene.stop();
             SoundUtil.stopAllSfx();
         });
     }
