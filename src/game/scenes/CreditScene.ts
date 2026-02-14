@@ -57,15 +57,20 @@ export class CreditScene extends Scene {
 
         addText("Sound Effects by", 30, true);
 
-        addText("BlenderTimer\nhttps://pixabay.com/users/blendertimer-9538909/", 18, false, 20);
-        addText("freesound_community\nhttps://pixabay.com/users/freesound_community-46691455/", 18, false, 20);
-        addText("DenielCZ\nhttps://pixabay.com/users/denielcz-50993549/", 18, false, 20);
-        addText("Mrstokes302\nhttps://pixabay.com/users/mrstokes302-48032194/", 18, false, 20);
-        addText("DRAGON-STUDIO\nhttps://pixabay.com/users/dragon-studio-38165424/", 18, false, 40);
+        // addText("No Wait To You by Fresh_Morning \nhttps://pixabay.com/music/smooth-jazz-no-wait-to-you-190-210152/", 18, false, 24);
+        addText("Menu Select Button by VoiceBosch\nhttps://pixabay.com/sound-effects/search/menu%20select%20button/", 18, false, 25);
+        // addText("Urban Street City Music by BackgroundMusicForVideo\nhttps://pixabay.com/music/beats-urban-street-city-music-385623/", 18, false, 20);
+        addText("Bus idle to drive off by rabbydaw (Freesound)\nhttps://pixabay.com/sound-effects/city-bus-idle-to-drive-off-65780/", 18, false, 25);
+        addText("Correct by chrisiex1\nhttps://pixabay.com/sound-effects/film-special-effects-correct-156911/", 18, false, 25);
+        addText("Wrong Answer by Universfield\nhttps://pixabay.com/sound-effects/film-special-effects-wrong-answer-129254/", 18, false, 25);
+        addText("Paddle boat on water by SpliceSound (Freesound)\nhttps://pixabay.com/sound-effects/nature-paddle-boat-on-waterwav-14861/", 18, false, 40);
 
         addText("Music by", 30, true);
 
-        addText("DziiTen\nhttps://pixabay.com/users/dziiten-37030569/", 18, false, 40);
+        addText("Urban Street City Music by BackgroundMusicForVideo\nhttps://pixabay.com/music/beats-urban-street-city-music-385623/", 18, false, 25);
+        addText("No Wait To You by Fresh_Morning\nhttps://pixabay.com/music/smooth-jazz-no-wait-to-you-190-210152/", 18, false, 25);
+        addText("Train to Paris by MusicWorld\nhttps://pixabay.com/music/modern-classical-train-to-paris-234096/", 18, false, 25);
+        addText("By the Sea by DJARTMUSIC\nhttps://pixabay.com/music/smooth-jazz-by-the-sea-254093/", 18, false, 40);
 
         // ===== SCROLL =====
         this.tweens.add({
