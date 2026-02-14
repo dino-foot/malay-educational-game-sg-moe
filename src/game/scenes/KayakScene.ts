@@ -164,7 +164,7 @@ export class KaysakScene extends Scene {
 
         const padding = 10;
         const kayakFontStyle = this.getextStyle();
-        let questionType = 'hintSentence'; // Math.random() > 0.5 ? "hintSentence" : "fillinTheGap";  //? debug only
+        let questionType = 'fillinTheGap'; // Math.random() > 0.5 ? "hintSentence" : "fillinTheGap";  //? debug only
 
         if (questionType == "fillinTheGap") {
             this.createFillIntheGapZone(levelIndex);
@@ -229,9 +229,11 @@ export class KaysakScene extends Scene {
 
     private createFillIntheGapZone(levelIndex) {
         const BLANK = "___________________";
-        const parts = Math.random() > 0.5 ?
-            this.randomizedLevels[levelIndex].fillinTheGap.split(BLANK) :
-            this.randomizedLevels[levelIndex].hintSentence.split(BLANK);
+        // const parts = Math.random() > 0.5 ?
+        // this.randomizedLevels[levelIndex].fillinTheGap.split(BLANK) :
+        // this.randomizedLevels[levelIndex].hintSentence.split(BLANK);
+
+        const parts = this.randomizedLevels[levelIndex].hintSentence.split(BLANK);
 
         const leftText = this.add.text(0, 0, parts[0], this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
         const blankText = this.add.text(0, 0, BLANK, this.getextStyle()).setOrigin(0, 0.5).setDepth(13);
