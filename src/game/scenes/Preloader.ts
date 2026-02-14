@@ -35,6 +35,7 @@ export class Preloader extends Scene {
         this.load.image("green_light", "assets/menu/green_light.png");
         this.load.image("red_light", "assets/menu/red_light.png");
         this.load.image("yellow_light", "assets/menu/yellow_light.png");
+        this.load.image("GameTitlePopUpText", "assets/menu/GameTitlePopUpText.png");
 
         this.load.video("splashVideo", "assets/videos/splash_video.mp4");
 
