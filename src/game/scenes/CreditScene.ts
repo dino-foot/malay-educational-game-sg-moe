@@ -48,8 +48,8 @@ export class CreditScene extends Scene {
         addText("Acknowledgements", 30, true);
 
         addText(
-            "The Ministry of Education wishes to acknowledge the following\n" +
-            "source for licensed content used in this production:",
+            "The Ministry of Education wishes to thank the following\n" +
+            "for permission to use copyright material:",
             20,
             false,
             40
