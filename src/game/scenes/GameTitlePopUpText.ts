@@ -21,13 +21,13 @@ export class GameTitlePopupScene extends Scene {
         const popupContainer = this.add.container(x, y);
 
         // 2. Add elements to the container (positions are now relative to container's center 0,0)
-        const panelBg = this.add.image(0, 0, "setting-bg").setOrigin(0.5);
-        const titleImg = this.add.image(0, 0, "GameTitlePopUpText").setOrigin(0.5, 0); // Adjusted for container
+        const panelBg = this.add.image(0, 0, "GameTitlePopUpText").setOrigin(0.5).setScale(0.9);
+        // const titleImg = this.add.image(0, 0, "GameTitlePopUpText").setOrigin(0.5, 0); // Adjusted for container
         const closeBtn = this.add.image(0, 0, "GameTitle-Close").setOrigin(0.5); // Adjusted for container
 
-        popupContainer.add([panelBg, titleImg, closeBtn]);
-        Display.Align.In.BottomCenter(closeBtn, panelBg, 0, -50);
-        Display.Align.In.TopCenter(titleImg, panelBg, 20, -50);
+        popupContainer.add([panelBg, closeBtn]);
+        Display.Align.In.BottomCenter(closeBtn, panelBg, 0, -80);
+        // Display.Align.In.TopCenter(titleImg, panelBg, 20, -50);
 
         // 3. Set initial state for the animation
         popupContainer.setScale(0); // Start invisible/small

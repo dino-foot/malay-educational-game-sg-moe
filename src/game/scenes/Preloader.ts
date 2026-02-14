@@ -36,6 +36,7 @@ export class Preloader extends Scene {
         this.load.image("red_light", "assets/menu/red_light.png");
         this.load.image("yellow_light", "assets/menu/yellow_light.png");
         this.load.image("GameTitlePopUpText", "assets/menu/GameTitlePopUpText.png");
+        this.load.image("GameTitle-Close", "assets/menu/GameTitle-Close.png");
 
         this.load.video("splashVideo", "assets/videos/splash_video.mp4");
 
@@ -57,15 +58,15 @@ export class Preloader extends Scene {
         this.load.audio("paddleBoat", "assets/sounds/paddle-boat-on-waterwav.mp3");
 
         // voice over 
-        this.load.audio("MisiPulang_a", "assets/VO/MisiPulang_a.wav");
-        this.load.audio("MisiPulang_b", "assets/VO/MisiPulang_b.wav");
-        this.load.audio("MisiPulang_c", "assets/VO/MisiPulang_c.wav");
-        this.load.audio("MisiPulang_d", "assets/VO/MisiPulang_d.wav");
-        this.load.audio("MisiPulang", "assets/VO/MisiPulang.wav");
+        this.load.audio("MisiPulang_a", "assets/sounds/VO/MisiPulang_a.wav");
+        this.load.audio("MisiPulang_b", "assets/sounds/VO/MisiPulang_b.wav");
+        this.load.audio("MisiPulang_c", "assets/sounds/VO/MisiPulang_c.wav");
+        this.load.audio("MisiPulang_d", "assets/sounds/VO/MisiPulang_d.wav");
+        this.load.audio("MisiPulang", "assets/sounds/VO/MisiPulang.wav");
 
-        this.load.audio("Peringkat-1", "assets/VO/Peringkat-1.wav");
-        this.load.audio("Peringkat-2", "assets/VO/Peringkat-2.wav");
-        this.load.audio("Peringkat-3", "assets/VO/Peringkat-3.wav");
+        this.load.audio("Peringkat-1", "assets/sounds/VO/Peringkat-1.wav");
+        this.load.audio("Peringkat-2", "assets/sounds/VO/Peringkat-2.wav");
+        this.load.audio("Peringkat-3", "assets/sounds/VO/Peringkat-3.wav");
 
         // this.load.audio('menuSelectButton', 'assets/sounds/menu-select-button.mp3');
         // Load the assets for the game - Replace with your own assets
@@ -164,6 +165,6 @@ export class Preloader extends Scene {
 
     create() {
         // this.scene.start("CreditScene");
-        this.scene.start("SplashScene"); //? debug only
+        this.scene.start("MainMenu"); //? debug only
     }
 }

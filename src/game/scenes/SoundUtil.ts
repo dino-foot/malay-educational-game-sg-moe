@@ -59,6 +59,7 @@ export class SoundUtil {
             sfx.stop();
         }
         sfx.play();
+        return sfx;
     }
 
     static stopSfx(key: string, volume = 1) {
