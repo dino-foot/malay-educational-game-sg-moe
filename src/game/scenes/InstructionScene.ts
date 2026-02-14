@@ -1,5 +1,6 @@
 import { Display, Scene } from "phaser";
 import { Utils } from "./Utils";
+import { SoundUtil } from "./SoundUtil";
 
 export class InstructionScene extends Scene {
     fromScene!: string;
@@ -24,12 +25,18 @@ export class InstructionScene extends Scene {
         let img = 'insturction_1';
         if (this.fromScene === 'BasScene') {
             img = 'insturction_1';
+            SoundUtil.stopAllSfx();
+            SoundUtil.playSfx('Peringkat-1');
         }
         else if (this.fromScene === 'KuasaScene') {
             img = 'insturction_2';
+            SoundUtil.stopAllSfx();
+            SoundUtil.playSfx('Peringkat-2');
         }
         else if (this.fromScene === 'KayakScene') {
             img = 'insturction_3';
+            SoundUtil.stopAllSfx();
+            SoundUtil.playSfx('Peringkat-3');
         }
 
         const instructionImg = this.add.image(0, 0, img).setOrigin(0.5).setDepth(1);
@@ -40,6 +47,7 @@ export class InstructionScene extends Scene {
 
         Utils.MakeButton(this, okBtn, () => {
             this.scene.sendToBack();
+            SoundUtil.stopAllSfx();
         });
     }
 }

@@ -123,6 +123,7 @@ export class MainMenu extends Scene {
             Utils.MakeButton(this, button, () => {
                 // console.log(`Start scene: ${btn.key}`);
                 // SoundUtil.playClick();
+                SoundUtil.stopAllSfx();
                 SoundUtil.playSfx(btn.soundKey);
                 Utils.FadeToScene(this, btn.scene);
 

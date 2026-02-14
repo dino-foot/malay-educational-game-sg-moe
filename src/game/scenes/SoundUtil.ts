@@ -62,6 +62,19 @@ export class SoundUtil {
         return sfx;
     }
 
+    static stopAllSfx() {
+        this.sfxCache.forEach((sfx) => {
+            if (sfx.isPlaying) {
+                sfx.stop();
+            }
+        });
+
+        // Also stop the specific click sound if it's playing
+        // if (this.clickSfx?.isPlaying) {
+        //     this.clickSfx.stop();
+        // }
+    }
+
     static stopSfx(key: string, volume = 1) {
         if (!this.sfxEnabled) return;
         let sfx = this.sfxCache.get(key);
