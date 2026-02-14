@@ -3,9 +3,9 @@ import { Utils } from "./Utils";
 import { SoundUtil } from "./SoundUtil";
 
 const menuButtons = [
-    { key: "bas", scene: "BasScene" },
-    { key: "kuasa", scene: "KuasaScene" },
-    { key: "kampung", scene: "KayakScene" },
+    { key: "bas", scene: "BasScene", soundKey: 'MisiPulang_b' },
+    { key: "kuasa", scene: "KuasaScene", soundKey: 'MisiPulang_c' },
+    { key: "kampung", scene: "KayakScene", soundKey: 'MisiPulang_d' },
 ];
 export class MainMenu extends Scene {
     background: GameObjects.Image;
@@ -16,6 +16,8 @@ export class MainMenu extends Scene {
     settingsBtn: GameObjects.Image;
     watchLights: Phaser.GameObjects.Image[] = [];
     watchBars: Phaser.GameObjects.Image[] = [];
+
+    firstEntry = false;
 
     constructor() {
         super("MainMenu");
@@ -91,6 +93,18 @@ export class MainMenu extends Scene {
         // this.scene.launch("KayakScene");
         // this.scene.launch("InstructionScene");
 
+        const isFirstEntry = true; //this.registry.get('isFirstEntry'); //
+        if (isFirstEntry) {
+
+            const firstVO = SoundUtil.playSfx('MisiPulang');
+            if (firstVO) {
+                firstVO.once('complete', () => {
+                    SoundUtil.playSfx('MisiPulang_a');
+                });
+            }
+            this.scene.launch("GameTitlePopupScene");
+        }
+
 
     } // end
 
@@ -108,9 +122,9 @@ export class MainMenu extends Scene {
 
             Utils.MakeButton(this, button, () => {
                 // console.log(`Start scene: ${btn.key}`);
-                SoundUtil.playClick();
+                // SoundUtil.playClick();
+                SoundUtil.playSfx(btn.soundKey);
                 Utils.FadeToScene(this, btn.scene);
-
 
                 if (btn.scene === 'BasScene') {
                     this.scene.stop('KayakScene');
