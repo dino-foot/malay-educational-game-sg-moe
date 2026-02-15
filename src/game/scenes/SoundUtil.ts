@@ -6,6 +6,7 @@ export class SoundUtil {
 
     static musicEnabled = true;
     static sfxEnabled = true;
+    static voiceOverEnabled = true;
 
     static sfxCache: Map<string, Phaser.Sound.BaseSound> = new Map()
 
@@ -49,6 +50,22 @@ export class SoundUtil {
     // 🔊 GENERIC SFX PLAYER
     static playSfx(key: string, volume = 1) {
         if (!this.sfxEnabled) return;
+        let sfx = this.sfxCache.get(key);
+        if (!sfx) {
+            sfx = this.scene.sound.add(key, { volume });
+            this.sfxCache.set(key, sfx);
+        }
+        // prevent overlap spam
+        if (sfx.isPlaying) {
+            sfx.stop();
+        }
+        sfx.play();
+        return sfx;
+    }
+
+    static playVO(key: string, volume = 1) {
+        if (!this.voiceOverEnabled) return;
+
         let sfx = this.sfxCache.get(key);
         if (!sfx) {
             sfx = this.scene.sound.add(key, { volume });
@@ -107,6 +124,11 @@ export class SoundUtil {
     static setSfxEnabled(enabled: boolean) {
         this.sfxEnabled = enabled;
         localStorage.setItem("sfxOn", String(enabled));
+    }
+
+    static setVOEnabled(enabled: boolean) {
+        this.sfxEnabled = enabled;
+        localStorage.setItem("voOn", String(enabled));
     }
 
     // 🔁 Restore saved settings
