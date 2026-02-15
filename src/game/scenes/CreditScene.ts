@@ -63,6 +63,7 @@ export class CreditScene extends Scene {
         addText("Bus idle to drive off by rabbydaw (Freesound)\nhttps://pixabay.com/sound-effects/city-bus-idle-to-drive-off-65780/", 18, false, 25);
         addText("Correct by chrisiex1\nhttps://pixabay.com/sound-effects/film-special-effects-correct-156911/", 18, false, 25);
         addText("Wrong Answer by Universfield\nhttps://pixabay.com/sound-effects/film-special-effects-wrong-answer-129254/", 18, false, 25);
+        addText("Train Passing By by kalsstockmedia\nhttps://pixabay.com/users/kalsstockmedia-13377274/", 18, false, 25);
         addText("Paddle boat on water by SpliceSound (Freesound)\nhttps://pixabay.com/sound-effects/nature-paddle-boat-on-waterwav-14861/", 18, false, 40);
 
         addText("Music by", 30, true);
