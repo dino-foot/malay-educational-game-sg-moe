@@ -279,7 +279,7 @@ export class KuasaScene extends Scene {
             duration: Utils.GetTrainSpeedByLevel(this.currentLevelIndex, (this.currentLevelIndex >= 5) ? true : false),
             ease: "Linear",
             onStart: () => {
-                SoundUtil.playSfx('trainPassing');
+                SoundUtil.playSfx('trainPassing', 0.55);
             },
             onComplete: () => {
                 SoundUtil.stopSfx('trainPassing');
