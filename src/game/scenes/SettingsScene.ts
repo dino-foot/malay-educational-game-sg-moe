@@ -5,7 +5,7 @@ import { SoundUtil } from "./SoundUtil";
 export class SettingsScene extends Phaser.Scene {
     private soundOn: boolean = true;
     private musicOn: boolean = true;
-    private voiceover: boolean = false;
+    private voiceover: boolean = true;
     fromScene!: string;
 
     constructor() {
@@ -98,19 +98,16 @@ export class SettingsScene extends Phaser.Scene {
 
         });
 
+        // sound
         sound.on("pointerdown", () => {
-            // this.soundOn = this.toggleOption(
-            //     this.soundOn,
-            //     checkMark1,
-            //     "Sound FX"
-            // );
             this.soundOn = this.toggleOption(this.soundOn, checkMark1, "Sound FX");
-            SoundUtil.setSfxEnabled(this.soundOn);
+            SoundUtil.setSfxEnabled(this.voiceover);
         });
 
+        // voice over
         voice.on("pointerdown", () => {
             this.voiceover = this.toggleOption(this.voiceover, checkMark2, "Voice Over");
-
+            SoundUtil.setVOEnabled(this.voiceover);
             // TODO: Hook voice over system
         });
     }

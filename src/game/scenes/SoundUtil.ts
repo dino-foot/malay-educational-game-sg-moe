@@ -47,9 +47,10 @@ export class SoundUtil {
     }
 
 
-    // 🔊 GENERIC SFX PLAYER
+    // GENERIC SFX PLAYER
     static playSfx(key: string, volume = 1) {
         if (!this.sfxEnabled) return;
+
         let sfx = this.sfxCache.get(key);
         if (!sfx) {
             sfx = this.scene.sound.add(key, { volume });
@@ -64,8 +65,9 @@ export class SoundUtil {
     }
 
     static playVO(key: string, volume = 1) {
-        if (!this.voiceOverEnabled) return;
+        console.log('voice over >> ', this.voiceOverEnabled);
 
+        if (!this.voiceOverEnabled) return;
         let sfx = this.sfxCache.get(key);
         if (!sfx) {
             sfx = this.scene.sound.add(key, { volume });
@@ -103,7 +105,7 @@ export class SoundUtil {
         if (sfx.isPlaying) {
             sfx.stop();
         }
-    }
+    } // end 
 
     static stopBg() {
         if (this.bgMusic) {
@@ -127,7 +129,7 @@ export class SoundUtil {
     }
 
     static setVOEnabled(enabled: boolean) {
-        this.sfxEnabled = enabled;
+        this.voiceOverEnabled = enabled;
         localStorage.setItem("voOn", String(enabled));
     }
 
@@ -135,9 +137,11 @@ export class SoundUtil {
     static loadSettings() {
         this.musicEnabled = localStorage.getItem("musicOn") !== "false";
         this.sfxEnabled = localStorage.getItem("sfxOn") !== "false";
+        this.voiceOverEnabled = localStorage.getItem("voOn") !== "false";
     }
 
     static applySettings() {
         if (!this.musicEnabled) this.stopBg();
+        if (!this.voiceOverEnabled) this.stopAllSfx();
     }
 }

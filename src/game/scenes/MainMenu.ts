@@ -123,23 +123,6 @@ export class MainMenu extends Scene {
                 // console.log(`Start scene: ${btn.key}`);
                 // SoundUtil.playClick();
 
-                if (SoundUtil.voiceOverEnabled) {
-                    SoundUtil.stopAllSfx();
-                    const vo = SoundUtil.playVO(btn.soundKey);
-                    if (vo) {
-                        vo.once('complete', () => {
-                            Utils.FadeToScene(this, btn.scene);
-                        });
-                    }
-                } else if (SoundUtil.sfxEnabled) {
-                    SoundUtil.playClick();
-                    Utils.FadeToScene(this, btn.scene);
-                }
-                else {
-                    Utils.FadeToScene(this, btn.scene);
-                }
-
-
                 if (btn.scene === 'BasScene') {
                     this.scene.stop('KayakScene');
                     this.scene.stop('KuasaScene');
@@ -153,6 +136,27 @@ export class MainMenu extends Scene {
                 if (btn.scene === 'KayakScene') {
                     this.scene.stop('BasScene');
                     this.scene.stop('KuasaScene');
+                }
+
+                console.log('vo-enabled ', SoundUtil.voiceOverEnabled);
+
+
+                if (SoundUtil.voiceOverEnabled) {
+                    SoundUtil.stopAllSfx();
+                    const vo = SoundUtil.playVO(btn.soundKey);
+                    // console.log('vo >> ', vo);
+                    if (vo) {
+                        vo.once('complete', () => {
+                            Utils.FadeToScene(this, btn.scene);
+                        });
+                    }
+                }
+                else if (SoundUtil.sfxEnabled) {
+                    SoundUtil.playClick();
+                    Utils.FadeToScene(this, btn.scene);
+                }
+                else {
+                    Utils.FadeToScene(this, btn.scene);
                 }
 
                 // this.scene.start(btn.scene);

@@ -61,6 +61,7 @@ export class OnExitScene extends Phaser.Scene {
         });
 
         Utils.MakeButton(this, batalBtn, () => {
+            SoundUtil.stopAllSfx();
             SoundUtil.playClick();
             this.scene.stop();
             this.scene.resume(this.fromScene); // resume previous scene
