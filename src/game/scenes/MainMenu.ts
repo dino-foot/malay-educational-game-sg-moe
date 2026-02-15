@@ -89,10 +89,10 @@ export class MainMenu extends Scene {
 
         const isFirstEntry = this.registry.get('isFirstEntry');
         if (isFirstEntry) {
-            const firstVO = SoundUtil.playSfx('MisiPulang');
+            const firstVO = SoundUtil.playVO('MisiPulang');
             if (firstVO) {
                 firstVO.once('complete', () => {
-                    SoundUtil.playSfx('MisiPulang_a');
+                    SoundUtil.playVO('MisiPulang_a');
                 });
             }
             this.scene.launch("GameTitlePopupScene");
@@ -122,13 +122,23 @@ export class MainMenu extends Scene {
             Utils.MakeButton(this, button, () => {
                 // console.log(`Start scene: ${btn.key}`);
                 // SoundUtil.playClick();
-                SoundUtil.stopAllSfx();
-                const sfx = SoundUtil.playSfx(btn.soundKey);
-                if (sfx) {
-                    sfx.once('complete', () => {
-                        Utils.FadeToScene(this, btn.scene);
-                    });
+
+                if (SoundUtil.voiceOverEnabled) {
+                    SoundUtil.stopAllSfx();
+                    const vo = SoundUtil.playVO(btn.soundKey);
+                    if (vo) {
+                        vo.once('complete', () => {
+                            Utils.FadeToScene(this, btn.scene);
+                        });
+                    }
+                } else if (SoundUtil.sfxEnabled) {
+                    SoundUtil.playClick();
+                    Utils.FadeToScene(this, btn.scene);
                 }
+                else {
+                    Utils.FadeToScene(this, btn.scene);
+                }
+
 
                 if (btn.scene === 'BasScene') {
                     this.scene.stop('KayakScene');
