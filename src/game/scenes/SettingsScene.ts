@@ -5,7 +5,7 @@ import { SoundUtil } from "./SoundUtil";
 export class SettingsScene extends Phaser.Scene {
     private soundOn: boolean = true;
     private musicOn: boolean = true;
-    private voiceover: boolean = true;
+    private voOn: boolean = true;
     fromScene!: string;
 
     constructor() {
@@ -18,12 +18,12 @@ export class SettingsScene extends Phaser.Scene {
 
     create() {
         SoundUtil.init(this);
+        const { x, y } = Utils.CenterXY(this.game);
 
         // sync UI with global state
         this.musicOn = SoundUtil.musicEnabled;
         this.soundOn = SoundUtil.sfxEnabled;
-
-        const { x, y } = Utils.CenterXY(this.game);
+        this.voOn = SoundUtil.voiceOverEnabled;
 
         const darkBg = this.add.graphics().fillStyle(0x000000, 0.7).fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
 
@@ -72,10 +72,7 @@ export class SettingsScene extends Phaser.Scene {
 
         checkMark.setVisible(this.musicOn);
         checkMark1.setVisible(this.soundOn);
-        checkMark2.setVisible(this.voiceover);
-
-        checkMark.setVisible(this.musicOn);
-        checkMark1.setVisible(this.soundOn);
+        checkMark2.setVisible(this.voOn);
 
         music.on("pointerdown", () => {
             this.musicOn = this.toggleOption(this.musicOn, checkMark, "Music");
@@ -101,14 +98,13 @@ export class SettingsScene extends Phaser.Scene {
         // sound
         sound.on("pointerdown", () => {
             this.soundOn = this.toggleOption(this.soundOn, checkMark1, "Sound FX");
-            SoundUtil.setSfxEnabled(this.voiceover);
+            SoundUtil.setSfxEnabled(this.soundOn);
         });
 
         // voice over
         voice.on("pointerdown", () => {
-            this.voiceover = this.toggleOption(this.voiceover, checkMark2, "Voice Over");
-            SoundUtil.setVOEnabled(this.voiceover);
-            // TODO: Hook voice over system
+            this.voOn = this.toggleOption(this.voOn, checkMark2, "Voice Over");
+            SoundUtil.setVOEnabled(this.voOn);
         });
     }
 
