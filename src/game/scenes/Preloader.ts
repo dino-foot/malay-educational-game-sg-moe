@@ -43,7 +43,7 @@ export class Preloader extends Scene {
         // menu/bas music
         this.load.audio("mainMenuMusic", "assets/sounds/no-wait-to-you.mp3");
 
-        this.load.audio("busBgMusic", "assets/sounds/urban-street-city-music.mp3");
+        this.load.audio("busBgMusic", "assets/sounds/bas_level_music.mp3");
         this.load.audio("busRollForward", "assets/sounds/bus-idle-to-drive-off.mp3");
 
         this.load.audio("buttonClick", "assets/sounds/button-click.mp3");

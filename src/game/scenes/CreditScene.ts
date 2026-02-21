@@ -68,7 +68,7 @@ export class CreditScene extends Scene {
 
         addText("Music by", 30, true);
 
-        addText("Urban Street City Music by BackgroundMusicForVideo\nhttps://pixabay.com/music/beats-urban-street-city-music-385623/", 18, false, 25);
+        addText("Cheerful Morning with Ukulele by Sweet_kr\nhttps://pixabay.com/music/happy-childrens-tunes-cheerful-morning-with-ukulele-112936/", 18, false, 25);
         addText("No Wait To You by Fresh_Morning\nhttps://pixabay.com/music/smooth-jazz-no-wait-to-you-190-210152/", 18, false, 25);
         addText("Train to Paris by MusicWorld\nhttps://pixabay.com/music/modern-classical-train-to-paris-234096/", 18, false, 25);
         addText("By the Sea by DJARTMUSIC\nhttps://pixabay.com/music/smooth-jazz-by-the-sea-254093/", 18, false, 40);
